@@ -1,4 +1,6 @@
-package com.cuupa.mailprocessor.services;
+package com.cuupa.mailprocessor.services.semantic;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
 import java.util.List;
@@ -35,4 +37,11 @@ public class SemanticResult implements Serializable {
         this.sender = sender;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).append("topicName", topicName)
+                                        .append("sender", sender)
+                                        .append("metaData", metaData)
+                                        .toString();
+    }
 }

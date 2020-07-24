@@ -14,6 +14,11 @@ public abstract class AbstractProcessInstanceHandler {
 
     public AbstractProcessInstanceHandler(final DelegateExecution delegateExecution) {
         this.delegateExecution = delegateExecution;
+        for(ProcessProperty property : ProcessProperty.values()) {
+            if(!delegateExecution.hasVariable(property.name())){
+                delegateExecution.setVariable(property.name(), null);
+            }
+        }
     }
 
     protected void add(final String key, final Object value) {
@@ -69,5 +74,9 @@ public abstract class AbstractProcessInstanceHandler {
             return getAsT(propertyName, byte[].class);
         }
         return new byte[0];
+    }
+
+    protected DelegateExecution getDelegateExecution(){
+        return delegateExecution;
     }
 }

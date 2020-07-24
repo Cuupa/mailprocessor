@@ -1,0 +1,17 @@
+server.port: 8080
+
+logging.level:
+    root: ERROR
+    com.cuupa.mailprocessor: DEBUG
+
+mailprocessor:
+  config: /opt/mailprocessor/config.json
+
+camunda:
+  admin-user:
+    id: demo
+    password: demo
+    firstName: John
+    lastName: Doe
+  filter.create: All tasks
+  bpm.job-execution.enabled: true

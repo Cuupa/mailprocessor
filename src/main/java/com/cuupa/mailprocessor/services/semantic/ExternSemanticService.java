@@ -1,4 +1,4 @@
-package com.cuupa.mailprocessor.services;
+package com.cuupa.mailprocessor.services.semantic;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -9,6 +9,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Calls the extern semantic serivce to classify the text
+ */
 public class ExternSemanticService {
 
     private final RestTemplate restTemplate;
@@ -17,7 +20,7 @@ public class ExternSemanticService {
 
     private final Gson gson = new Gson();
 
-    public ExternSemanticService(final RestTemplate restTemplate, final String semanticUrl){
+    public ExternSemanticService(final RestTemplate restTemplate, final String semanticUrl) {
         this.restTemplate = restTemplate;
         this.semanticUrl = semanticUrl;
     }
@@ -26,8 +29,9 @@ public class ExternSemanticService {
         final ResponseEntity<String>
                 responseEntity =
                 restTemplate.postForEntity(semanticUrl, plainText, String.class);
-        if(responseEntity.getStatusCode().is2xxSuccessful()){
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
             Type listType = new TypeToken<ArrayList<SemanticResult>>() {
+
             }.getType();
             return gson.fromJson(responseEntity.getBody(), listType);
         } else {

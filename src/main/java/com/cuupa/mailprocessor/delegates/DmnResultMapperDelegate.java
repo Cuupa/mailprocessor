@@ -1,7 +1,7 @@
 package com.cuupa.mailprocessor.delegates;
 
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler;
-import com.cuupa.mailprocessor.services.Metadata;
+import com.cuupa.mailprocessor.services.semantic.Metadata;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -17,7 +17,7 @@ public class DmnResultMapperDelegate implements JavaDelegate {
     private final Pattern regexPlaceholder = Pattern.compile("\\%[a-zA-Z]*\\%");
 
     @Override
-    public void execute(DelegateExecution delegateExecution) throws Exception {
+    public void execute(DelegateExecution delegateExecution) {
         ProcessInstanceHandler handler = new ProcessInstanceHandler(delegateExecution);
         final String pathToSave = getPathToSave(handler.getDmnResult());
         final String replacedPath = replacePlaceholder(pathToSave, handler);
@@ -50,7 +50,7 @@ public class DmnResultMapperDelegate implements JavaDelegate {
         return (String) dmn_result.get("path_to_save");
     }
 
-    private Boolean getReminder(Map<String, Object> dmn_result) {
+    private Boolean getReminder(final Map<String, Object> dmn_result) {
         return (Boolean) dmn_result.get("hasReminder");
     }
 }

@@ -1,10 +1,12 @@
 package com.cuupa.mailprocessor.process;
 
-import com.cuupa.mailprocessor.services.Metadata;
+import com.cuupa.mailprocessor.services.semantic.Metadata;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ProcessInstanceHandler extends AbstractProcessInstanceHandler {
@@ -18,7 +20,7 @@ public class ProcessInstanceHandler extends AbstractProcessInstanceHandler {
         set(ProcessProperty.PLAIN_TEXT.name(), textPerPage);
     }
 
-    public List<String> getPlainText(){
+    public List<String> getPlainText() {
         return getAsListOfString(ProcessProperty.PLAIN_TEXT.name());
     }
 
@@ -31,12 +33,21 @@ public class ProcessInstanceHandler extends AbstractProcessInstanceHandler {
         return this;
     }
 
+    public ProcessInstanceHandler setTopics(List<String> topics) {
+        add(ProcessProperty.TOPIC.name(), topics);
+        return this;
+    }
+
+    public List<String> getTopics() {
+        return getAsListOfString(ProcessProperty.TOPIC.name());
+    }
+
     public ProcessInstanceHandler setSender(final String sender) {
         set(ProcessProperty.SENDER.name(), sender);
         return this;
     }
 
-    public String getSender(){
+    public String getSender() {
         return getAsString(ProcessProperty.SENDER.name());
     }
 
@@ -45,7 +56,7 @@ public class ProcessInstanceHandler extends AbstractProcessInstanceHandler {
         return this;
     }
 
-    public List<Metadata> getMetadata(){
+    public List<Metadata> getMetadata() {
         return getAsListOf(ProcessProperty.METADATA.name());
     }
 
@@ -58,8 +69,27 @@ public class ProcessInstanceHandler extends AbstractProcessInstanceHandler {
         return this;
     }
 
+    public String getPathToSave() {
+        return getAsString(ProcessProperty.PATH_TO_SAVE.name());
+    }
+
     public ProcessInstanceHandler setHasReminder(final Boolean reminder) {
         add(ProcessProperty.HAS_REMINDER.name(), reminder);
         return this;
+    }
+
+    public Locale getLocale() {
+        return Locale.getDefault();
+    }
+
+
+    public String getFileName() {
+        return getAsString(ProcessProperty.FILE_NAME.name());
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(getDelegateExecution().getVariables(),
+                                                  ToStringStyle.MULTI_LINE_STYLE);
     }
 }

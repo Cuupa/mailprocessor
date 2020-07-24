@@ -1,9 +1,9 @@
 package com.cuupa.mailprocessor.delegates;
 
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler;
-import com.cuupa.mailprocessor.services.ExternSemanticService;
-import com.cuupa.mailprocessor.services.Metadata;
-import com.cuupa.mailprocessor.services.SemanticResult;
+import com.cuupa.mailprocessor.services.semantic.ExternSemanticService;
+import com.cuupa.mailprocessor.services.semantic.Metadata;
+import com.cuupa.mailprocessor.services.semantic.SemanticResult;
 import org.apache.commons.collections4.CollectionUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -21,7 +21,7 @@ public class SemanticDelegate implements JavaDelegate {
     }
 
     @Override
-    public void execute(DelegateExecution delegateExecution) throws Exception {
+    public void execute(DelegateExecution delegateExecution) {
         ProcessInstanceHandler handler = new ProcessInstanceHandler(delegateExecution);
         final List<SemanticResult>
                 semanticResult =

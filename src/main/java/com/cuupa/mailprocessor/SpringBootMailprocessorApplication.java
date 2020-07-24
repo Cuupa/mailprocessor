@@ -5,10 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class SpringBootProcessApplication extends SpringBootServletInitializer {
+public class SpringBootMailprocessorApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringBootProcessApplication.class, args);
+        SpringApplication.run(SpringBootMailprocessorApplication.class, args);
     }
 
 }

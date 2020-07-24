@@ -1,10 +1,11 @@
-package com.cuupa.mailprocessor.services;
+package com.cuupa.mailprocessor.services.semantic;
 
 import java.io.Serializable;
 
 public class Metadata implements Serializable {
 
     private final String name;
+
     private final String value;
 
     public Metadata(String name, String value) {

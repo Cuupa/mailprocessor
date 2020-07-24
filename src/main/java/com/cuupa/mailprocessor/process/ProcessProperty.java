@@ -10,6 +10,8 @@ public enum ProcessProperty {
 
     FILE_CONTENT,
 
+    FILE_NAME,
+
     METADATA,
 
     PATH_TO_SAVE,

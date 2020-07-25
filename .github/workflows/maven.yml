@@ -32,6 +32,7 @@ jobs:
 
       - name: Coping artifact
         run: mkdir staging && cp target/*.jar staging
+      - name: Uploading artifact
         uses: actions/upload-artifact@v2
         with:
           name: Package

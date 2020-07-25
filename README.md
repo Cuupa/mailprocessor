@@ -15,7 +15,7 @@ The project is a spring boot project, so it works as a jar file as well as deplo
 It works closely with my other project called "classificator" (https://github.com/Cuupa/classificator) but since it's a simple REST call, you can swap it out to your likings.
 Just keep in mind that the result is a "SemanticResult".
 
-[BPMN-Process](https://github.com/Cuupa/mailprocessor/tree/master/src/main/resources/mailprocessor.png "BPMN-Process")
+[BPMN-Process]: https://github.com/Cuupa/mailprocessor/tree/master/src/main/resources/mailprocessor.png "BPMN-Process"
 
 ## Configuration
 Below there's a sample configuration file in plain old json. Each section can be deactivated by simply deleting the property or using the enabled switch.

@@ -19,7 +19,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
       - name: Set up JDK 14
@@ -27,11 +27,19 @@ jobs:
         with:
           java-version: 14
 
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
       - name: Build with maven
         run: mvn -B package --file pom.xml
 
       - name: Coping artifact
         run: mkdir staging && cp target/*.jar staging
+
       - name: Uploading artifact
         uses: actions/upload-artifact@v2
         with:

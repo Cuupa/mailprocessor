@@ -1,14 +1,16 @@
-package com.cuupa.mailprocessor;
+package com.cuupa.mailprocessor
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 @SpringBootApplication
-public class SpringBootMailprocessorApplication extends SpringBootServletInitializer {
+open class SpringBootMailprocessorApplication : SpringBootServletInitializer() {
 
-    public static void main(String[] args) {
-        SpringApplication.run(SpringBootMailprocessorApplication.class, args);
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            SpringApplication.run(SpringBootMailprocessorApplication::class.java, *args)
+        }
     }
-
 }

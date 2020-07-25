@@ -1,28 +1,10 @@
-package com.cuupa.mailprocessor.services.semantic;
+package com.cuupa.mailprocessor.services.semantic
 
-import java.io.Serializable;
+import java.io.Serializable
 
-public class Metadata implements Serializable {
+data class Metadata(val name: String, val value: String) : Serializable {
 
-    private final String name;
-
-    private final String value;
-
-    public Metadata(String name, String value) {
-        this.name = name;
-        this.value = value;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return name + ": " + value;
+    override fun toString(): String {
+        return "$name: $value"
     }
 }

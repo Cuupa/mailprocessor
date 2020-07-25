@@ -1,142 +1,98 @@
-package com.cuupa.mailprocessor.userconfiguration;
+package com.cuupa.mailprocessor.userconfiguration
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import org.apache.commons.lang3.builder.ToStringBuilder
+import java.util.*
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ScanProperties extends ConfigurationProperties {
-
+class ScanProperties : ConfigurationProperties() {
     @SerializedName("path")
     @Expose
-    private String path;
+    var path: String? = null
 
-    @SerializedName("path")
+    @SerializedName("port")
     @Expose
-    private int port;
+    var port = 0
 
     @SerializedName("username")
     @Expose
-    private String username;
+    var username: String? = null
 
     @SerializedName("password")
     @Expose
-    private String password;
+    var password: String? = null
 
     @SerializedName("scannerprefix")
     @Expose
-    private List<String> scannerPrefix;
+    private var scannerPrefix: List<String> = listOf()
 
     @SerializedName("filetypes")
     @Expose
-    private List<String> fileTypes;
+    private var fileTypes: List<String> = listOf()
 
     @SerializedName("enabled")
     @Expose
-    private boolean enabled;
+    var isEnabled = false
 
-    public String getPath() {
-        return path;
+    fun path(path: String?): ScanProperties {
+        this.path = path
+        return this
     }
 
-    public void setPath(final String path) {
-        this.path = path;
+    fun port(port: Int): ScanProperties {
+        this.port = port
+        return this
     }
 
-    public ScanProperties path(final String path) {
-        this.path = path;
-        return this;
+    fun username(username: String?): ScanProperties {
+        this.username = username
+        return this
     }
 
-    public int getPort() {
-        return port;
+    fun password(password: String?): ScanProperties {
+        this.password = password
+        return this
     }
 
-    public void setPort(final int port) {
-        this.port = port;
+    fun getScannerPrefix(): List<String> {
+        return if (scannerPrefix != null) scannerPrefix else ArrayList()
     }
 
-    public ScanProperties port(int port) {
-        this.port = port;
-        return this;
+    fun setScannerPrefix(scannerPrefix: List<String>) {
+        this.scannerPrefix = scannerPrefix
     }
 
-    public String getUsername() {
-        return username;
+    fun scannerPrefix(scannerPrefix: List<String>): ScanProperties {
+        this.scannerPrefix = scannerPrefix
+        return this
     }
 
-    public void setUsername(final String username) {
-        this.username = username;
+    fun getFileTypes(): List<String> {
+        return if (fileTypes != null) fileTypes else ArrayList()
     }
 
-    public ScanProperties username(final String username) {
-        this.username = username;
-        return this;
+    fun setFileTypes(fileTypes: List<String>) {
+        this.fileTypes = fileTypes
     }
 
-    public String getPassword() {
-        return password;
+    fun fileTypes(fileTypes: List<String>): ScanProperties {
+        this.fileTypes = fileTypes
+        return this
     }
 
-    public void setPassword(final String password) {
-        this.password = password;
+    fun enabled(enabled: Boolean): ScanProperties {
+        isEnabled = enabled
+        return this
     }
 
-    public ScanProperties password(final String password) {
-        this.password = password;
-        return this;
-    }
-
-    public List<String> getScannerPrefix() {
-        return scannerPrefix != null ? scannerPrefix : new ArrayList<>();
-    }
-
-    public void setScannerPrefix(final List<String> scannerPrefix) {
-        this.scannerPrefix = scannerPrefix;
-    }
-
-    public ScanProperties scannerPrefix(final List<String> scannerPrefix) {
-        this.scannerPrefix = scannerPrefix;
-        return this;
-    }
-
-    public List<String> getFileTypes() {
-        return fileTypes != null ? fileTypes : new ArrayList<>();
-    }
-
-    public void setFileTypes(final List<String> fileTypes) {
-        this.fileTypes = fileTypes;
-    }
-
-    public ScanProperties fileTypes(final List<String> fileTypes) {
-        this.fileTypes = fileTypes;
-        return this;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(final boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public ScanProperties enabled(final boolean enabled) {
-        this.enabled = enabled;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("path", path)
-                                        .append("port", port)
-                                        .append("username", username)
-                                        .append("password", getPasswordStared(password))
-                                        .append("scannerprefix", scannerPrefix)
-                                        .append("filetypes", fileTypes)
-                                        .append("enabled", enabled)
-                                        .toString();
+    override fun toString(): String {
+        return ToStringBuilder(this).append("path", path)
+                .append("port", port)
+                .append("username", username)
+                .append("password", getPasswordStared(password!!))
+                .append("scannerprefix", scannerPrefix)
+                .append("filetypes", fileTypes)
+                .append("enabled", isEnabled)
+                .toString()
     }
 }

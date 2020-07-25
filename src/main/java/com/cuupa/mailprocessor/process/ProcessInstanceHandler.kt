@@ -1,95 +1,78 @@
-package com.cuupa.mailprocessor.process;
+package com.cuupa.mailprocessor.process
 
-import com.cuupa.mailprocessor.services.semantic.Metadata;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
+import com.cuupa.mailprocessor.services.semantic.Metadata
+import org.apache.commons.lang3.builder.ToStringBuilder
+import org.apache.commons.lang3.builder.ToStringStyle
+import org.camunda.bpm.engine.delegate.DelegateExecution
+import java.util.*
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+class ProcessInstanceHandler(
+        delegateExecution: DelegateExecution?) : AbstractProcessInstanceHandler(delegateExecution!!) {
 
-public class ProcessInstanceHandler extends AbstractProcessInstanceHandler {
-
-
-    public ProcessInstanceHandler(final DelegateExecution delegateExecution) {
-        super(delegateExecution);
+    fun setPlaintext(textPerPage: List<String>) {
+        set(ProcessProperty.PLAIN_TEXT.name, textPerPage)
     }
 
-    public void setPlaintext(final List<String> textPerPage) {
-        set(ProcessProperty.PLAIN_TEXT.name(), textPerPage);
+    val plainText: List<String>
+        get() = getAsListOfString(ProcessProperty.PLAIN_TEXT.name)
+
+    val fileContent: ByteArray
+        get() = getAsByteArray(ProcessProperty.FILE_CONTENT.name)
+
+    fun addTopic(topic: String?): ProcessInstanceHandler {
+        add(ProcessProperty.TOPIC.name, topic)
+        return this
     }
 
-    public List<String> getPlainText() {
-        return getAsListOfString(ProcessProperty.PLAIN_TEXT.name());
+    fun setTopics(topics: List<String>): ProcessInstanceHandler {
+        add(ProcessProperty.TOPIC.name, topics)
+        return this
     }
 
-    public byte[] getFileContent() {
-        return getAsByteArray(ProcessProperty.FILE_CONTENT.name());
+    var topics: List<String> = mutableListOf()
+        get() = getAsListOfString(ProcessProperty.TOPIC.name)
+
+    fun setSender(sender: String?): ProcessInstanceHandler {
+        set(ProcessProperty.SENDER.name, sender)
+        return this
     }
 
-    public ProcessInstanceHandler addTopic(final String topic) {
-        add(ProcessProperty.TOPIC.name(), topic);
-        return this;
+    val sender: String?
+        get() = getAsString(ProcessProperty.SENDER.name)
+
+    fun addMetaData(
+            metadata: List<Metadata>): ProcessInstanceHandler {
+        add(ProcessProperty.METADATA.name, metadata)
+        return this
     }
 
-    public ProcessInstanceHandler setTopics(List<String> topics) {
-        add(ProcessProperty.TOPIC.name(), topics);
-        return this;
+    val metadata: List<Metadata>
+        get() = getAsListOf(ProcessProperty.METADATA.name)
+
+    val dmnResult: Map<String, Any>
+        get() = getAsMap(ProcessProperty.DMN_RESULT.name)
+
+    fun setPathToSave(pathToSave: String?): ProcessInstanceHandler {
+        add(ProcessProperty.PATH_TO_SAVE.name, pathToSave)
+        return this
     }
 
-    public List<String> getTopics() {
-        return getAsListOfString(ProcessProperty.TOPIC.name());
+    val pathToSave: String?
+        get() = getAsString(ProcessProperty.PATH_TO_SAVE.name)
+
+    fun setHasReminder(reminder: Boolean): ProcessInstanceHandler {
+        add(ProcessProperty.HAS_REMINDER.name, reminder)
+        return this
     }
 
-    public ProcessInstanceHandler setSender(final String sender) {
-        set(ProcessProperty.SENDER.name(), sender);
-        return this;
-    }
+    val locale: Locale
+        get() = Locale.getDefault()
 
-    public String getSender() {
-        return getAsString(ProcessProperty.SENDER.name());
-    }
+    val fileName: String?
+        get() = getAsString(ProcessProperty.FILE_NAME.name)
 
-    public ProcessInstanceHandler addMetaData(final List<Metadata> metadata) {
-        add(ProcessProperty.METADATA.name(), metadata);
-        return this;
-    }
-
-    public List<Metadata> getMetadata() {
-        return getAsListOf(ProcessProperty.METADATA.name());
-    }
-
-    public Map<String, Object> getDmnResult() {
-        return getAsMap(ProcessProperty.DMN_RESULT.name());
-    }
-
-    public ProcessInstanceHandler setPathToSave(final String pathToSave) {
-        add(ProcessProperty.PATH_TO_SAVE.name(), pathToSave);
-        return this;
-    }
-
-    public String getPathToSave() {
-        return getAsString(ProcessProperty.PATH_TO_SAVE.name());
-    }
-
-    public ProcessInstanceHandler setHasReminder(final Boolean reminder) {
-        add(ProcessProperty.HAS_REMINDER.name(), reminder);
-        return this;
-    }
-
-    public Locale getLocale() {
-        return Locale.getDefault();
-    }
-
-
-    public String getFileName() {
-        return getAsString(ProcessProperty.FILE_NAME.name());
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(getDelegateExecution().getVariables(),
-                                                  ToStringStyle.MULTI_LINE_STYLE);
+    override fun toString(): String {
+        return ToStringBuilder.reflectionToString(delegateExecution.variables,
+                ToStringStyle.MULTI_LINE_STYLE)
     }
 }

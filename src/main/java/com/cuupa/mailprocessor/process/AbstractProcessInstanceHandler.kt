@@ -1,82 +1,66 @@
-package com.cuupa.mailprocessor.process;
+package com.cuupa.mailprocessor.process
 
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.jetbrains.annotations.NotNull;
+import org.camunda.bpm.engine.delegate.DelegateExecution
+import java.util.*
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+abstract class AbstractProcessInstanceHandler(protected val delegateExecution: DelegateExecution) {
 
-public abstract class AbstractProcessInstanceHandler {
+    //TODO: value?
+    protected fun add(key: String, value: Any?) {
+        if (delegateExecution.hasVariable(key)) {
+            val variableCasted = getAsT<Map<String, Any>>(key, MutableMap::class.java)
+            delegateExecution.setVariable(key, variableCasted)
+        } else {
+            delegateExecution.setVariable(key, ArrayList<Any>())
+        }
+    }
 
-    private final DelegateExecution delegateExecution;
+    protected operator fun set(key: String?, value: Any?) {
+        delegateExecution.setVariable(key, value)
+    }
 
-    public AbstractProcessInstanceHandler(final DelegateExecution delegateExecution) {
-        this.delegateExecution = delegateExecution;
-        for(ProcessProperty property : ProcessProperty.values()) {
-            if(!delegateExecution.hasVariable(property.name())){
-                delegateExecution.setVariable(property.name(), null);
+    protected fun getAsString(propertyName: String): String? {
+        return if (delegateExecution.hasVariable(propertyName)) {
+            getAsT<String>(propertyName, String::class.java)
+        } else null
+    }
+
+    protected fun <T> getAsListOf(propertyName: String): T {
+        return getAsT(propertyName, MutableList::class.java)
+    }
+
+    protected fun getAsListOfString(propertyName: String): List<String> {
+        return if (delegateExecution.hasVariable(propertyName)) {
+            getAsT(propertyName, MutableList::class.java)
+        } else ArrayList()
+    }
+
+    private fun <T> getAsT(propertyName: String, clazz: Class<*>): T {
+        val property = delegateExecution.getVariable(propertyName)
+        return if (clazz.isInstance(property)) {
+            clazz.cast(property) as T
+        } else {
+            throw RuntimeException("Invalid data type")
+        }
+    }
+
+    protected fun getAsMap(propertyName: String): Map<String, Any> {
+        return if (delegateExecution.hasVariable(propertyName)) {
+            getAsT(propertyName, MutableMap::class.java)
+        } else HashMap()
+    }
+
+    protected fun getAsByteArray(propertyName: String): ByteArray {
+        return if (delegateExecution.hasVariable(propertyName)) {
+            getAsT(propertyName, ByteArray::class.java)
+        } else ByteArray(0)
+    }
+
+    init {
+        for (property in ProcessProperty.values()) {
+            if (!delegateExecution.hasVariable(property.name)) {
+                delegateExecution.setVariable(property.name, null)
             }
         }
-    }
-
-    protected void add(final String key, final Object value) {
-        if (delegateExecution.hasVariable(key)) {
-            final Map<String, Object> variableCasted = getAsT(key, Map.class);
-            delegateExecution.setVariable(key, variableCasted);
-        } else {
-            delegateExecution.setVariable(key, new ArrayList<>());
-        }
-    }
-
-    protected void set(final String key, final Object value) {
-        delegateExecution.setVariable(key, value);
-    }
-
-    protected String getAsString(final String propertyName) {
-        if(delegateExecution.hasVariable(propertyName)){
-            return getAsT(propertyName, String.class);
-        }
-        return null;
-    }
-
-    protected <T> T getAsListOf(final String propertyName){
-        return getAsT(propertyName, List.class);
-    }
-
-    protected List<String> getAsListOfString(final String propertyName) {
-        if (delegateExecution.hasVariable(propertyName)) {
-            return getAsT(propertyName, List.class);
-        }
-        return new ArrayList<>();
-    }
-
-    @NotNull
-    private <T> T getAsT(final String propertyName, Class clazz) {
-        final Object property = delegateExecution.getVariable(propertyName);
-        if (clazz.isInstance(property)) {
-            return (T) clazz.cast(property);
-        } else {
-            throw new RuntimeException("Invalid data type");
-        }
-    }
-
-    protected Map<String, Object> getAsMap(final String propertyName) {
-        if(delegateExecution.hasVariable(propertyName)){
-            return getAsT(propertyName, Map.class);
-        }
-        return new HashMap<>();
-    }
-
-    protected byte[] getAsByteArray(final String propertyName) {
-        if (delegateExecution.hasVariable(propertyName)) {
-            return getAsT(propertyName, byte[].class);
-        }
-        return new byte[0];
-    }
-
-    protected DelegateExecution getDelegateExecution(){
-        return delegateExecution;
     }
 }

@@ -1,11 +1,10 @@
-package com.cuupa.mailprocessor.services;
+package com.cuupa.mailprocessor.services
 
-import java.util.Locale;
+import java.util.*
 
-public class TranslateService {
+class TranslateService {
 
-    public String translate(final String toTranslate, final Locale locale){
-        return null;
+    fun translate(toTranslate: String, locale: Locale): String {
+        return ""
     }
-
 }

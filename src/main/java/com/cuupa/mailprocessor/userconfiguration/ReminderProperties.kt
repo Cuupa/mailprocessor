@@ -1,103 +1,61 @@
-package com.cuupa.mailprocessor.userconfiguration;
+package com.cuupa.mailprocessor.userconfiguration
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import org.apache.commons.lang3.builder.ToStringBuilder
 
-public class ReminderProperties extends ConfigurationProperties {
-
+class ReminderProperties : ConfigurationProperties() {
     @SerializedName("botname")
     @Expose
-    private String botname;
+    var botname: String? = null
 
     @SerializedName("token")
     @Expose
-    private String token;
+    var token: String? = null
 
     @SerializedName("chatId")
     @Expose
-    private String chatId;
+    var chatId: String? = null
 
     @SerializedName("url")
     @Expose
-    private String url;
+    var url: String? = null
 
     @SerializedName("enabled")
     @Expose
-    private boolean enabled;
+    var isEnabled = false
 
-    public String getBotname() {
-        return botname;
+    fun botname(botname: String?): ReminderProperties {
+        this.botname = botname
+        return this
     }
 
-    public void setBotname(final String botname) {
-        this.botname = botname;
+    fun token(token: String?): ReminderProperties {
+        this.token = token
+        return this
     }
 
-    public ReminderProperties botname(final String botname) {
-        this.botname = botname;
-        return this;
+    fun chatId(chatId: String?): ReminderProperties {
+        this.chatId = chatId
+        return this
     }
 
-    public String getToken() {
-        return token;
+    fun url(url: String?): ReminderProperties {
+        this.url = url
+        return this
     }
 
-    public void setToken(final String token) {
-        this.token = token;
+    fun enabled(enabled: Boolean): ReminderProperties {
+        isEnabled = enabled
+        return this
     }
 
-    public ReminderProperties token(String token) {
-        this.token = token;
-        return this;
-    }
-
-    public String getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(final String chatId) {
-        this.chatId = chatId;
-    }
-
-    public ReminderProperties chatId(final String chatId) {
-        this.chatId = chatId;
-        return this;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(final String url) {
-        this.url = url;
-    }
-
-    public ReminderProperties url(final String url) {
-        this.url = url;
-        return this;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(final boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public ReminderProperties enabled(final boolean enabled) {
-        this.enabled = enabled;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("botname", botname)
-                                        .append("token", getPasswordStared(token))
-                                        .append("chatId", chatId)
-                                        .append("url", url)
-                                        .append("enabled", enabled)
-                                        .toString();
+    override fun toString(): String {
+        return ToStringBuilder(this).append("botname", botname)
+                .append("token", getPasswordStared(token!!))
+                .append("chatId", chatId)
+                .append("url", url)
+                .append("enabled", isEnabled)
+                .toString()
     }
 }

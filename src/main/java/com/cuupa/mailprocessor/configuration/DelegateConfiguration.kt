@@ -1,31 +1,31 @@
-package com.cuupa.mailprocessor.configuration;
+package com.cuupa.mailprocessor.configuration
 
-import com.cuupa.mailprocessor.delegates.DmnResultMapperDelegate;
-import com.cuupa.mailprocessor.delegates.PlaintextDelegate;
-import com.cuupa.mailprocessor.delegates.SemanticDelegate;
-import com.cuupa.mailprocessor.services.semantic.ExternSemanticService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.cuupa.mailprocessor.delegates.DmnResultMapperDelegate
+import com.cuupa.mailprocessor.delegates.PlaintextDelegate
+import com.cuupa.mailprocessor.delegates.SemanticDelegate
+import com.cuupa.mailprocessor.services.semantic.ExternSemanticService
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
 @Configuration
-public class DelegateConfiguration {
+open class DelegateConfiguration {
 
     @Autowired
-    private ExternSemanticService externSemanticService;
+    private val externSemanticService: ExternSemanticService? = null
 
     @Bean
-    public PlaintextDelegate plaintextDelegate() {
-        return new PlaintextDelegate();
+    open fun plaintextDelegate(): PlaintextDelegate {
+        return PlaintextDelegate()
     }
 
     @Bean
-    public SemanticDelegate semanticDelegate() {
-        return new SemanticDelegate(externSemanticService);
+    open fun semanticDelegate(): SemanticDelegate {
+        return SemanticDelegate(externSemanticService!!)
     }
 
     @Bean
-    public DmnResultMapperDelegate dmnResultMapperDelegate() {
-        return new DmnResultMapperDelegate();
+    open fun dmnResultMapperDelegate(): DmnResultMapperDelegate {
+        return DmnResultMapperDelegate()
     }
 }

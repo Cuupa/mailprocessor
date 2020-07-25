@@ -1,33 +1,20 @@
-package com.cuupa.mailprocessor.services.archive;
+package com.cuupa.mailprocessor.services.archive
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder
 
-public class ArchiveResource {
+class ArchiveResource internal constructor(val name: String, private val contentType: String) {
+    val isPdf: Boolean
+        get() = pdfContentType == contentType
 
-    private final String name;
-
-    private final String contentType;
-
-    private static final String pdfContentType = "application/pdf";
-
-    ArchiveResource(final String name, final String contentType) {
-        this.name = name;
-        this.contentType = contentType;
+    override fun toString(): String {
+        return ToStringBuilder(this).append("name", name)
+                .append("contentType", contentType)
+                .append("isPdf", isPdf)
+                .toString()
     }
 
-    public boolean isPdf() {
-        return pdfContentType.equals(contentType);
+    companion object {
+        private const val pdfContentType = "application/pdf"
     }
 
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("name", name)
-                                        .append("contentType", contentType)
-                                        .append("isPdf", isPdf())
-                                        .toString();
-    }
 }

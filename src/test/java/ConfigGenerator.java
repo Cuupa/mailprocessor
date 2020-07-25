@@ -1,9 +1,11 @@
-import com.cuupa.mailprocessor.userconfiguration.*;
+import com.cuupa.mailprocessor.userconfiguration.ArchiveProperties;
+import com.cuupa.mailprocessor.userconfiguration.EmailProperties;
+import com.cuupa.mailprocessor.userconfiguration.ReminderProperties;
+import com.cuupa.mailprocessor.userconfiguration.ScanProperties;
 import com.google.gson.Gson;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Locale;
 
 public class ConfigGenerator {
 
@@ -45,18 +47,18 @@ public class ConfigGenerator {
                                         .url("http://url.call")
                                         .enabled(false);
 
-        final UserConfiguration
-                userConfiguration =
-                new UserConfiguration().username("user.name")
-                                       .locale(Locale.getDefault())
-                                       .archiveProperties(archiveProperties)
-                                       .emailProperties(emailProperties)
-                                       .scanProperties(scanProperties)
-                                       .reminderProperties(reminderProperties);
+//        final UserConfiguration
+//                userConfiguration =
+//                new UserConfiguration().username("user.name")
+//                                       .locale(Locale.getDefault())
+//                                       .archiveProperties(archiveProperties)
+//                                       .emailProperties(emailProperties)
+//                                       .scanProperties(scanProperties)
+//                                       .reminderProperties(reminderProperties);
 
-        List<UserConfiguration> config = List.of(userConfiguration);
-        final String json = gson.toJson(config);
-        System.out.println(json);
+//        List<UserConfiguration> config = List.of(userConfiguration);
+//        final String json = gson.toJson(config);
+//        System.out.println(json);
     }
 
 }

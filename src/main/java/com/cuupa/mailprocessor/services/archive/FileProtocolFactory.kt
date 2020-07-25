@@ -1,35 +1,33 @@
-package com.cuupa.mailprocessor.services.archive;
+package com.cuupa.mailprocessor.services.archive
 
-import org.springframework.util.Assert;
-
-import java.util.regex.Pattern;
+import org.springframework.util.Assert
+import java.util.regex.Pattern
 
 /**
  * Determines which FileProtocol to use. Currently supports WebDAV and local storage for windows and UNIX
  */
-public class FileProtocolFactory {
+object FileProtocolFactory {
 
-    private static final Pattern patternWindows = Pattern.compile("([A-Z]):\\\\[a-zA-Z0-9\\.\\\\]*");
+    private val patternWindows = Pattern.compile("([A-Z]):\\\\[a-zA-Z0-9\\.\\\\]*")
 
-    private static final Pattern patternUnix = Pattern.compile("/[a-zA-Z0-9/]*");
+    private val patternUnix = Pattern.compile("/[a-zA-Z0-9/]*")
 
-    public static FileProtocol getForPath(final String path) {
-        Assert.hasText(path, "no path provided");
-
+    fun getForPath(path: String): FileProtocol? {
+        Assert.hasText(path, "no path provided")
         if (isWebDav(path)) {
-            return new WebDavArchiver();
+            return WebDavArchiver()
         } else if (isLocal(path)) {
-            return new LocalArchiver();
+            return LocalArchiver()
         }
-        return null;
+        return null
     }
 
-    private static boolean isLocal(String path) {
-        return patternWindows.matcher(path.replace("/", "\\")).matches() || patternUnix.matcher(path).matches();
+    private fun isLocal(path: String): Boolean {
+        return patternWindows.matcher(path.replace("/", "\\"))
+                .matches() || patternUnix.matcher(path).matches()
     }
 
-    private static boolean isWebDav(String path) {
-        return path.startsWith("http://") || path.startsWith("https://");
+    private fun isWebDav(path: String): Boolean {
+        return path.startsWith("http://") || path.startsWith("https://")
     }
-
 }

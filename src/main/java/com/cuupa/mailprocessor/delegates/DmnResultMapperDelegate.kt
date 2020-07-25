@@ -1,56 +1,53 @@
-package com.cuupa.mailprocessor.delegates;
+package com.cuupa.mailprocessor.delegates
 
-import com.cuupa.mailprocessor.process.ProcessInstanceHandler;
-import com.cuupa.mailprocessor.services.semantic.Metadata;
-import org.apache.commons.lang3.StringUtils;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.JavaDelegate;
+import com.cuupa.mailprocessor.process.ProcessInstanceHandler
+import com.cuupa.mailprocessor.services.semantic.Metadata
+import org.apache.commons.lang3.StringUtils
+import org.camunda.bpm.engine.delegate.DelegateExecution
+import org.camunda.bpm.engine.delegate.JavaDelegate
+import java.util.regex.Pattern
+import java.util.stream.Collectors
 
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+class DmnResultMapperDelegate : JavaDelegate {
 
-public class DmnResultMapperDelegate implements JavaDelegate {
-
-    private final Pattern regexPlaceholder = Pattern.compile("\\%[a-zA-Z]*\\%");
-
-    @Override
-    public void execute(DelegateExecution delegateExecution) {
-        ProcessInstanceHandler handler = new ProcessInstanceHandler(delegateExecution);
-        final String pathToSave = getPathToSave(handler.getDmnResult());
-        final String replacedPath = replacePlaceholder(pathToSave, handler);
-        handler.setPathToSave(replacedPath).setHasReminder(getReminder(handler.getDmnResult()));
+    private val regexPlaceholder = Pattern.compile("\\%[a-zA-Z]*\\%")
+    override fun execute(delegateExecution: DelegateExecution) {
+        val handler = ProcessInstanceHandler(delegateExecution)
+        val pathToSave = getPathToSave(handler.dmnResult)
+        val replacedPath = replacePlaceholder(pathToSave, handler)
+        handler.setPathToSave(replacedPath).setHasReminder(getReminder(handler.dmnResult))
     }
 
-    private String replacePlaceholder(final String pathToSave, final ProcessInstanceHandler handler) {
-        String newPath = pathToSave;
-        if (StringUtils.isNotEmpty(handler.getSender())) {
-            newPath = newPath.replace("%sender", handler.getSender());
+    private fun replacePlaceholder(pathToSave: String?, handler: ProcessInstanceHandler): String? {
+        var newPath = pathToSave
+        if (StringUtils.isNotEmpty(handler.sender)) {
+            newPath = newPath?.replace("%sender".toRegex(), handler.sender!!)
         }
-
-        final Matcher matcher = regexPlaceholder.matcher(pathToSave);
+        val matcher = regexPlaceholder.matcher(pathToSave)
         while (matcher.find()) {
-            final String varName = matcher.group();
-            final List<Metadata>
-                    collect =
-                    handler.getMetadata()
-                           .stream()
-                           .filter(e -> e.getName().equals(varName.replace("%", "")))
-                           .collect(Collectors.toList());
-            newPath =
-                    newPath.replace(varName, collect.stream().map(Metadata::getValue).collect(Collectors.joining("_")));
+            val varName = matcher.group()
+            val collect = handler.metadata
+                    .filter { e: Metadata -> e.name == varName.replace("%", "") }
+            newPath = newPath!!.replace(varName, collect.stream()
+                    .map { obj: Metadata -> obj.value }
+                    .collect(Collectors.joining("_")))
         }
-        return newPath;
-
+        return newPath
     }
 
-    private String getPathToSave(final Map<String, Object> dmn_result) {
-        return (String) dmn_result.get("path_to_save");
+    private fun getPathToSave(dmn_result: Map<String, Any>): String {
+        return if (dmn_result.contains("path_to_save")) {
+            dmn_result["path_to_save"] as String
+        } else {
+            ""
+        }
     }
 
-    private Boolean getReminder(final Map<String, Object> dmn_result) {
-        return (Boolean) dmn_result.get("hasReminder");
+    private fun getReminder(dmn_result: Map<String, Any>): Boolean {
+        return if (dmn_result.contains("hasReminder")) {
+            dmn_result["hasReminder"] as Boolean
+        } else {
+            false
+        }
     }
 }

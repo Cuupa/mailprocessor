@@ -1,66 +1,59 @@
-package com.cuupa.mailprocessor.delegates;
+package com.cuupa.mailprocessor.delegates
 
-import com.cuupa.mailprocessor.process.ProcessInstanceHandler;
-import com.cuupa.mailprocessor.services.archive.FileProtocol;
-import com.cuupa.mailprocessor.services.archive.FileProtocolFactory;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.juli.logging.Log;
-import org.apache.juli.logging.LogFactory;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.JavaDelegate;
+import com.cuupa.mailprocessor.process.ProcessInstanceHandler
+import com.cuupa.mailprocessor.services.archive.FileProtocol
+import com.cuupa.mailprocessor.services.archive.FileProtocolFactory
+import org.apache.juli.logging.LogFactory
+import org.camunda.bpm.engine.delegate.DelegateExecution
+import org.camunda.bpm.engine.delegate.JavaDelegate
+import java.util.*
 
-import java.util.Arrays;
+class ArchiveDelegate : JavaDelegate {
 
-public class ArchiveDelegate implements JavaDelegate {
+    override fun execute(delegateExecution: DelegateExecution) {
+        val handler = ProcessInstanceHandler(delegateExecution)
+        FileProtocolFactory.getForPath("address").use { fileProtocol ->
+            val path = createCollections(handler.pathToSave!!, fileProtocol!!)
 
-    private static final Log LOG = LogFactory.getLog(ArchiveDelegate.class);
-
-    @Override
-    public void execute(DelegateExecution delegateExecution) throws Exception {
-        ProcessInstanceHandler handler = new ProcessInstanceHandler(delegateExecution);
-
-        try (FileProtocol fileProtocol = FileProtocolFactory.getForPath("address")) {
-            final String path = createCollections(handler.getPathToSave(), fileProtocol);
-            String filename = "[" + String.join("_", handler.getTopics()) + "]_" + handler.getFileName();
-            filename = filename.replace(" ", "_");
-            String url = path + filename;
-            if(!fileProtocol.exists(url)) {
-                fileProtocol.save(url, handler.getFileContent());
+            var filename = handler.topics.joinToString("_", "[", "]_") + handler.fileName
+            filename = filename.replace(" ", "_")
+            val url = path + filename
+            if (!fileProtocol.exists(url)) {
+                fileProtocol.save(url, handler.fileContent)
             }
         }
     }
 
-    private String createCollections(String path, FileProtocol fileProtocol) {
-        StringBuilder pathTemp = new StringBuilder("/");
-
-        Arrays.stream(path.split("/")).filter(StringUtils::isNotBlank).forEach(e -> {
-            pathTemp.append(e);
-            pathTemp.append("/");
-            String url = getUrlAsString(null, pathTemp.toString());
-
-            if (!fileProtocol.exists(url)) {
-                LOG.error("Creating collection " + url);
-                fileProtocol.createDirectory(url);
-            }
-        });
-
-        return pathTemp.toString();
+    private fun createCollections(path: String, fileProtocol: FileProtocol): String {
+        val pathTemp = StringBuilder("/")
+        Arrays.stream(path.split("/".toRegex()).toTypedArray())
+                .filter { cs: String? -> !cs.isNullOrBlank() }
+                .forEach { e: String? ->
+                    pathTemp.append(e)
+                    pathTemp.append("/")
+                    val url = getUrlAsString(null, pathTemp.toString())
+                    if (!fileProtocol.exists(url)) {
+                        LOG.error("Creating collection $url")
+                        fileProtocol.createDirectory(url)
+                    }
+                }
+        return pathTemp.toString()
     }
 
-    private String getUrlAsString(Object properties, String path) {
-        return "";
-//        return new String(getUrl(properties, path).toString().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+    private fun getUrlAsString(properties: Any?, path: String): String {
+        return ""
+        //        return new String(getUrl(properties, path).toString().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+    } //    private URL getUrl(ArchiveProperties properties, String path) throws MalformedURLException, URISyntaxException {
+
+    //        return new URI(getScheme(properties.getAddress()),
+    //                       null,
+    //                       getHost(properties.getAddress()),
+    //                       getPort(properties.getAddress()),
+    //                       path,
+    //                       null,
+    //                       null).toURL();
+    //    }
+    companion object {
+        private val LOG = LogFactory.getLog(ArchiveDelegate::class.java)
     }
-
-//    private URL getUrl(ArchiveProperties properties, String path) throws MalformedURLException, URISyntaxException {
-//        return new URI(getScheme(properties.getAddress()),
-//                       null,
-//                       getHost(properties.getAddress()),
-//                       getPort(properties.getAddress()),
-//                       path,
-//                       null,
-//                       null).toURL();
-//    }
-
-
 }

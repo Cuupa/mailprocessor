@@ -1,87 +1,51 @@
-package com.cuupa.mailprocessor.userconfiguration;
+package com.cuupa.mailprocessor.userconfiguration
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import org.apache.commons.lang3.builder.ToStringBuilder
 
-
-public class ArchiveProperties extends ConfigurationProperties {
-
+class ArchiveProperties : ConfigurationProperties() {
     @SerializedName("path")
     @Expose
-    private String path;
+    var path: String? = null
 
     @SerializedName("port")
     @Expose
-    private int port;
+    var port = 0
 
     @SerializedName("username")
     @Expose
-    private String username;
+    var username: String? = null
 
     @SerializedName("password")
     @Expose
-    private String password;
+    var password: String? = null
 
-    public String getPath() {
-        return path;
+    fun path(path: String?): ArchiveProperties {
+        this.path = path
+        return this
     }
 
-    public void setPath(final String path) {
-        this.path = path;
+    fun port(port: Int): ArchiveProperties {
+        this.port = port
+        return this
     }
 
-    public ArchiveProperties path(final String path) {
-        this.path = path;
-        return this;
+    fun username(username: String?): ArchiveProperties {
+        this.username = username
+        return this
     }
 
-    public int getPort() {
-        return port;
+    fun password(password: String?): ArchiveProperties {
+        this.password = password
+        return this
     }
 
-    public void setPort(final int port) {
-        this.port = port;
-    }
-
-    public ArchiveProperties port(final int port) {
-        this.port = port;
-        return this;
-
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(final String username) {
-        this.username = username;
-    }
-
-    public ArchiveProperties username(final String username) {
-        this.username = username;
-        return this;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(final String password) {
-        this.password = password;
-    }
-
-    public ArchiveProperties password(final String password) {
-        this.password = password;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("path", path)
-                                        .append("port", port)
-                                        .append("username", username)
-                                        .append("password", getPasswordStared(password))
-                                        .toString();
+    override fun toString(): String {
+        return ToStringBuilder(this).append("path", path)
+                .append("port", port)
+                .append("username", username)
+                .append("password", getPasswordStared(password))
+                .toString()
     }
 }

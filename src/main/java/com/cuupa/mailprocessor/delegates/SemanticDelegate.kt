@@ -1,39 +1,30 @@
-package com.cuupa.mailprocessor.delegates;
+package com.cuupa.mailprocessor.delegates
 
-import com.cuupa.mailprocessor.process.ProcessInstanceHandler;
-import com.cuupa.mailprocessor.services.semantic.ExternSemanticService;
-import com.cuupa.mailprocessor.services.semantic.Metadata;
-import com.cuupa.mailprocessor.services.semantic.SemanticResult;
-import org.apache.commons.collections4.CollectionUtils;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.JavaDelegate;
+import com.cuupa.mailprocessor.process.ProcessInstanceHandler
+import com.cuupa.mailprocessor.services.semantic.ExternSemanticService
+import com.cuupa.mailprocessor.services.semantic.Metadata
+import com.cuupa.mailprocessor.services.semantic.SemanticResult
+import org.apache.commons.collections4.CollectionUtils
+import org.camunda.bpm.engine.delegate.DelegateExecution
+import org.camunda.bpm.engine.delegate.JavaDelegate
+import java.util.function.Consumer
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+class SemanticDelegate(private val externSemanticService: ExternSemanticService) : JavaDelegate {
 
-public class SemanticDelegate implements JavaDelegate {
+    override fun execute(delegateExecution: DelegateExecution) {
+        val handler = ProcessInstanceHandler(delegateExecution)
 
-    private final ExternSemanticService externSemanticService;
+        val semanticResult = externSemanticService.getSemanticResult(
+                handler.plainText.joinToString(" ", "", ""))
 
-    public SemanticDelegate(final ExternSemanticService externSemanticService) {
-        this.externSemanticService = externSemanticService;
+        semanticResult.forEach(Consumer { result: SemanticResult ->
+            val metadata = CollectionUtils.emptyIfNull(result.metaData)
+            handler.addTopic(result.topicName)
+                    .setSender(result.sender)
+                    .addMetaData(metadata
+                            .filter { e: Metadata -> "sender" != e.name }
+                    )
+        })
     }
 
-    @Override
-    public void execute(DelegateExecution delegateExecution) {
-        ProcessInstanceHandler handler = new ProcessInstanceHandler(delegateExecution);
-        final List<SemanticResult>
-                semanticResult =
-                externSemanticService.getSemanticResult(String.join("", handler.getPlainText()));
-
-        semanticResult.forEach(result -> {
-            final Collection<Metadata> metadata = CollectionUtils.emptyIfNull(result.getMetaData());
-            handler.addTopic(result.getTopicName())
-                   .setSender(result.getSender())
-                   .addMetaData(metadata.stream()
-                                        .filter(e -> !"sender".equals(e.getName()))
-                                        .collect(Collectors.toList()));
-        });
-    }
 }

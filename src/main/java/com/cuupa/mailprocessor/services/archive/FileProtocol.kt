@@ -1,16 +1,14 @@
-package com.cuupa.mailprocessor.services.archive;
+package com.cuupa.mailprocessor.services.archive
 
-import java.util.List;
+interface FileProtocol : AutoCloseable {
 
-public interface FileProtocol extends AutoCloseable {
+    fun init(username: String?, password: String?)
 
-    void init(String username, String password);
+    fun exists(path: String): Boolean
 
-    boolean exists(String path);
+    fun save(path: String, data: ByteArray): Boolean
 
-    boolean save(String path, byte[] data);
+    fun createDirectory(path: String): Boolean
 
-    boolean createDirectory(String path);
-
-    List<ArchiveResource> list(String path);
+    fun list(path: String): List<ArchiveResource>
 }

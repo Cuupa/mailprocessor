@@ -1,155 +1,53 @@
-package com.cuupa.mailprocessor.userconfiguration;
+package com.cuupa.mailprocessor.userconfiguration
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.jetbrains.annotations.NotNull;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import org.apache.commons.lang3.builder.ToStringBuilder
+import java.util.*
 
-import java.util.Locale;
-
-public class UserConfiguration {
+class UserConfiguration {
 
     @SerializedName("username")
     @Expose
-    private String username;
+    var username: String? = null
 
     @SerializedName("locale")
     @Expose
-    private Locale locale;
+    var locale: Locale? = null
 
-    @SerializedName("locale")
+    @SerializedName("reload")
     @Expose
-    private boolean reload;
+    var isReload = false
 
     @SerializedName("emailproperties")
     @Expose
-    private EmailProperties emailProperties;
+    var emailProperties: EmailProperties = EmailProperties()
 
     @SerializedName("scanproperties")
     @Expose
-    private ScanProperties scanProperties;
+    var scanProperties: ScanProperties = ScanProperties()
 
     @SerializedName("archiveproperties")
     @Expose
-    private ArchiveProperties archiveProperties;
+    private var archiveProperties: ArchiveProperties? = null
 
     @SerializedName("reminderproperties")
     @Expose
-    private ReminderProperties reminderProperties;
+    private var reminderProperties: ReminderProperties? = null
 
-    public String getUsername() {
-        return username;
+    fun reload(reload: Boolean): UserConfiguration {
+        isReload = reload
+        return this
     }
 
-    @NotNull
-    public void setUsername(final String username) {
-        this.username = username;
-    }
-
-    @NotNull
-    public UserConfiguration username(final String username) {
-        this.username = username;
-        return this;
-    }
-
-    public Locale getLocale() {
-        return locale;
-    }
-
-    @NotNull
-    public void setLocale(final Locale locale) {
-        this.locale = locale;
-    }
-
-    @NotNull
-    public UserConfiguration locale(final Locale locale) {
-        this.locale = locale;
-        return this;
-    }
-
-    public boolean isReload() {
-        return reload;
-    }
-
-    public void setReload(final boolean reload) {
-        this.reload = reload;
-    }
-
-    @NotNull
-    public UserConfiguration reload(final boolean reload) {
-        this.reload = reload;
-        return this;
-    }
-
-    public EmailProperties getEmailProperties() {
-        return emailProperties != null ? emailProperties : new EmailProperties();
-    }
-
-    @NotNull
-    public void setEmailProperties(final EmailProperties emailProperties) {
-        this.emailProperties = emailProperties;
-    }
-
-    @NotNull
-    public UserConfiguration emailProperties(final EmailProperties emailProperties) {
-        this.emailProperties = emailProperties;
-        return this;
-    }
-
-    public ScanProperties getScanProperties() {
-        return scanProperties != null ? scanProperties : new ScanProperties();
-    }
-
-    @NotNull
-    public void setScanProperties(final ScanProperties scanProperties) {
-        this.scanProperties = scanProperties;
-    }
-
-    @NotNull
-    public UserConfiguration scanProperties(final ScanProperties scanProperties) {
-        this.scanProperties = scanProperties;
-        return this;
-    }
-
-    public ArchiveProperties getArchiveProperties() {
-        return archiveProperties != null ? archiveProperties : new ArchiveProperties();
-    }
-
-    @NotNull
-    public void setArchiveProperties(final ArchiveProperties archiveProperties) {
-        this.archiveProperties = archiveProperties;
-    }
-
-    @NotNull
-    public UserConfiguration archiveProperties(final ArchiveProperties archiveProperties) {
-        this.archiveProperties = archiveProperties;
-        return this;
-    }
-
-    public ReminderProperties getReminderProperties() {
-        return reminderProperties != null ? reminderProperties : new ReminderProperties();
-    }
-
-    @NotNull
-    public void setReminderProperties(final ReminderProperties reminderProperties) {
-        this.reminderProperties = reminderProperties;
-    }
-
-    @NotNull
-    public UserConfiguration reminderProperties(final ReminderProperties reminderProperties) {
-        this.reminderProperties = reminderProperties;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("username", username)
-                                        .append("locale", locale)
-                                        .append("reload", reload)
-                                        .append("emailproperties", emailProperties)
-                                        .append("scanproperties", scanProperties)
-                                        .append("archiveproperties", archiveProperties)
-                                        .append("reminderproperties", reminderProperties)
-                                        .toString();
+    override fun toString(): String {
+        return ToStringBuilder(this).append("username", username)
+                .append("locale", locale)
+                .append("reload", isReload)
+                .append("emailproperties", emailProperties)
+                .append("scanproperties", scanProperties)
+                .append("archiveproperties", archiveProperties)
+                .append("reminderproperties", reminderProperties)
+                .toString()
     }
 }

@@ -6,6 +6,7 @@ logging.level:
 
 mailprocessor:
   config: /opt/mailprocessor/config.json
+  semanticUrl: "http://localhost:8090"
 
 camunda:
   admin-user:

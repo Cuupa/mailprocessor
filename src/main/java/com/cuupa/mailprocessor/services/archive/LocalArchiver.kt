@@ -1,67 +1,62 @@
-package com.cuupa.mailprocessor.services.archive;
+package com.cuupa.mailprocessor.services.archive
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.io.ByteArrayInputStream
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.util.*
+import java.util.stream.Collectors
 
-public class LocalArchiver implements FileProtocol {
+class LocalArchiver : FileProtocol {
 
-    @Override
-    public void init(String username, String password) {
+    override fun init(username: String?, password: String?) {
         // Not implemented
     }
 
-    @Override
-    public boolean exists(String path) {
-        return Files.exists(Paths.get(path));
+    override fun exists(path: String): Boolean {
+        return Files.exists(Paths.get(path))
     }
 
-    @Override
-    public boolean save(String path, byte[] data) {
-        try {
-            Files.copy(new ByteArrayInputStream(data), Paths.get(path));
-            return true;
-        } catch (IOException e) {
-            return false;
+    override fun save(path: String, data: ByteArray): Boolean {
+        return try {
+            Files.copy(ByteArrayInputStream(data), Paths.get(path))
+            true
+        } catch (e: IOException) {
+            false
         }
     }
 
-    @Override
-    public boolean createDirectory(String path) {
-        try {
-            Files.createDirectory(Paths.get(path));
-            return true;
-        } catch (IOException e) {
-            return false;
+    override fun createDirectory(path: String): Boolean {
+        return try {
+            Files.createDirectory(Paths.get(path))
+            true
+        } catch (e: IOException) {
+            false
         }
     }
 
-    @Override
-    public List<ArchiveResource> list(String path) {
-        try {
-            return Files.list(Paths.get(path))
-                        .map(e -> new ArchiveResource(e.getFileName().toString(), getContentType(e)))
-                        .collect(Collectors.toList());
-        } catch (IOException e) {
-            return new ArrayList<>();
+    override fun list(path: String): List<ArchiveResource> {
+        return try {
+            Files.list(Paths.get(path))
+                    .map { e: Path ->
+                        ArchiveResource(e.fileName.toString(), getContentType(e))
+                    }
+                    .collect(Collectors.toList())
+        } catch (e: IOException) {
+            ArrayList()
         }
     }
 
-    private String getContentType(Path e) {
-        try {
-            return Files.probeContentType(e);
-        } catch (IOException ioException) {
-            return "*/*";
+    private fun getContentType(e: Path): String {
+        return try {
+            Files.probeContentType(e)
+        } catch (ioException: IOException) {
+            "*/*"
         }
     }
 
-    @Override
-    public void close() {
+    override fun close() {
         // Not implemented
     }
 }

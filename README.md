@@ -97,3 +97,14 @@ This section is about the configuration of reminders, if there is a document wit
 - chatId: the chatId of the chat where the reminders are published to
 - url: the webhook url of the api
 - enabled: the flag to enable or disable this service
+
+## DMN-Table
+There is a sample dmn table provided (empty.dmn)
+
+    | TOPIC  | SENDER  | PATH_TO_SAVE  | REMINDER  | NOTES  |
+    |---|---|---|---|---|
+    | - | "UNKNOWN"  | "/path/to/review/"  | true  | Unknown to unknown  |
+    | "CREDITCARD"  | - | "/path/to/finance/review/"  | true  | Credit card statements to folder "review"  |
+    | "OTHER"  | - | "/path/to/review/"  | true  | Unknown topics to folder "review"  |
+    | - | - | "/path/to/%sender%/"  | false  | The rest will be sorted by sender  |
+    

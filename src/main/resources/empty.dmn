@@ -1,13 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" id="Definitions_1t4fdpm" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="3.2.1">
-  <decision id="empty" name="empty">
-    <decisionTable id="decisionTable_1">
-      <input id="input_1">
-        <inputExpression id="inputExpression_1" typeRef="string">
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_05gs6bx" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.1.1">
+  <decision id="simon.thiel" name="simon.thiel">
+    <decisionTable id="decisionTable_1" hitPolicy="FIRST">
+      <input id="input_1" label="topics">
+        <inputExpression id="inputExpression_1" typeRef="string" expressionLanguage="juel">
+          <text>TOPICS.get(0)</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1ct9f9f" label="sender" camunda:inputVariable="SENDER">
+        <inputExpression id="LiteralExpression_03ittm8" typeRef="string">
           <text></text>
         </inputExpression>
       </input>
-      <output id="output_1" typeRef="string" />
+      <output id="output_1" label="path to save" name="PATH_TO_SAVE" typeRef="string" />
+      <output id="OutputClause_00jmc6v" label="has reminder" name="hasReminder" typeRef="boolean" />
+      <rule id="DecisionRule_1xkfsfp">
+        <description>Unknown to unknown</description>
+        <inputEntry id="UnaryTests_173l92g">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ycgvpc">
+          <text>"UNKNOWN"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0r9jeyc">
+          <text>"/path/to/review/"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1lgji5u">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_16udi40">
+        <description>Credit card statements to folder "review"</description>
+        <inputEntry id="UnaryTests_1ijoayv">
+          <text>"CREDITCARD"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0vhx7lv">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0k5vw79">
+          <text>"/path/to/finance/review/"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1fjlxvx">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0sz5zjv">
+        <description>Unknown topics to folder "review"</description>
+        <inputEntry id="UnaryTests_17t8y61">
+          <text>"OTHER"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0oes9dw">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_143bacb">
+          <text>"/path/to/review/"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1wzh3dw">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0fhnp69">
+        <description>The rest will be sorted by sender</description>
+        <inputEntry id="UnaryTests_08icdma">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_00ay4qf">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_116szk3">
+          <text>"/path/to/%sender%/"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_06qtbb1">
+          <text>false</text>
+        </outputEntry>
+      </rule>
     </decisionTable>
   </decision>
 </definitions>

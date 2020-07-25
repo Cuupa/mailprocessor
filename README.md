@@ -13,7 +13,9 @@ THIS IS A WORK IN PROGRESS and done in my spare time.
 This project uses Camunda BPMN for orchestration (https://camunda.org) and DMN for decision tables.
 The project is a spring boot project, so it works as a jar file as well as deployed to a tomcat/websphere/glassfish/etc application server.
 It works closely with my other project called "classificator" (https://github.com/Cuupa/classificator) but since it's a simple REST call, you can swap it out to your likings.
-Just keep in mind that the result is a "SemanticResult"
+Just keep in mind that the result is a "SemanticResult".
+
+[BPMN-Process](https://github.com/Cuupa/mailprocessor/tree/master/src/main/resources/mailprocessor.png)
 
 ## Configuration
 Below there's a sample configuration file in plain old json. Each section can be deactivated by simply deleting the property or using the enabled switch.

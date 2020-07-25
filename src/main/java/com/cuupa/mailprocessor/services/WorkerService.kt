@@ -32,6 +32,12 @@ class WorkerService(private val runtimeService: RuntimeService,
             mapOf(ProcessProperty.FILE_NAME.name to it.filename, ProcessProperty.FILE_CONTENT.name
                     to it.content, ProcessProperty.USERNAME.name to it.user)
         }
-        map.forEach { runtimeService.startProcessInstanceByKey("mailprocessor", it) }
+        map.forEach {
+            try {
+                runtimeService.startProcessInstanceByKey("mailprocessor", it)
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
+        }
     }
 }

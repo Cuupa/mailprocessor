@@ -1,6 +1,7 @@
 package com.cuupa.mailprocessor.configuration
 
 import com.cuupa.mailprocessor.MailprocessorConfiguration
+import com.cuupa.mailprocessor.services.TranslateService
 import com.cuupa.mailprocessor.services.WorkerService
 import com.cuupa.mailprocessor.services.input.ScanService
 import com.cuupa.mailprocessor.services.semantic.ExternSemanticService
@@ -41,5 +42,10 @@ open class ServiceConfiguration {
     @Bean
     open fun scanService(): ScanService {
         return ScanService()
+    }
+
+    @Bean
+    open fun translateService(): TranslateService {
+        return TranslateService()
     }
 }

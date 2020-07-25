@@ -6,7 +6,7 @@ logging.level:
 
 mailprocessor:
   config: /opt/mailprocessor/config.json
-  semanticUrl: "http://localhost:8090"
+  semanticUrl: "http://localhost:8081/api/rest/1.0/classifyText"
 
 camunda:
   admin-user:

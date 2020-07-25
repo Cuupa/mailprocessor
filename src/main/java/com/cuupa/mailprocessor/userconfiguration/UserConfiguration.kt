@@ -13,7 +13,7 @@ class UserConfiguration {
 
     @SerializedName("locale")
     @Expose
-    var locale: Locale? = null
+    var locale: Locale = Locale.getDefault()
 
     @SerializedName("reload")
     @Expose

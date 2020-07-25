@@ -17,20 +17,23 @@ class ProcessInstanceHandler(
         get() = getAsListOfString(ProcessProperty.PLAIN_TEXT.name)
 
     val fileContent: ByteArray
-        get() = getAsByteArray(ProcessProperty.FILE_CONTENT.name)
+        get() = getAsByteArray(ProcessProperty.FILE_CONTENT.name) ?: ByteArray(0)
+
+    val username: String
+        get() = getAsString(ProcessProperty.USERNAME.name) ?: ""
 
     fun addTopic(topic: String?): ProcessInstanceHandler {
-        add(ProcessProperty.TOPIC.name, topic)
+        add(ProcessProperty.TOPICS.name, topic)
         return this
     }
 
     fun setTopics(topics: List<String>): ProcessInstanceHandler {
-        add(ProcessProperty.TOPIC.name, topics)
+        add(ProcessProperty.TOPICS.name, topics)
         return this
     }
 
-    var topics: List<String> = mutableListOf()
-        get() = getAsListOfString(ProcessProperty.TOPIC.name)
+    var topics: List<String> = listOf()
+        get() = getAsListOfString(ProcessProperty.TOPICS.name)
 
     fun setSender(sender: String?): ProcessInstanceHandler {
         set(ProcessProperty.SENDER.name, sender)

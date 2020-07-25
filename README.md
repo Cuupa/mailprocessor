@@ -12,6 +12,8 @@ THIS IS A WORK IN PROGRESS and done in my spare time.
 ## How it works
 This project uses Camunda BPMN for orchestration (https://camunda.org) and DMN for decision tables.
 The project is a spring boot project, so it works as a jar file as well as deployed to a tomcat/websphere/glassfish/etc application server.
+It works closely with my other project called "classificator" (https://github.com/Cuupa/classificator) but since it's a simple REST call, you can swap it out to your likings.
+Just keep in mind that the result is a "SemanticResult"
 
 ## Configuration
 Below there's a sample configuration file in plain old json. Each section can be deactivated by simply deleting the property or using the enabled switch.
@@ -100,11 +102,15 @@ This section is about the configuration of reminders, if there is a document wit
 
 ## DMN-Table
 There is a sample dmn table provided (empty.dmn)
+The desicion tables are referenced by username provided in the config above. 
+That means the table "user.name.dmn" belongs to the user "user.name" and needs to be provided under /src/main/resources.
+Feel free to change as you seem fit. 
 
-    | TOPIC  | SENDER  | PATH_TO_SAVE  | REMINDER  | NOTES  |
-    |---|---|---|---|---|
-    | - | "UNKNOWN"  | "/path/to/review/"  | true  | Unknown to unknown  |
-    | "CREDITCARD"  | - | "/path/to/finance/review/"  | true  | Credit card statements to folder "review"  |
-    | "OTHER"  | - | "/path/to/review/"  | true  | Unknown topics to folder "review"  |
-    | - | - | "/path/to/%sender%/"  | false  | The rest will be sorted by sender  |
-    
+    | TOPIC         | SENDER    | PATH_TO_SAVE                | REMINDER  | NOTES                                      |
+    |---------------|-----------|-----------------------------|-----------|--------------------------------------------|
+    |       -       | "UNKNOWN" | "/path/to/review/"          | true      | Unknown to unknown                         |
+    | "CREDITCARD"  |     -     | "/path/to/finance/review/"  | true      | Credit card statements to folder "review"  |
+    | "OTHER"       |     -     | "/path/to/review/"          | true      | Unknown topics to folder "review"          |
+    |       -       |     -     | "/path/to/%sender%/"        | false     | The rest will be sorted by sender          |
+   
+The String "%sender%" will be replaced with the acutal sender.

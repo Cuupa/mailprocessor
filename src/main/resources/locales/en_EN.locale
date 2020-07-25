@@ -1,3 +1,4 @@
+SEVERAL_TOPICS=several topics
 OTHER=Unknown
 APPLICATION=Application
 BANK_STATEMENT=Bank Statement
@@ -14,6 +15,8 @@ SEPA=SEPA-Mandate
 SICKNOTE=Sicknote
 STANDING_ORDER_CONFIRMATION=Standing Order Confirmation
 STANDING_ORDER_TERMINATION=Standing Order Termination
+SOCIAL_INSURANCE_CERTIFICATE=Social Insurance Certificate
 TAX_OFFICE_CERTIFCATE=Tax Office Certificate
 TERMINATION=Termination
+UNKNOWN=unknown
 WARNING=Warning

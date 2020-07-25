@@ -29,11 +29,11 @@ class UserConfiguration {
 
     @SerializedName("archiveproperties")
     @Expose
-    private var archiveProperties: ArchiveProperties? = null
+    var archiveProperties: ArchiveProperties = ArchiveProperties()
 
     @SerializedName("reminderproperties")
     @Expose
-    private var reminderProperties: ReminderProperties? = null
+    var reminderProperties: ReminderProperties = ReminderProperties()
 
     fun reload(reload: Boolean): UserConfiguration {
         isReload = reload

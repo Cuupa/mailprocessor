@@ -14,7 +14,7 @@ class PlaintextDelegate : JavaDelegate {
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
         PDDocument.load(ByteArrayInputStream(handler.fileContent))
-                .use { document -> handler.setPlaintext(getTextPerPage(document)) }
+                .use { handler.plainText = getTextPerPage(it) }
     }
 
     @Throws(IOException::class)

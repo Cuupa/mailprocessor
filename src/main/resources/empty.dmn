@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_05gs6bx" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.1.1">
-  <decision id="simon.thiel" name="simon.thiel">
+  <decision id="empty" name="empty">
     <decisionTable id="decisionTable_1" hitPolicy="FIRST">
       <input id="input_1" label="topics">
         <inputExpression id="inputExpression_1" typeRef="string" expressionLanguage="juel">

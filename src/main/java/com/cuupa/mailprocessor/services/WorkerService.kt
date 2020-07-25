@@ -5,6 +5,7 @@ import com.cuupa.mailprocessor.process.ProcessProperty
 import com.cuupa.mailprocessor.services.input.ScanService
 import com.cuupa.mailprocessor.userconfiguration.EmailProperties
 import com.cuupa.mailprocessor.userconfiguration.ScanProperties
+import org.apache.juli.logging.LogFactory
 import org.camunda.bpm.engine.RuntimeService
 import org.springframework.scheduling.annotation.Scheduled
 
@@ -12,7 +13,7 @@ class WorkerService(private val runtimeService: RuntimeService,
                     private val mailprocessorConfiguration: MailprocessorConfiguration,
                     private val scanService: ScanService) {
 
-    @Scheduled(cron = "* * * * * *")
+    @Scheduled(cron = "*/30 * * * * *")
     fun execute() {
         val userConfigurationList = mailprocessorConfiguration.configurations
         userConfigurationList.forEach { config ->
@@ -36,8 +37,12 @@ class WorkerService(private val runtimeService: RuntimeService,
             try {
                 runtimeService.startProcessInstanceByKey("mailprocessor", it)
             } catch (exception: Exception) {
-                exception.printStackTrace()
+                LOG.error(exception)
             }
         }
+    }
+
+    companion object {
+        private val LOG = LogFactory.getLog(WorkerService::class.java)
     }
 }

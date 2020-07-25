@@ -17,20 +17,21 @@ class DmnResultMapperDelegate : JavaDelegate {
         val handler = ProcessInstanceHandler(delegateExecution)
         val pathToSave = getPathToSave(handler.dmnResult)
         val replacedPath = replacePlaceholder(pathToSave, handler)
-        handler.setPathToSave(replacedPath).setHasReminder(getReminder(handler.dmnResult))
+        handler.pathToSave = replacedPath
+        handler.hasReminder = getReminder(handler.dmnResult)
     }
 
-    private fun replacePlaceholder(pathToSave: String?, handler: ProcessInstanceHandler): String? {
+    private fun replacePlaceholder(pathToSave: String, handler: ProcessInstanceHandler): String {
         var newPath = pathToSave
         if (!handler.sender.isNullOrEmpty()) {
-            newPath = newPath?.replace(senderRegex, handler.sender!!)
+            newPath = newPath.replace(senderRegex, handler.sender!!)
         }
-        val matcher = regexPlaceholder.matcher(pathToSave)
+        val matcher = regexPlaceholder.matcher(newPath)
         while (matcher.find()) {
             val varName = matcher.group()
             val collect = handler.metadata
                     .filter { e: Metadata -> e.name == varName.replace("%", "") }
-            newPath = newPath!!.replace(varName, collect.stream()
+            newPath = newPath.replace(varName, collect.stream()
                     .map { obj: Metadata -> obj.value }
                     .collect(Collectors.joining("_")))
         }

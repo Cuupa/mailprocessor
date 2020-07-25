@@ -25,17 +25,17 @@ class WebDavArchiver : FileProtocol {
         sardine?.enableCompression()
     }
 
-    override fun exists(path: String): Boolean {
+    override fun exists(path: String, filename: String): Boolean {
         return try {
-            sardine!!.exists(path)
+            sardine!!.exists(getUrl(path, filename))
         } catch (e: IOException) {
             false
         }
     }
 
-    override fun save(path: String, data: ByteArray): Boolean {
+    override fun save(path: String, filename: String, data: ByteArray): Boolean {
         return try {
-            sardine!!.put(path, data)
+            sardine!!.put(getUrl(path, filename), data)
             true
         } catch (e: IOException) {
             false
@@ -44,7 +44,7 @@ class WebDavArchiver : FileProtocol {
 
     override fun createDirectory(path: String): Boolean {
         return try {
-            sardine!!.createDirectory(path)
+            sardine!!.createDirectory(getUrl(path, ""))
             true
         } catch (e: IOException) {
             false
@@ -65,8 +65,18 @@ class WebDavArchiver : FileProtocol {
     }
 
     private fun getUrl(path: String, name: String): String {
-        return URI(getScheme(path), null, getHost(path), getPort(getHost(path)), "/$name", null, null).toURL()
+        val pathReplaced = path.replace(" ", "%20")
+        val nameReplaced = name.replace(" ", "%20")
+        return URI(getScheme(pathReplaced), null, getHost(pathReplaced), getPort(getHost(pathReplaced)), getName(nameReplaced), null, null).toURL()
                 .toString()
+    }
+
+    private fun getName(name: String): String {
+        return if (name.isNullOrEmpty()) {
+            ""
+        } else {
+            "/$name"
+        }
     }
 
     private fun getPort(path: String): Int {

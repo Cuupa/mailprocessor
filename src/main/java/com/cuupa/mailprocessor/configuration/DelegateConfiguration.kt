@@ -1,10 +1,7 @@
 package com.cuupa.mailprocessor.configuration
 
 import com.cuupa.mailprocessor.MailprocessorConfiguration
-import com.cuupa.mailprocessor.delegates.DmnResultMapperDelegate
-import com.cuupa.mailprocessor.delegates.PlaintextDelegate
-import com.cuupa.mailprocessor.delegates.SemanticDelegate
-import com.cuupa.mailprocessor.delegates.TranslateTopicDelegate
+import com.cuupa.mailprocessor.delegates.*
 import com.cuupa.mailprocessor.services.TranslateService
 import com.cuupa.mailprocessor.services.semantic.ExternSemanticService
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,7 +36,12 @@ open class DelegateConfiguration {
     }
 
     @Bean
-    open fun translateTopicDelegte(): TranslateTopicDelegate {
-        return TranslateTopicDelegate(mailprocessorConfiguration!!, translateService!!)
+    open fun translateTopicDelegate(): TranslateDelegate {
+        return TranslateDelegate(mailprocessorConfiguration!!, translateService!!)
+    }
+
+    @Bean
+    open fun archiveDelegate(): ArchiveDelegate {
+        return ArchiveDelegate(mailprocessorConfiguration!!, translateService!!)
     }
 }

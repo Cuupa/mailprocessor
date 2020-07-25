@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder
 class ArchiveProperties : ConfigurationProperties() {
     @SerializedName("path")
     @Expose
-    var path: String? = null
+    var path: String = ""
 
     @SerializedName("port")
     @Expose
@@ -20,26 +20,6 @@ class ArchiveProperties : ConfigurationProperties() {
     @SerializedName("password")
     @Expose
     var password: String? = null
-
-    fun path(path: String?): ArchiveProperties {
-        this.path = path
-        return this
-    }
-
-    fun port(port: Int): ArchiveProperties {
-        this.port = port
-        return this
-    }
-
-    fun username(username: String?): ArchiveProperties {
-        this.username = username
-        return this
-    }
-
-    fun password(password: String?): ArchiveProperties {
-        this.password = password
-        return this
-    }
 
     override fun toString(): String {
         return ToStringBuilder(this).append("path", path)

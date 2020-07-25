@@ -1,4 +1,5 @@
-OTHER=Unbekannt
+SEVERAL_TOPICS=mehrere Themen
+OTHER=sonstiges
 APPLICATION=Antrag
 BANK_STATEMENT=Kontoauszug
 BILL=Rechnung
@@ -14,6 +15,8 @@ SEPA=SEPA-Mandat
 SICKNOTE=Arbeitsunfähigkeitsbescheinigung
 STANDING_ORDER_CONFIRMATION=Dauerauftragsbestätigung
 STANDING_ORDER_TERMINATION=Dauerauftragslöschung
+SOCIAL_INSURANCE_CERTIFICATE=Sozialversicherungsbescheinigung
 TAX_OFFICE_CERTIFCATE=Steuerbescheinigung
 TERMINATION=Kündigung
+UNKNOWN=Unbekannt
 WARNING=Mahnung

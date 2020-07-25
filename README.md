@@ -101,10 +101,10 @@ This section is about the configuration of reminders, if there is a document wit
 - enabled: the flag to enable or disable this service
 
 ## DMN-Table
-There is a sample dmn table provided (empty.dmn)
+There is a sample dmn table provided (empty.dmn) with the hit policy "First". This means the first rule matching the given criterias wins.
 The desicion tables are referenced by username provided in the config above. 
 That means the table "user.name.dmn" belongs to the user "user.name" and needs to be provided under /src/main/resources.
-Feel free to change as you seem fit. 
+Feel free to change as you seem fit like adding new rules etc.
 
     | TOPIC         | SENDER    | PATH_TO_SAVE                | REMINDER  | NOTES                                      |
     |---------------|-----------|-----------------------------|-----------|--------------------------------------------|
@@ -113,4 +113,4 @@ Feel free to change as you seem fit.
     | "OTHER"       |     -     | "/path/to/review/"          | true      | Unknown topics to folder "review"          |
     |       -       |     -     | "/path/to/%sender%/"        | false     | The rest will be sorted by sender          |
    
-The String "%sender%" will be replaced with the acutal sender.
+The string "%sender%" will be replaced with the acutal sender.

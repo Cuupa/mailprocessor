@@ -1,59 +1,63 @@
 package com.cuupa.mailprocessor.delegates
 
+import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
+import com.cuupa.mailprocessor.services.TranslateService
 import com.cuupa.mailprocessor.services.archive.FileProtocol
 import com.cuupa.mailprocessor.services.archive.FileProtocolFactory
-import com.cuupa.mailprocessor.userconfiguration.ArchiveProperties
 import org.apache.juli.logging.LogFactory
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
 import java.util.*
 
-class ArchiveDelegate(private val archiveProperties: ArchiveProperties) : JavaDelegate {
+class ArchiveDelegate(private val mailprocessorConfiguration: MailprocessorConfiguration,
+                      private val translateService: TranslateService) :
+        JavaDelegate {
 
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
-        FileProtocolFactory.getForPath(archiveProperties.path).use { fileProtocol ->
-            val path = createCollections(handler.pathToSave!!, fileProtocol!!)
+        val configurationForUser = mailprocessorConfiguration.getConfigurationForUser(handler.username)
 
-            var filename = handler.topics.joinToString("_", "[", "]_") + handler.fileName
-            filename = filename.replace(" ", "_")
-            val url = path + filename
-            if (!fileProtocol.exists(url)) {
-                fileProtocol.save(url, handler.fileContent)
+        FileProtocolFactory.getForPath(configurationForUser.archiveProperties.path).use { fileProtocol ->
+            fileProtocol!!.init(configurationForUser.archiveProperties.username, configurationForUser.archiveProperties
+                    .password)
+            val filename = handler.topics.joinToString("_", "[", "]_") + handler.fileName?.replace(" ", "_")
+            val topicNameFolder = getTopicNameFolder(handler.topics, configurationForUser.locale)
+
+            val path = createCollections(configurationForUser.archiveProperties.path,
+                    handler.pathToSave!! + topicNameFolder, fileProtocol)
+
+
+            if (!fileProtocol.exists(path, filename)) {
+                fileProtocol.save(path, filename, handler.fileContent)
             }
         }
     }
 
-    private fun createCollections(path: String, fileProtocol: FileProtocol): String {
+    private fun getTopicNameFolder(topics: List<String>, locale: Locale): String {
+        return if (topics.size > 1) {
+            translateService.translate("SEVERAL_TOPICS", locale)
+        } else {
+            topics.first()
+        }
+    }
+
+    private fun createCollections(url: String, path: String, fileProtocol: FileProtocol): String {
         val pathTemp = StringBuilder("/")
         Arrays.stream(path.split("/".toRegex()).toTypedArray())
                 .filter { cs: String? -> !cs.isNullOrBlank() }
-                .forEach { e: String? ->
+                .forEach { e: String ->
                     pathTemp.append(e)
                     pathTemp.append("/")
-                    val url = getUrlAsString(null, pathTemp.toString())
-                    if (!fileProtocol.exists(url)) {
-                        LOG.error("Creating collection $url")
-                        fileProtocol.createDirectory(url)
+                    val urlWithPath = url + pathTemp.toString().substring(0, pathTemp.toString().length - 1)
+                    if (!fileProtocol.exists(urlWithPath, "")) {
+                        LOG.error("Creating collection $urlWithPath")
+                        fileProtocol.createDirectory(urlWithPath)
                     }
                 }
-        return pathTemp.toString()
+        return url + pathTemp.toString()
     }
 
-    private fun getUrlAsString(properties: Any?, path: String): String {
-        return ""
-        //        return new String(getUrl(properties, path).toString().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
-    } //    private URL getUrl(ArchiveProperties properties, String path) throws MalformedURLException, URISyntaxException {
-
-    //        return new URI(getScheme(properties.getAddress()),
-    //                       null,
-    //                       getHost(properties.getAddress()),
-    //                       getPort(properties.getAddress()),
-    //                       path,
-    //                       null,
-    //                       null).toURL();
-    //    }
     companion object {
         private val LOG = LogFactory.getLog(ArchiveDelegate::class.java)
     }

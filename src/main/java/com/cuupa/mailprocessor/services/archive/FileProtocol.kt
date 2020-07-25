@@ -6,9 +6,9 @@ interface FileProtocol : AutoCloseable {
 
     fun init(username: String?, password: String?)
 
-    fun exists(path: String): Boolean
+    fun exists(path: String, filename: String): Boolean
 
-    fun save(path: String, data: ByteArray): Boolean
+    fun save(path: String, filename: String, data: ByteArray): Boolean
 
     fun createDirectory(path: String): Boolean
 

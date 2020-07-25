@@ -5,55 +5,56 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0zhqb8f"
                   targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.1.1">
-  <bpmn:process id="mailprocessor" name="mailprocessor" isExecutable="true" camunda:versionTag="1.0">
-    <bpmn:startEvent id="StartEvent_1">
-      <bpmn:outgoing>SequenceFlow_00istqs</bpmn:outgoing>
-    </bpmn:startEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_00istqs" sourceRef="StartEvent_1" targetRef="plaintextDelegate"/>
-    <bpmn:serviceTask id="plaintextDelegate" name="Extract plain text"
-                      camunda:delegateExpression="#{plaintextDelegate}">
-      <bpmn:incoming>SequenceFlow_00istqs</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0u6gtjb</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="text_found_gateway" name="Text found?">
-      <bpmn:incoming>SequenceFlow_0u6gtjb</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1m1ndrq</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_0wqfbtm</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_0u6gtjb" sourceRef="plaintextDelegate" targetRef="text_found_gateway"/>
-    <bpmn:sequenceFlow id="SequenceFlow_1m1ndrq" name="yes" sourceRef="text_found_gateway" targetRef="semanticDelegate">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{PLAIN_TEXT != null}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="semanticDelegate" name="Call semantic" camunda:delegateExpression="#{semanticDelegate}">
-      <bpmn:incoming>SequenceFlow_1m1ndrq</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1oxfhn2</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="SequenceFlow_1oxfhn2" sourceRef="semanticDelegate" targetRef="Task_18f14i5"/>
-    <bpmn:sequenceFlow id="SequenceFlow_1emtoax" sourceRef="ExclusiveGateway_0rvogll" targetRef="Task_1bnkgad"/>
-    <bpmn:sequenceFlow id="SequenceFlow_0wqfbtm" name="no" sourceRef="text_found_gateway"
-                       targetRef="ExclusiveGateway_0rvogll">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{PLAIN_TEXT == null}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Task_0rzjwj2" name="Archive Document" camunda:delegateExpression="#{archiveScanDelegate}">
-      <bpmn:incoming>SequenceFlow_0vvzn4y</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0h6vusv</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:businessRuleTask id="Task_18f14i5" name="route document" camunda:resultVariable="DMN_RESULT"
-                           camunda:decisionRef="${USERNAME}" camunda:mapDecisionResult="singleResult">
-      <bpmn:incoming>SequenceFlow_1oxfhn2</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0j76y9n</bpmn:outgoing>
-    </bpmn:businessRuleTask>
+    <bpmn:process id="mailprocessor" name="mailprocessor" isExecutable="true" camunda:versionTag="1.0">
+        <bpmn:startEvent id="StartEvent_1">
+            <bpmn:outgoing>SequenceFlow_00istqs</bpmn:outgoing>
+        </bpmn:startEvent>
+        <bpmn:sequenceFlow id="SequenceFlow_00istqs" sourceRef="StartEvent_1" targetRef="plaintextDelegate"/>
+        <bpmn:serviceTask id="plaintextDelegate" name="Extract plain text"
+                          camunda:delegateExpression="#{plaintextDelegate}">
+            <bpmn:incoming>SequenceFlow_00istqs</bpmn:incoming>
+            <bpmn:outgoing>SequenceFlow_0u6gtjb</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:exclusiveGateway id="text_found_gateway" name="Text found?">
+            <bpmn:incoming>SequenceFlow_0u6gtjb</bpmn:incoming>
+            <bpmn:outgoing>SequenceFlow_1m1ndrq</bpmn:outgoing>
+            <bpmn:outgoing>SequenceFlow_0wqfbtm</bpmn:outgoing>
+        </bpmn:exclusiveGateway>
+        <bpmn:sequenceFlow id="SequenceFlow_0u6gtjb" sourceRef="plaintextDelegate" targetRef="text_found_gateway"/>
+        <bpmn:sequenceFlow id="SequenceFlow_1m1ndrq" name="yes" sourceRef="text_found_gateway"
+                           targetRef="semanticDelegate">
+            <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{PLAIN_TEXT != null}</bpmn:conditionExpression>
+        </bpmn:sequenceFlow>
+        <bpmn:serviceTask id="semanticDelegate" name="Call semantic" camunda:delegateExpression="#{semanticDelegate}">
+            <bpmn:incoming>SequenceFlow_1m1ndrq</bpmn:incoming>
+            <bpmn:outgoing>SequenceFlow_1oxfhn2</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:sequenceFlow id="SequenceFlow_1oxfhn2" sourceRef="semanticDelegate" targetRef="Task_18f14i5"/>
+        <bpmn:sequenceFlow id="SequenceFlow_1emtoax" sourceRef="ExclusiveGateway_0rvogll" targetRef="Task_1bnkgad"/>
+        <bpmn:sequenceFlow id="SequenceFlow_0wqfbtm" name="no" sourceRef="text_found_gateway"
+                           targetRef="ExclusiveGateway_0rvogll">
+            <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{PLAIN_TEXT == null}</bpmn:conditionExpression>
+        </bpmn:sequenceFlow>
+        <bpmn:serviceTask id="Task_0rzjwj2" name="Archive Document" camunda:delegateExpression="#{archiveDelegate}">
+            <bpmn:incoming>SequenceFlow_0vvzn4y</bpmn:incoming>
+            <bpmn:outgoing>SequenceFlow_0h6vusv</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:businessRuleTask id="Task_18f14i5" name="route document" camunda:resultVariable="DMN_RESULT"
+                               camunda:decisionRef="${USERNAME}" camunda:mapDecisionResult="singleResult">
+            <bpmn:incoming>SequenceFlow_1oxfhn2</bpmn:incoming>
+            <bpmn:outgoing>SequenceFlow_0j76y9n</bpmn:outgoing>
+        </bpmn:businessRuleTask>
     <bpmn:exclusiveGateway id="ExclusiveGateway_0rvogll">
       <bpmn:incoming>SequenceFlow_0wqfbtm</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1yytic3</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1emtoax</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Task_1bnkgad" name="translate topics for locale"
-                      camunda:delegateExpression="#{translateTopicDelegate}">
-      <bpmn:incoming>SequenceFlow_1emtoax</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1w5sbti</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="SequenceFlow_1w5sbti" sourceRef="Task_1bnkgad" targetRef="ExclusiveGateway_0ssyp84"/>
+        <bpmn:serviceTask id="Task_1bnkgad" name="translate topics for locale"
+                          camunda:delegateExpression="#{translateTopicDelegate}">
+            <bpmn:incoming>SequenceFlow_1emtoax</bpmn:incoming>
+            <bpmn:outgoing>SequenceFlow_1w5sbti</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:sequenceFlow id="SequenceFlow_1w5sbti" sourceRef="Task_1bnkgad" targetRef="ExclusiveGateway_0ssyp84"/>
     <bpmn:serviceTask id="Task_0vbz037" name="map DMN-result" camunda:delegateExpression="#{dmnResultMapperDelegate}">
       <bpmn:incoming>SequenceFlow_0j76y9n</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1yytic3</bpmn:outgoing>

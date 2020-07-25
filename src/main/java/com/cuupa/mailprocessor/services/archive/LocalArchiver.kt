@@ -15,13 +15,13 @@ class LocalArchiver : FileProtocol {
         // Not implemented
     }
 
-    override fun exists(path: String): Boolean {
-        return Files.exists(Paths.get(path))
+    override fun exists(path: String, filename: String): Boolean {
+        return Files.exists(Paths.get(path + filename))
     }
 
-    override fun save(path: String, data: ByteArray): Boolean {
+    override fun save(path: String, filename: String, data: ByteArray): Boolean {
         return try {
-            Files.copy(ByteArrayInputStream(data), Paths.get(path))
+            Files.copy(ByteArrayInputStream(data), Paths.get(path + filename))
             true
         } catch (e: IOException) {
             false

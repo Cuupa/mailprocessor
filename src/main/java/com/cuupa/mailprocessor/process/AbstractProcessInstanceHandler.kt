@@ -7,7 +7,7 @@ abstract class AbstractProcessInstanceHandler(protected val delegateExecution: D
 
     protected fun add(key: String, value: Any?) {
         if (delegateExecution.hasVariable(key) && delegateExecution.getVariable(key) != null) {
-            val variableCasted = getAsT<Map<String, Any?>>(key, MutableMap::class.java) as
+            val variableCasted = getAsT<Map<String, Any?>>(key) as
                     MutableMap
             variableCasted[key] = value
             delegateExecution.setVariable(key, variableCasted)
@@ -22,39 +22,42 @@ abstract class AbstractProcessInstanceHandler(protected val delegateExecution: D
 
     protected fun getAsString(propertyName: String): String? {
         return if (delegateExecution.hasVariable(propertyName)) {
-            getAsT<String>(propertyName, String::class.java)
+            getAsT<String>(propertyName)
         } else null
     }
 
     protected fun <T> getAsListOf(propertyName: String): List<T> {
-        return getAsT(propertyName, MutableList::class.java) ?: mutableListOf()
+        return getAsT<MutableList<T>>(propertyName)
     }
 
     protected fun getAsListOfString(propertyName: String): List<String> {
         return if (delegateExecution.hasVariable(propertyName)) {
-            getAsT(propertyName, MutableList::class.java) ?: mutableListOf()
+            getAsT(propertyName)
         } else ArrayList()
     }
 
-    private fun <T> getAsT(propertyName: String, clazz: Class<*>): T? {
-        val property = delegateExecution.getVariable(propertyName)
-        return if (clazz.isInstance(property)) {
-            clazz.cast(property) as T
-        } else {
-            return null
-        }
+    private fun <T> getAsT(propertyName: String): T {
+        return delegateExecution.getVariable(propertyName) as T
     }
 
     protected fun getAsMap(propertyName: String): Map<String, Any> {
         return if (delegateExecution.hasVariable(propertyName)) {
-            getAsT(propertyName, MutableMap::class.java) ?: mapOf()
+            getAsT(propertyName) ?: mapOf()
         } else HashMap()
     }
 
     protected fun getAsByteArray(propertyName: String): ByteArray? {
         return if (delegateExecution.hasVariable(propertyName)) {
-            getAsT(propertyName, ByteArray::class.java)
+            getAsT(propertyName)
         } else ByteArray(0)
+    }
+
+    protected fun getAsBooleanDefaultFalse(name: String): Boolean {
+        return if (delegateExecution.hasVariable(name)) {
+            return delegateExecution.getVariable(name) as Boolean? ?: false
+        } else {
+            false
+        }
     }
 
     init {

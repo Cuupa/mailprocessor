@@ -20,10 +20,10 @@ class SemanticDelegate(private val externSemanticService: ExternSemanticService)
         semanticResult.forEach(Consumer { result: SemanticResult ->
             val metadata = CollectionUtils.emptyIfNull(result.metaData)
             handler.addTopic(result.topicName)
-                    .setSender(result.sender)
-                    .addMetaData(metadata
-                            .filter { e: Metadata -> "sender" != e.name }
-                    )
+            handler.sender = result.sender
+            handler.addMetaData(metadata
+                    .filter { e: Metadata -> "sender" != e.name }
+            )
         })
     }
 }

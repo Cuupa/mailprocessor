@@ -1,5 +1,7 @@
 # mailprocessor
 
+![CI](https://github.com/Cuupa/mailprocessor/workflows/CI/badge.svg)
+
 ## About this project
 This is a project to automate archiving of documents. 
 Currently, it supports fetching from an email account or working through documents on a folder, being a local folder or on a webdav share.

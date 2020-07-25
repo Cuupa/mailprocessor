@@ -7,7 +7,7 @@
     <groupId>com.cuupa</groupId>
     <artifactId>mailprocessor</artifactId>
     <version>DEV</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <name>mailprocessor</name>
     <description>Process your mails</description>

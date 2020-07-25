@@ -5,7 +5,7 @@ This is a project to automate archiving of documents.
 Currently, it supports fetching from an email account or working through documents on a folder, being a local folder or on a webdav share.
 
 This project is provided via the MIT-licence, which is free of charge. But if you want to support me, you can spend me a beer or a coffee.
-If you want to participate, feel free to create pull requests, fork this project or hit me up with suggestions.
+If you want to participate, feel free to create pull requests, fork this project or hit me up with suggestions or code reviews.
 
 THIS IS A WORK IN PROGRESS and done in my spare time.
 
@@ -103,7 +103,7 @@ This section is about the configuration of reminders, if there is a document wit
 ## DMN-Table
 There is a sample dmn table provided (empty.dmn) with the hit policy "First". This means the first rule matching the given criterias wins.
 The desicion tables are referenced by username provided in the config above. 
-That means the table "user.name.dmn" belongs to the user "user.name" and needs to be provided under /src/main/resources.
+That means the table "john.doe.dmn" belongs to the user "john.doe" and needs to be provided under /src/main/resources.
 Feel free to change as you seem fit like adding new rules etc.
 
     | TOPIC         | SENDER    | PATH_TO_SAVE                | REMINDER  | NOTES                                      |

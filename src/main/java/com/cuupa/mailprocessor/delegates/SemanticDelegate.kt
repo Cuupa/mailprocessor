@@ -26,5 +26,4 @@ class SemanticDelegate(private val externSemanticService: ExternSemanticService)
                     )
         })
     }
-
 }

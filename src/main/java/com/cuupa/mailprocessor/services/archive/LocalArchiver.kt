@@ -2,6 +2,7 @@ package com.cuupa.mailprocessor.services.archive
 
 import java.io.ByteArrayInputStream
 import java.io.IOException
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -46,6 +47,10 @@ class LocalArchiver : FileProtocol {
         } catch (e: IOException) {
             ArrayList()
         }
+    }
+
+    override fun get(name: String, path: String): InputStream {
+        TODO("Not yet implemented")
     }
 
     private fun getContentType(e: Path): String {

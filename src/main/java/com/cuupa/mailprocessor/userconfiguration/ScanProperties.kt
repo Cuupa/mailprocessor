@@ -3,7 +3,6 @@ package com.cuupa.mailprocessor.userconfiguration
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import org.apache.commons.lang3.builder.ToStringBuilder
-import java.util.*
 
 class ScanProperties : ConfigurationProperties() {
     @SerializedName("path")
@@ -24,11 +23,11 @@ class ScanProperties : ConfigurationProperties() {
 
     @SerializedName("scannerprefix")
     @Expose
-    private var scannerPrefix: List<String> = listOf()
+    var scannerPrefix: List<String> = listOf()
 
     @SerializedName("filetypes")
     @Expose
-    private var fileTypes: List<String> = listOf()
+    var fileTypes: List<String> = listOf()
 
     @SerializedName("enabled")
     @Expose
@@ -51,37 +50,6 @@ class ScanProperties : ConfigurationProperties() {
 
     fun password(password: String?): ScanProperties {
         this.password = password
-        return this
-    }
-
-    fun getScannerPrefix(): List<String> {
-        return if (scannerPrefix != null) scannerPrefix else ArrayList()
-    }
-
-    fun setScannerPrefix(scannerPrefix: List<String>) {
-        this.scannerPrefix = scannerPrefix
-    }
-
-    fun scannerPrefix(scannerPrefix: List<String>): ScanProperties {
-        this.scannerPrefix = scannerPrefix
-        return this
-    }
-
-    fun getFileTypes(): List<String> {
-        return if (fileTypes != null) fileTypes else ArrayList()
-    }
-
-    fun setFileTypes(fileTypes: List<String>) {
-        this.fileTypes = fileTypes
-    }
-
-    fun fileTypes(fileTypes: List<String>): ScanProperties {
-        this.fileTypes = fileTypes
-        return this
-    }
-
-    fun enabled(enabled: Boolean): ScanProperties {
-        isEnabled = enabled
         return this
     }
 

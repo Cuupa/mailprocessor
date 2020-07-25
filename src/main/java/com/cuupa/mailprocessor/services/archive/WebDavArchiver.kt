@@ -4,10 +4,17 @@ import com.github.sardine.DavResource
 import com.github.sardine.Sardine
 import com.github.sardine.SardineFactory
 import java.io.IOException
+import java.io.InputStream
+import java.net.URI
 import java.util.*
 
 class WebDavArchiver : FileProtocol {
+
     private var sardine: Sardine? = null
+
+    private val colonRegex = ":".toRegex()
+
+    private val colon = ":"
 
     override fun init(username: String?, password: String?) {
         sardine = if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
@@ -51,6 +58,36 @@ class WebDavArchiver : FileProtocol {
         } catch (e: IOException) {
             ArrayList()
         }
+    }
+
+    override fun get(path: String, name: String): InputStream {
+        return sardine!!.get(getUrl(path, name))
+    }
+
+    private fun getUrl(path: String, name: String): String {
+        return URI(getScheme(path), null, getHost(path), getPort(getHost(path)), "/$name", null, null).toURL()
+                .toString()
+    }
+
+    private fun getPort(path: String): Int {
+        if (path.contains(colon)) {
+
+            val addressArray = path.split(colonRegex)
+            val port = addressArray[addressArray.size - 1]
+            return port.toInt()
+        }
+        return -1
+    }
+
+    private fun getHost(path: String): String {
+        val addressWithoutScheme: String = path.split("://".toRegex())[1]
+        return if (addressWithoutScheme.contains(colon)) {
+            addressWithoutScheme.split(colonRegex).toTypedArray()[0]
+        } else addressWithoutScheme
+    }
+
+    private fun getScheme(path: String): String {
+        return path.split(colonRegex)[0]
     }
 
     override fun close() {

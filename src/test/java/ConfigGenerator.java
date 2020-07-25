@@ -1,7 +1,6 @@
 import com.cuupa.mailprocessor.userconfiguration.ArchiveProperties;
 import com.cuupa.mailprocessor.userconfiguration.EmailProperties;
 import com.cuupa.mailprocessor.userconfiguration.ReminderProperties;
-import com.cuupa.mailprocessor.userconfiguration.ScanProperties;
 import com.google.gson.Gson;
 import org.junit.Test;
 
@@ -29,15 +28,15 @@ public class ConfigGenerator {
                                      .protocol("imap")
                                      .labels(List.of("inbox", "label1", "label2"))
                                      .enabled(false);
-
-        final ScanProperties
-                scanProperties =
-                new ScanProperties().path("\\path\\to\\documents")
-                                    .username(USERNAME)
-                                    .password(PASSWORD)
-                                    .scannerPrefix(List.of("scannerprefix"))
-                                    .fileTypes(List.of("pdf"))
-                                    .enabled(true);
+//
+//        final ScanProperties
+//                scanProperties =
+//                new ScanProperties().path("\\path\\to\\documents")
+//                                    .username(USERNAME)
+//                                    .password(PASSWORD)
+//                                    .scannerPrefix(List.of("scannerprefix"))
+//                                    .fileTypes(List.of("pdf"))
+//                                    .enabled(true);
 
         final ReminderProperties
                 reminderProperties =

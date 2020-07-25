@@ -3,16 +3,17 @@ package com.cuupa.mailprocessor.delegates
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
 import com.cuupa.mailprocessor.services.archive.FileProtocol
 import com.cuupa.mailprocessor.services.archive.FileProtocolFactory
+import com.cuupa.mailprocessor.userconfiguration.ArchiveProperties
 import org.apache.juli.logging.LogFactory
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
 import java.util.*
 
-class ArchiveDelegate : JavaDelegate {
+class ArchiveDelegate(private val archiveProperties: ArchiveProperties) : JavaDelegate {
 
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
-        FileProtocolFactory.getForPath("address").use { fileProtocol ->
+        FileProtocolFactory.getForPath(archiveProperties.path).use { fileProtocol ->
             val path = createCollections(handler.pathToSave!!, fileProtocol!!)
 
             var filename = handler.topics.joinToString("_", "[", "]_") + handler.fileName

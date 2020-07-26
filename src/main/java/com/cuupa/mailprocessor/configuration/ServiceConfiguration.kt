@@ -1,6 +1,7 @@
 package com.cuupa.mailprocessor.configuration
 
 import com.cuupa.mailprocessor.MailprocessorConfiguration
+import com.cuupa.mailprocessor.services.ReminderService
 import com.cuupa.mailprocessor.services.TranslateService
 import com.cuupa.mailprocessor.services.WorkerService
 import com.cuupa.mailprocessor.services.input.ScanService
@@ -47,5 +48,10 @@ open class ServiceConfiguration {
     @Bean
     open fun translateService(): TranslateService {
         return TranslateService()
+    }
+
+    @Bean
+    open fun reminderService(): ReminderService {
+        return ReminderService()
     }
 }

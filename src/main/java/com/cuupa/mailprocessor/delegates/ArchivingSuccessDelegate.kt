@@ -7,12 +7,12 @@ import org.apache.juli.logging.LogFactory
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
 
-class ArchivingErrorDelegate(private val scanService: ScanService,
-                             private val configuration: MailprocessorConfiguration) : JavaDelegate {
+class ArchivingSuccessDelegate(private val scanService: ScanService,
+                               private val configuration: MailprocessorConfiguration) : JavaDelegate {
 
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
-        if (handler.archived) {
+        if (!handler.archived) {
             return
         }
 
@@ -21,14 +21,14 @@ class ArchivingErrorDelegate(private val scanService: ScanService,
                              scanProperties.path,
                              scanProperties.port,
                              handler.fileContent,
-                             scanProperties.errorFolder,
+                             scanProperties.successFolder,
                              scanProperties.username,
                              scanProperties.password)
-        log.warn("Error archiving ${handler.fileName}")
+        log.warn("Successfully archived ${handler.fileName} to ${handler.archivedFilename}")
     }
 
     companion object {
-        private val log = LogFactory.getLog(ArchivingErrorDelegate::class.java)
+        private val log = LogFactory.getLog(ArchivingSuccessDelegate::class.java)
     }
 
 }

@@ -55,6 +55,10 @@ class ProcessInstanceHandler(
         get() = getAsString(ProcessProperty.FILE_NAME.name)
         set(value) = set(ProcessProperty.FILE_NAME.name, value)
 
+    var archivedFilename: String?
+        get() = getAsString(ProcessProperty.ARCHIVED_FILE_NAME.name)
+        set(value) = set(ProcessProperty.ARCHIVED_FILE_NAME.name, value)
+
     fun addTopic(topic: String?): ProcessInstanceHandler {
         addToList(ProcessProperty.TOPICS.name, topic)
         return this

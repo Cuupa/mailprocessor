@@ -33,8 +33,6 @@ class ReminderService {
         while (br.readLine().also { inputLine = it } != null) {
             sb.append(inputLine)
         }
-        val response = sb.toString()
-        print(response)
     }
 
     private fun getTextForReminder(fileName: String, reminderDate: String, metadata: List<Metadata>): String {

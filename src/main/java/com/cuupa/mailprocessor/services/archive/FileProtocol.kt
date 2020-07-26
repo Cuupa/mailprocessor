@@ -15,4 +15,8 @@ interface FileProtocol : AutoCloseable {
     fun list(path: String): List<ArchiveResource>
 
     fun get(path: String, filename: String): InputStream
+
+    fun delete(path: String, filename: String): Boolean
+
+    fun createDirectories(url: String, path: String): String
 }

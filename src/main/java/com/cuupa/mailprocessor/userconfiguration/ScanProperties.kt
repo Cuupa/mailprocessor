@@ -9,6 +9,14 @@ class ScanProperties : ConfigurationProperties() {
     @Expose
     var path: String? = null
 
+    @SerializedName("errorpath")
+    @Expose
+    var errorPath: String? = null
+
+    @SerializedName("errorfolder")
+    @Expose
+    var errorFolder: String? = null
+
     @SerializedName("port")
     @Expose
     var port = 0

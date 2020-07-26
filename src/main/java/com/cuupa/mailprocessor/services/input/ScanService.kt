@@ -19,13 +19,36 @@ class ScanService {
             }
             fileProtocol.init(config.username, config.password)
             return fileProtocol.list(path).filter { it.isPdf }.filter {
-                isCorrectScanner(it, config
-                        .scannerPrefix)
+                isCorrectScanner(it, config.scannerPrefix)
             }.map { createPdfObject(user, path, fileProtocol, it) }
         }
     }
 
-    private fun createPdfObject(user: String, path: String, fileProtocol: FileProtocol,
+    fun moveScan(filename: String?,
+                 filecontent: ByteArray?,
+                 errorPath: String?,
+                 scanProperties: ScanProperties): Boolean {
+        if (filename.isNullOrEmpty() || errorPath.isNullOrEmpty() || filecontent == null) {
+            return false
+        }
+        FileProtocolFactory.getForPath(errorPath).use { fileProtocol ->
+            if (fileProtocol == null) {
+                return false
+            }
+
+            fileProtocol.init(scanProperties.username, scanProperties.password)
+            val directories = fileProtocol.createDirectories(scanProperties.errorPath!!, scanProperties.errorFolder!!)
+            return if (fileProtocol.save(directories, filename, filecontent)) {
+                fileProtocol.delete(scanProperties.path!!, filename)
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun createPdfObject(user: String,
+                                path: String,
+                                fileProtocol: FileProtocol,
                                 archiveResource: ArchiveResource): PDF {
         val inputStream = fileProtocol.get(path, archiveResource.name)
         val pdf = PDF()

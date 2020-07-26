@@ -9,6 +9,10 @@ class ScanProperties : ConfigurationProperties() {
     @Expose
     var path: String? = null
 
+    @SerializedName("port")
+    @Expose
+    var port = 0
+
     @SerializedName("errorpath")
     @Expose
     var errorPath: String? = null
@@ -17,9 +21,9 @@ class ScanProperties : ConfigurationProperties() {
     @Expose
     var errorFolder: String? = null
 
-    @SerializedName("port")
+    @SerializedName("errorport")
     @Expose
-    var port = 0
+    var errorPort = 0
 
     @SerializedName("username")
     @Expose

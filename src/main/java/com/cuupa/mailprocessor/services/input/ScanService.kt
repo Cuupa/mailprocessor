@@ -27,6 +27,7 @@ class ScanService {
     fun moveScan(filename: String?,
                  filecontent: ByteArray?,
                  errorPath: String?,
+                 errorPort: Int,
                  scanProperties: ScanProperties): Boolean {
         if (filename.isNullOrEmpty() || errorPath.isNullOrEmpty() || filecontent == null) {
             return false
@@ -37,7 +38,14 @@ class ScanService {
             }
 
             fileProtocol.init(scanProperties.username, scanProperties.password)
-            val directories = fileProtocol.createDirectories(scanProperties.errorPath!!, scanProperties.errorFolder!!)
+
+            val path = if (errorPort > 0) {
+                "$errorPath:$errorPort"
+            } else {
+                errorPath
+            }
+
+            val directories = fileProtocol.createDirectories(path, scanProperties.errorFolder!!)
             return if (fileProtocol.save(directories, filename, filecontent)) {
                 fileProtocol.delete(scanProperties.path!!, filename)
             } else {

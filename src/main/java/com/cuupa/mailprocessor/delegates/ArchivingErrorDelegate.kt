@@ -16,7 +16,11 @@ class ArchivingErrorDelegate(private val scanService: ScanService,
         }
 
         val scanProperties = configuration.getConfigurationForUser(handler.username).scanProperties
-        scanService.moveScan(handler.fileName, handler.fileContent, scanProperties.errorPath, scanProperties)
+        scanService.moveScan(handler.fileName,
+                             handler.fileContent,
+                             scanProperties.errorPath,
+                             scanProperties.errorPort,
+                             scanProperties)
     }
 
 }

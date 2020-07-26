@@ -26,7 +26,7 @@ class DetectReminder(private val configuration: MailprocessorConfiguration) : Ja
             val toInstant = LocalDateTime.of(LocalDate.parse(dueDate.value, formatter), LocalTime.of(8, 0))
             handler.reminderDate = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(toInstant)
         } else if (handler.reminderDate.isNullOrEmpty() && handler.hasReminder) {
-            handler.reminderDate = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(LocalDateTime.now().plusMinutes(10))
+            handler.reminderDate = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(LocalDateTime.now())
         }
     }
 }

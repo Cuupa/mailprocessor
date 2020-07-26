@@ -13,5 +13,6 @@ class TriggerReminderDelegate(private val reminderService: ReminderService,
         val handler = ProcessInstanceHandler(delegateExecution)
         val reminderProperties = config.getConfigurationForUser(handler.username).reminderProperties
         reminderService.remind(handler.fileName!!, handler.reminderDate!!, handler.metadata, reminderProperties)
+        handler.hasReminder = false
     }
 }

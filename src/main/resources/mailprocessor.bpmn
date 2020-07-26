@@ -81,7 +81,7 @@
             <bpmn:incoming>SequenceFlow_0wqfbtm</bpmn:incoming>
             <bpmn:outgoing>Flow_09ps3yv</bpmn:outgoing>
         </bpmn:serviceTask>
-        <bpmn:exclusiveGateway id="Gateway_1htb5s0" name="archivinv successful?">
+        <bpmn:exclusiveGateway id="Gateway_1htb5s0" name="archiving successful?">
             <bpmn:incoming>SequenceFlow_0h6vusv</bpmn:incoming>
             <bpmn:outgoing>Flow_1ts1fnn</bpmn:outgoing>
             <bpmn:outgoing>Flow_107ks3l</bpmn:outgoing>
@@ -218,5 +218,5 @@
                 <dc:Bounds x="1802" y="222" width="36" height="36"/>
             </bpmndi:BPMNShape>
         </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
+    </bpmndi:BPMNDiagram>
 </bpmn:definitions>

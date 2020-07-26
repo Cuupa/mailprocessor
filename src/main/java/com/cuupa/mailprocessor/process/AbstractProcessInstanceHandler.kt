@@ -18,18 +18,23 @@ abstract class AbstractProcessInstanceHandler(protected val delegateExecution: D
     protected fun addToList(key: String, value: Any?) {
         if (delegateExecution.hasVariable(key) && delegateExecution.getVariable(key) != null) {
             val variableCasted = getAsT<MutableList<Any?>>(key)
-            if (value is Collection<*>) {
-                if (value.isEmpty()) {
-                    return
-                }
-                variableCasted.addAll(value)
-            } else {
-                variableCasted.add(value)
-            }
-            delegateExecution.setVariable(key, variableCasted)
+            delegateExecution.setVariable(key, addIfApplicable(value, variableCasted))
         } else {
-            delegateExecution.setVariable(key, mutableListOf(value))
+            val list = mutableListOf<Any?>()
+            delegateExecution.setVariable(key, addIfApplicable(value, list))
         }
+    }
+
+    private fun addIfApplicable(value: Any?, list: MutableList<Any?>): MutableList<Any?> {
+        if (value is Collection<*>) {
+            if (value.isEmpty()) {
+                return list
+            }
+            list.addAll(value)
+        } else {
+            list.add(value)
+        }
+        return list
     }
 
     protected operator fun set(key: String?, value: Any?) {

@@ -30,6 +30,9 @@ class ArchiveDelegate(private val mailprocessorConfiguration: MailprocessorConfi
             handler.archived = !fileProtocol.exists(path, filename) && fileProtocol.save(path,
                                                                                          filename,
                                                                                          handler.fileContent)
+            if (handler.archived) {
+                handler.fileName = filename
+            }
         }
     }
 

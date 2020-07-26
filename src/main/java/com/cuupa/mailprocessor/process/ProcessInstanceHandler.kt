@@ -51,16 +51,12 @@ class ProcessInstanceHandler(
         get() = getAsBooleanDefaultFalse(ProcessProperty.HAS_REMINDER.name)
         set(value) = set(ProcessProperty.HAS_REMINDER.name, value)
 
-    val fileName: String?
+    var fileName: String?
         get() = getAsString(ProcessProperty.FILE_NAME.name)
+        set(value) = set(ProcessProperty.FILE_NAME.name, value)
 
     fun addTopic(topic: String?): ProcessInstanceHandler {
         addToList(ProcessProperty.TOPICS.name, topic)
-        return this
-    }
-
-    fun setHasReminder(reminder: Boolean): ProcessInstanceHandler {
-        add(ProcessProperty.HAS_REMINDER.name, reminder)
         return this
     }
 

@@ -13,7 +13,7 @@
         </inputExpression>
       </input>
       <output id="output_1" label="path to save" name="PATH_TO_SAVE" typeRef="string" />
-      <output id="OutputClause_00jmc6v" label="has reminder" name="hasReminder" typeRef="boolean" />
+      <output id="OutputClause_00jmc6v" label="has reminder" name="HAS_REMINDER" typeRef="boolean" />
       <rule id="DecisionRule_1xkfsfp">
         <description>Unknown to unknown</description>
         <inputEntry id="UnaryTests_173l92g">

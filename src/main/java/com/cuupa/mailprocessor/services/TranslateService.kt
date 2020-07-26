@@ -9,20 +9,17 @@ import java.util.*
 
 class TranslateService {
 
-    private val translations: MutableMap<Locale, Map<String, String>> = mutableMapOf()
+    private val translations = mutableMapOf<Locale, Map<String, String>>()
 
     private val equalRegex = "=".toRegex()
 
     private val dotRegex = "\\.".toRegex()
 
     init {
-        Files.list(Paths.get("src/main/resources/locales"))
-                .forEach {
-                    translations[LocaleUtils.toLocale(it.toFile().name.split(dotRegex)[0])] =
-                            getTranslateMappings(FileUtils.readLines(it
-                                    .toFile(),
-                                    StandardCharsets.UTF_8))
-                }
+        Files.list(Paths.get("src/main/resources/locales")).forEach {
+            val locale = LocaleUtils.toLocale(it.toFile().name.split(dotRegex)[0])
+            translations[locale] = getTranslateMappings(FileUtils.readLines(it.toFile(), StandardCharsets.UTF_8))
+        }
     }
 
     private fun getTranslateMappings(readLines: List<String>): Map<String, String> {
@@ -35,9 +32,6 @@ class TranslateService {
     }
 
     fun translate(toTranslate: String, locale: Locale): String {
-        if (!translations.contains(locale)) {
-            return toTranslate
-        }
         return translations[locale]?.getOrDefault(toTranslate, toTranslate) ?: toTranslate
     }
 }

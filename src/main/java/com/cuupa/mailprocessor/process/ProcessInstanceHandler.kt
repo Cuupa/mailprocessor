@@ -8,6 +8,14 @@ import org.camunda.bpm.engine.delegate.DelegateExecution
 class ProcessInstanceHandler(
         delegateExecution: DelegateExecution?) : AbstractProcessInstanceHandler(delegateExecution!!) {
 
+    var archived: Boolean
+        get() = getAsBooleanDefaultFalse(ProcessProperty.ARCHIVED.name)
+        set(value) = set(ProcessProperty.ARCHIVED.name, value)
+
+    var reminderDate: String?
+        get() = getAsString(ProcessProperty.REMINDER_DATE.name)
+        set(value) = set(ProcessProperty.REMINDER_DATE.name, value)
+
     var plainText: List<String>
         get() = getAsListOfString(ProcessProperty.PLAIN_TEXT.name)
         set(value) = set(ProcessProperty.PLAIN_TEXT.name, value)
@@ -43,21 +51,17 @@ class ProcessInstanceHandler(
         get() = getAsBooleanDefaultFalse(ProcessProperty.HAS_REMINDER.name)
         set(value) = set(ProcessProperty.HAS_REMINDER.name, value)
 
-    val fileName: String?
+    var fileName: String?
         get() = getAsString(ProcessProperty.FILE_NAME.name)
+        set(value) = set(ProcessProperty.FILE_NAME.name, value)
 
     fun addTopic(topic: String?): ProcessInstanceHandler {
-        add(ProcessProperty.TOPICS.name, topic)
-        return this
-    }
-
-    fun setHasReminder(reminder: Boolean): ProcessInstanceHandler {
-        add(ProcessProperty.HAS_REMINDER.name, reminder)
+        addToList(ProcessProperty.TOPICS.name, topic)
         return this
     }
 
     fun addMetaData(metadata: List<Metadata>): ProcessInstanceHandler {
-        add(ProcessProperty.METADATA.name, metadata)
+        addToList(ProcessProperty.METADATA.name, metadata)
         return this
     }
 

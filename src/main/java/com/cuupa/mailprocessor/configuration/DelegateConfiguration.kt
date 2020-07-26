@@ -7,8 +7,10 @@ import com.cuupa.mailprocessor.services.semantic.ExternSemanticService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 
 @Configuration
+@Import(ReminderDelegateConfiguration::class)
 open class DelegateConfiguration {
 
     @Autowired
@@ -43,5 +45,10 @@ open class DelegateConfiguration {
     @Bean
     open fun archiveDelegate(): ArchiveDelegate {
         return ArchiveDelegate(mailprocessorConfiguration!!, translateService!!)
+    }
+
+    @Bean
+    open fun defaultValueDelegate(): DefaultValueDelegate {
+        return DefaultValueDelegate()
     }
 }

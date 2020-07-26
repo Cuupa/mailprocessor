@@ -3,6 +3,8 @@ server.port: 8080
 logging.level:
     root: ERROR
     com.cuupa.mailprocessor: DEBUG
+    org.camunda: ERROR
+    org.apache.ibatis: ERROR
 
 mailprocessor:
   config: /opt/mailprocessor/config.json

@@ -7,7 +7,6 @@ import com.cuupa.mailprocessor.services.semantic.SemanticResult
 import org.apache.commons.collections4.CollectionUtils
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
-import java.util.function.Consumer
 
 class SemanticDelegate(private val externSemanticService: ExternSemanticService) : JavaDelegate {
 
@@ -17,13 +16,11 @@ class SemanticDelegate(private val externSemanticService: ExternSemanticService)
         val semanticResult = externSemanticService.getSemanticResult(
                 handler.plainText.joinToString(" ", "", ""))
 
-        semanticResult.forEach(Consumer { result: SemanticResult ->
+        semanticResult.forEach { result: SemanticResult ->
             val metadata = CollectionUtils.emptyIfNull(result.metaData)
             handler.addTopic(result.topicName)
             handler.sender = result.sender
-            handler.addMetaData(metadata
-                    .filter { e: Metadata -> "sender" != e.name }
-            )
-        })
+            handler.addMetaData(metadata.filter { e: Metadata -> "sender" != e.name })
+        }
     }
 }

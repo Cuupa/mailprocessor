@@ -41,9 +41,8 @@ The path to the configuration is specified in the application.yml.
       "scanproperties": {
         "path": "\\path\\to\\documents",
         "port": 0,
-        "errorpath": "path\\to\\error",
-        "errorfile": "directory",
-        "errorport": 0,
+        "errorfolder": "path\\to\\error",
+        "successfolder": "path\\to\\success",
         "username": "username",
         "password": "password",
         "scannerprefix": ["scannerprefix"],
@@ -86,10 +85,8 @@ This section is about the configuration of fetching emails
 This section is about the configuration for fetching scans from a local or a network drive 
 - path: the path to your files
 - port: the port to connect to the network drive. Use "0" or delete this property if the documents are stored on a local folder
-- errorpath: the path where documents that could not be archived should be placed
 - errorfolder: the folder for the not archived documents
-- errorport: the port to connect to the network drive. Use "0" or delete this property if the documents are stored on a local folder 
-- port: the port to connect to the network drive. Use "0" or delete this property if the documents are stored on a local folder
+- successfolder: the folder for the archived documents
 - username: the username for connecting to the network share. Leave empty or delete this property if the documents are stored on a local folder
 - password: the password for connecting to the network share. Leave empty or delete this property if the documents are stored on a local folder
 - scannerprefix: the prefix of the filename your scanner produces. Use "*" if you want to process all files. Comes in handy if you're using several scanners and only want to process the output of of a specific subset of scanners

@@ -1,6 +1,7 @@
 package com.cuupa.mailprocessor.delegates
 
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
+import com.cuupa.mailprocessor.process.ProcessProperty
 import com.cuupa.mailprocessor.services.semantic.Metadata
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
@@ -39,16 +40,16 @@ class DmnResultMapperDelegate : JavaDelegate {
     }
 
     private fun getPathToSave(dmn_result: Map<String, Any>): String {
-        return if (dmn_result.contains("PATH_TO_SAVE")) {
-            dmn_result["PATH_TO_SAVE"] as String
+        return if (dmn_result.contains(ProcessProperty.PATH_TO_SAVE.name)) {
+            dmn_result[ProcessProperty.PATH_TO_SAVE.name] as String
         } else {
             ""
         }
     }
 
     private fun getReminder(dmn_result: Map<String, Any>): Boolean {
-        return if (dmn_result.contains("hasReminder")) {
-            dmn_result["hasReminder"] as Boolean
+        return if (dmn_result.contains(ProcessProperty.HAS_REMINDER.name)) {
+            dmn_result[ProcessProperty.HAS_REMINDER.name] as Boolean
         } else {
             false
         }

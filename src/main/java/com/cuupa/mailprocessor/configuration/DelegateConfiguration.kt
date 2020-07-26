@@ -44,4 +44,9 @@ open class DelegateConfiguration {
     open fun archiveDelegate(): ArchiveDelegate {
         return ArchiveDelegate(mailprocessorConfiguration!!, translateService!!)
     }
+
+    @Bean
+    open fun defaultValueDelegate(): DefaultValueDelegate {
+        return DefaultValueDelegate()
+    }
 }

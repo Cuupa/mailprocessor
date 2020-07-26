@@ -8,6 +8,9 @@ import org.camunda.bpm.engine.delegate.DelegateExecution
 class ProcessInstanceHandler(
         delegateExecution: DelegateExecution?) : AbstractProcessInstanceHandler(delegateExecution!!) {
 
+    var reminderDate: String?
+        get() = getAsString(ProcessProperty.REMINDER_DATE.name)
+        set(value) = set(ProcessProperty.REMINDER_DATE.name, value)
     var plainText: List<String>
         get() = getAsListOfString(ProcessProperty.PLAIN_TEXT.name)
         set(value) = set(ProcessProperty.PLAIN_TEXT.name, value)

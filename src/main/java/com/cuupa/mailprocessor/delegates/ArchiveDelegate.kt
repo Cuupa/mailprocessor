@@ -11,26 +11,25 @@ import org.camunda.bpm.engine.delegate.JavaDelegate
 import java.util.*
 
 class ArchiveDelegate(private val mailprocessorConfiguration: MailprocessorConfiguration,
-                      private val translateService: TranslateService) :
-        JavaDelegate {
+                      private val translateService: TranslateService) : JavaDelegate {
 
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
         val configurationForUser = mailprocessorConfiguration.getConfigurationForUser(handler.username)
 
         FileProtocolFactory.getForPath(configurationForUser.archiveProperties.path).use { fileProtocol ->
-            fileProtocol!!.init(configurationForUser.archiveProperties.username, configurationForUser.archiveProperties
-                    .password)
+            fileProtocol!!.init(configurationForUser.archiveProperties.username,
+                                configurationForUser.archiveProperties.password)
             val filename = handler.topics.joinToString("_", "[", "]_") + handler.fileName?.replace(" ", "_")
             val topicNameFolder = getTopicNameFolder(handler.topics, configurationForUser.locale)
 
             val path = createCollections(configurationForUser.archiveProperties.path,
-                    handler.pathToSave!! + topicNameFolder, fileProtocol)
+                                         handler.pathToSave!! + topicNameFolder,
+                                         fileProtocol)
 
-
-            if (!fileProtocol.exists(path, filename)) {
-                fileProtocol.save(path, filename, handler.fileContent)
-            }
+            handler.archived = !fileProtocol.exists(path, filename) && fileProtocol.save(path,
+                                                                                         filename,
+                                                                                         handler.fileContent)
         }
     }
 
@@ -51,7 +50,6 @@ class ArchiveDelegate(private val mailprocessorConfiguration: MailprocessorConfi
                     pathTemp.append("/")
                     val urlWithPath = url + pathTemp.toString().substring(0, pathTemp.toString().length - 1)
                     if (!fileProtocol.exists(urlWithPath, "")) {
-                        LOG.error("Creating collection $urlWithPath")
                         fileProtocol.createDirectory(urlWithPath)
                     }
                 }

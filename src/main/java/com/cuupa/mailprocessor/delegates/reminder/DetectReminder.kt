@@ -15,21 +15,18 @@ class DetectReminder(private val configuration: MailprocessorConfiguration) : Ja
 
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
-        if (handler.hasReminder || !configuration.getConfigurationForUser(handler.username).reminderProperties.isEnabled) {
+        if (!configuration.getConfigurationForUser(handler.username).reminderProperties.isEnabled) {
+            handler.hasReminder = false
             return
         }
 
-        if (handler.metadata.isEmpty()) {
-            handler.hasReminder = false
-        } else {
-            val dueDate = handler.metadata.find { it.name == "dueDate" }
-            if (dueDate != null) {
-                handler.hasReminder = true
-                val toInstant = LocalDateTime.of(LocalDate.parse(dueDate.value, formatter), LocalTime.of(8, 0))
-                handler.reminderDate = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(toInstant)
-            } else {
-                handler.hasReminder = false
-            }
+        val dueDate = handler.metadata.find { element -> element.value == "dueDate" }
+        if (dueDate != null) {
+            handler.hasReminder = true
+            val toInstant = LocalDateTime.of(LocalDate.parse(dueDate.value, formatter), LocalTime.of(8, 0))
+            handler.reminderDate = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(toInstant)
+        } else if (handler.reminderDate.isNullOrEmpty() && handler.hasReminder) {
+            handler.reminderDate = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(LocalDateTime.now().plusMinutes(10))
         }
     }
 }

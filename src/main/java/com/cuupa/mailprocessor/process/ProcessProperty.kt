@@ -11,5 +11,6 @@ enum class ProcessProperty {
     PATH_TO_SAVE,
     DMN_RESULT,
     HAS_REMINDER,
-    REMINDER_DATE
+    REMINDER_DATE,
+    ARCHIVED
 }

@@ -8,9 +8,14 @@ import org.camunda.bpm.engine.delegate.DelegateExecution
 class ProcessInstanceHandler(
         delegateExecution: DelegateExecution?) : AbstractProcessInstanceHandler(delegateExecution!!) {
 
+    var archived: Boolean
+        get() = getAsBooleanDefaultFalse(ProcessProperty.ARCHIVED.name)
+        set(value) = set(ProcessProperty.ARCHIVED.name, value)
+
     var reminderDate: String?
         get() = getAsString(ProcessProperty.REMINDER_DATE.name)
         set(value) = set(ProcessProperty.REMINDER_DATE.name, value)
+
     var plainText: List<String>
         get() = getAsListOfString(ProcessProperty.PLAIN_TEXT.name)
         set(value) = set(ProcessProperty.PLAIN_TEXT.name, value)
@@ -50,7 +55,7 @@ class ProcessInstanceHandler(
         get() = getAsString(ProcessProperty.FILE_NAME.name)
 
     fun addTopic(topic: String?): ProcessInstanceHandler {
-        add(ProcessProperty.TOPICS.name, topic)
+        addToList(ProcessProperty.TOPICS.name, topic)
         return this
     }
 
@@ -60,7 +65,7 @@ class ProcessInstanceHandler(
     }
 
     fun addMetaData(metadata: List<Metadata>): ProcessInstanceHandler {
-        add(ProcessProperty.METADATA.name, metadata)
+        addToList(ProcessProperty.METADATA.name, metadata)
         return this
     }
 

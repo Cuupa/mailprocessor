@@ -4,15 +4,31 @@ import org.camunda.bpm.engine.delegate.DelegateExecution
 import java.util.*
 
 abstract class AbstractProcessInstanceHandler(protected val delegateExecution: DelegateExecution) {
-
+    //FIXME: this can't work
     protected fun add(key: String, value: Any?) {
         if (delegateExecution.hasVariable(key) && delegateExecution.getVariable(key) != null) {
-            val variableCasted = getAsT<Map<String, Any?>>(key) as
-                    MutableMap
+            val variableCasted = getAsT<MutableMap<String, Any?>>(key)
             variableCasted[key] = value
             delegateExecution.setVariable(key, variableCasted)
         } else {
             delegateExecution.setVariable(key, listOf(value))
+        }
+    }
+
+    protected fun addToList(key: String, value: Any?) {
+        if (delegateExecution.hasVariable(key) && delegateExecution.getVariable(key) != null) {
+            val variableCasted = getAsT<MutableList<Any?>>(key)
+            if (value is Collection<*>) {
+                if (value.isEmpty()) {
+                    return
+                }
+                variableCasted.addAll(value)
+            } else {
+                variableCasted.add(value)
+            }
+            delegateExecution.setVariable(key, variableCasted)
+        } else {
+            delegateExecution.setVariable(key, mutableListOf(value))
         }
     }
 

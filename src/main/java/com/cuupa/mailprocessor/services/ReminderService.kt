@@ -22,9 +22,9 @@ class ReminderService {
     }
 
     private fun getTextForReminder(fileName: String, reminderDate: String, metadata: List<Metadata>): String {
-        return "The mail $fileName needs your attention until $reminderDate \n" + metadata.joinToString("\n",
-                                                                                                        "",
-                                                                                                        "") { it.toString() }
+        return metadata.joinToString("\n",
+                                     "The mail $fileName needs your attention until $reminderDate \n",
+                                     "") { it.toString() }
     }
 
 }

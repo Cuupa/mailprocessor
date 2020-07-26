@@ -90,13 +90,15 @@ class WebDavArchiver : FileProtocol {
     private fun getUrl(path: String, name: String): String {
         val pathReplaced = path.replace(" ", "%20")
         val nameReplaced = name.replace(" ", "%20")
-        return URI(getScheme(pathReplaced),
-                   null,
-                   getHost(pathReplaced),
-                   getPort(getHost(pathReplaced)),
-                   getName(nameReplaced),
-                   null,
-                   null).toURL().toString()
+        val scheme = getScheme(pathReplaced)
+        val host = getHost(pathReplaced)
+        val port = getPort(pathReplaced.replace(scheme, "").replace("://", ""))
+        val filename = pathReplaced.replace("://", "")
+                .replace(":", "")
+                .replace(scheme, "")
+                .replace(host, "")
+                .replace("$port", "") + getName(nameReplaced)
+        return URI(scheme, null, host, port, filename, null, null).toURL().toString()
     }
 
     private fun getName(name: String): String {
@@ -108,13 +110,17 @@ class WebDavArchiver : FileProtocol {
     }
 
     private fun getPort(path: String): Int {
-        if (path.contains(colon)) {
-
-            val addressArray = path.split(colonRegex)
-            val port = addressArray[addressArray.size - 1]
-            return port.toInt()
+        if (!path.contains(colon)) {
+            return -1
         }
-        return -1
+
+        val addressArray = path.split(colonRegex)
+        val port = addressArray[addressArray.size - 1]
+        return if (port.contains("/")) {
+            port.split("/".toRegex())[0].toInt()
+        } else {
+            port.toInt()
+        }
     }
 
     private fun getHost(path: String): String {

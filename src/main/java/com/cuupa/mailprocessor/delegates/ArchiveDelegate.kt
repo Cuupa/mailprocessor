@@ -29,7 +29,7 @@ class ArchiveDelegate(private val mailprocessorConfiguration: MailprocessorConfi
                                                                                          filename,
                                                                                          handler.fileContent)
             if (handler.archived) {
-                handler.fileName = filename
+                handler.archivedFilename = filename
             }
         }
     }

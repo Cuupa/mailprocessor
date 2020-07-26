@@ -12,7 +12,7 @@ class ScanService {
         if (config.path.isNullOrEmpty()) {
             return listOf()
         }
-        val path = config.path!!
+        val path = getPath(config)
         FileProtocolFactory.getForPath(path).use { fileProtocol ->
             if (fileProtocol == null) {
                 return listOf()
@@ -24,36 +24,53 @@ class ScanService {
         }
     }
 
+    private fun getPath(config: ScanProperties): String {
+        return if (config.folder.isNullOrEmpty()) {
+            getPathWithPort(config)
+        } else {
+            "${getPathWithPort(config)}/${config.folder}"
+        }
+    }
+
+    private fun getPathWithPort(config: ScanProperties): String {
+        return if (config.port == 0) {
+            "${config.path}"
+        } else {
+            "${config.path}:${config.port}"
+        }
+    }
+
     fun moveScan(filename: String?,
+                 path: String?,
+                 port: Int,
                  filecontent: ByteArray?,
-                 errorPath: String?,
-                 errorPort: Int,
-                 scanProperties: ScanProperties): Boolean {
-        if (filename.isNullOrEmpty() || errorPath.isNullOrEmpty() || filecontent == null) {
+                 folder: String?,
+                 username: String?,
+                 password: String?): Boolean {
+        if (filename.isNullOrEmpty() || path.isNullOrEmpty() || filecontent == null) {
             return false
         }
-        FileProtocolFactory.getForPath(errorPath).use { fileProtocol ->
+        FileProtocolFactory.getForPath(path).use { fileProtocol ->
             if (fileProtocol == null) {
                 return false
             }
 
-            fileProtocol.init(scanProperties.username, scanProperties.password)
+            fileProtocol.init(username, password)
 
-            val path = if (errorPort > 0) {
-                "$errorPath:$errorPort"
+            val finalPath = if (port > 0) {
+                "$path:$port"
             } else {
-                errorPath
+                path
             }
 
-            val directories = fileProtocol.createDirectories(path, scanProperties.errorFolder!!)
+            val directories = fileProtocol.createDirectories(finalPath, folder!!)
             return if (fileProtocol.save(directories, filename, filecontent)) {
-                fileProtocol.delete(scanProperties.path!!, filename)
+                fileProtocol.delete(path, filename)
             } else {
                 false
             }
         }
     }
-
     private fun createPdfObject(user: String,
                                 path: String,
                                 fileProtocol: FileProtocol,

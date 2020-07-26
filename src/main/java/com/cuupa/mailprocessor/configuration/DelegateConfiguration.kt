@@ -60,4 +60,9 @@ open class DelegateConfiguration {
     open fun handleArchivingErrorDelegate(): ArchivingErrorDelegate {
         return ArchivingErrorDelegate(scanService!!, mailprocessorConfiguration!!)
     }
+
+    @Bean
+    open fun handleArchivingSuccessDelegate(): ArchivingSuccessDelegate {
+        return ArchivingSuccessDelegate(scanService!!, mailprocessorConfiguration!!)
+    }
 }

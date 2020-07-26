@@ -3,7 +3,6 @@ package com.cuupa.mailprocessor.delegates
 import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
 import com.cuupa.mailprocessor.services.TranslateService
-import com.cuupa.mailprocessor.services.archive.FileProtocol
 import com.cuupa.mailprocessor.services.archive.FileProtocolFactory
 import org.apache.juli.logging.LogFactory
 import org.camunda.bpm.engine.delegate.DelegateExecution
@@ -23,9 +22,8 @@ class ArchiveDelegate(private val mailprocessorConfiguration: MailprocessorConfi
             val filename = handler.topics.joinToString("_", "[", "]_") + handler.fileName?.replace(" ", "_")
             val topicNameFolder = getTopicNameFolder(handler.topics, configurationForUser.locale)
 
-            val path = createCollections(configurationForUser.archiveProperties.path,
-                                         handler.pathToSave!! + topicNameFolder,
-                                         fileProtocol)
+            val path = fileProtocol.createDirectories(configurationForUser.archiveProperties.path,
+                                                      handler.pathToSave!! + topicNameFolder)
 
             handler.archived = !fileProtocol.exists(path, filename) && fileProtocol.save(path,
                                                                                          filename,
@@ -42,21 +40,6 @@ class ArchiveDelegate(private val mailprocessorConfiguration: MailprocessorConfi
         } else {
             topics.first()
         }
-    }
-
-    private fun createCollections(url: String, path: String, fileProtocol: FileProtocol): String {
-        val pathTemp = StringBuilder("/")
-        Arrays.stream(path.split("/".toRegex()).toTypedArray())
-                .filter { cs: String? -> !cs.isNullOrBlank() }
-                .forEach { e: String ->
-                    pathTemp.append(e)
-                    pathTemp.append("/")
-                    val urlWithPath = url + pathTemp.toString().substring(0, pathTemp.toString().length - 1)
-                    if (!fileProtocol.exists(urlWithPath, "")) {
-                        fileProtocol.createDirectory(urlWithPath)
-                    }
-                }
-        return url + pathTemp.toString()
     }
 
     companion object {

@@ -3,6 +3,7 @@ package com.cuupa.mailprocessor.configuration
 import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.delegates.*
 import com.cuupa.mailprocessor.services.TranslateService
+import com.cuupa.mailprocessor.services.input.ScanService
 import com.cuupa.mailprocessor.services.semantic.ExternSemanticService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -21,6 +22,9 @@ open class DelegateConfiguration {
 
     @Autowired
     private val translateService: TranslateService? = null
+
+    @Autowired
+    private val scanService: ScanService? = null
 
     @Bean
     open fun plaintextDelegate(): PlaintextDelegate {
@@ -50,5 +54,10 @@ open class DelegateConfiguration {
     @Bean
     open fun defaultValueDelegate(): DefaultValueDelegate {
         return DefaultValueDelegate()
+    }
+
+    @Bean
+    open fun handleArchivingErrorDelegate(): ArchivingErrorDelegate {
+        return ArchivingErrorDelegate(scanService!!, mailprocessorConfiguration!!)
     }
 }

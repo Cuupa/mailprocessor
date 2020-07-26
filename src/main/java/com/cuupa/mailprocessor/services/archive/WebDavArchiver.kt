@@ -53,22 +53,50 @@ class WebDavArchiver : FileProtocol {
 
     override fun list(path: String): List<ArchiveResource> {
         return try {
-            sardine!!.list(path, 1)
-                    .map { e: DavResource -> ArchiveResource(e.name, e.contentType) }
+            sardine!!.list(path, 1).map { e: DavResource -> ArchiveResource(e.name, e.contentType) }
         } catch (e: IOException) {
             ArrayList()
         }
     }
 
-    override fun get(path: String, name: String): InputStream {
-        return sardine!!.get(getUrl(path, name))
+    override fun get(path: String, filename: String): InputStream {
+        return sardine!!.get(getUrl(path, filename))
+    }
+
+    override fun delete(path: String, filename: String): Boolean {
+        return try {
+            sardine!!.delete(getUrl(path, filename))
+            true
+        } catch (e: IOException) {
+            false
+        }
+    }
+
+    override fun createDirectories(url: String, path: String): String {
+        val pathTemp = StringBuilder("/")
+        Arrays.stream(path.split("/".toRegex()).toTypedArray())
+                .filter { cs: String? -> !cs.isNullOrBlank() }
+                .forEach { e: String ->
+                    pathTemp.append(e)
+                    pathTemp.append("/")
+                    val urlWithPath = url + pathTemp.toString().substring(0, pathTemp.toString().length - 1)
+                    if (!exists(urlWithPath, "")) {
+                        createDirectory(urlWithPath)
+                    }
+                }
+        return url + pathTemp.toString()
     }
 
     private fun getUrl(path: String, name: String): String {
         val pathReplaced = path.replace(" ", "%20")
         val nameReplaced = name.replace(" ", "%20")
-        return URI(getScheme(pathReplaced), null, getHost(pathReplaced), getPort(getHost(pathReplaced)), getName(nameReplaced), null, null).toURL()
-                .toString()
+        return URI(getScheme(pathReplaced),
+                   null,
+                   getHost(pathReplaced),
+                   getPort(getHost(pathReplaced)),
+                   getName(nameReplaced),
+                   null,
+                   null).toURL().toString()
     }
 
     private fun getName(name: String): String {

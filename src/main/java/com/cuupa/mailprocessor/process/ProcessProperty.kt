@@ -1,12 +1,18 @@
 package com.cuupa.mailprocessor.process
 
 enum class ProcessProperty {
+    MAIL_TYPE,
     USERNAME,
     TOPICS,
     SENDER,
     PLAIN_TEXT,
     FILE_CONTENT,
-    FILE_NAME, ARCHIVED_FILE_NAME, METADATA,
+    FILE_NAME,
+    EMAIL_LABEL,
+    EMAIL_SUBJECT,
+    EMAIL_ATTACHMENTS,
+    ARCHIVED_FILE_NAME,
+    METADATA,
     PATH_TO_SAVE,
     DMN_RESULT,
     HAS_REMINDER,

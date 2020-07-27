@@ -2,7 +2,7 @@ package com.cuupa.mailprocessor.delegates
 
 import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
-import com.cuupa.mailprocessor.services.input.ScanService
+import com.cuupa.mailprocessor.services.input.scan.ScanService
 import org.apache.juli.logging.LogFactory
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate

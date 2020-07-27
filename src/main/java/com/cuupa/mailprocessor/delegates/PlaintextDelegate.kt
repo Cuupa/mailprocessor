@@ -13,8 +13,21 @@ class PlaintextDelegate : JavaDelegate {
 
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
-        PDDocument.load(ByteArrayInputStream(handler.fileContent))
-                .use { handler.plainText = getTextPerPage(it) }
+        if (handler.isScanMail) {
+            PDDocument.load(ByteArrayInputStream(handler.fileContent)).use { handler.plainText = getTextPerPage(it) }
+        } else {
+            handler.attachments.forEach { attachment ->
+                try {
+                    PDDocument.load(ByteArrayInputStream(attachment.content)).use {
+                        val plainText = handler.plainText.toMutableList()
+                        plainText.addAll(getTextPerPage(it))
+                        handler.plainText = plainText
+                    }
+                } catch (exception: Exception) {
+                    // Propably no PDF
+                }
+            }
+        }
     }
 
     @Throws(IOException::class)

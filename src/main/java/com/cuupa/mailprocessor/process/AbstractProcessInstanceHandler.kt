@@ -48,7 +48,7 @@ abstract class AbstractProcessInstanceHandler(protected val delegateExecution: D
     }
 
     protected fun <T> getAsListOf(propertyName: String): List<T> {
-        return getAsT<MutableList<T>>(propertyName)
+        return getAsT<MutableList<T>?>(propertyName) ?: mutableListOf()
     }
 
     protected fun getAsListOfString(propertyName: String): List<String> {

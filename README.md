@@ -21,8 +21,7 @@ When creating an issue or a pull request, please be as detailed as possible.
 
 If you think this project is awesome, you can spend me a beer or a coffee.
 
-![BuyMeACoffee](https://img.shields.io/badge/Support%20%20me-Buy%20me%20a%20coffee-success?logo=buymeacoffee&link=https://buymeacoff.ee/Cuupa)
-
+<a href="https://www.buymeacoffee.com/Cuupa" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 26px !important;width: 108px !important;" ></a>
 ## How it works
 This project uses [Camunda BPMN](https://camunda.org) for orchestration  and DMN for decision tables.
 The project is a spring boot project, so it works as a jar file as well as deployed to a tomcat/websphere/glassfish/etc application server.
@@ -80,12 +79,12 @@ The path to the configuration is specified in the application.yml.
 - locale: the locale the topics should be translated to. Can be left out or deleted if there is no translation to be done
 
 #### emailproperties
-This section is about the configuration of fetching emails
+This section is about the configuration of fetching emails. It will only process unread emails.
 - servername: the servername of your mailprovider
 - port: the port the mailserver provides
 - username: the username for your mailaccount
 - password: the password for your mailaccount. I strongly encurage you to use a one-time-password like gmail offers
-- protocol: the protocol which you use to talk to your mailserver. IMAP (recommended) or POP3
+- protocol: the protocol which you use to talk to your mailserver. IMAP (recommended) or POP3. IMAP differntiates between "imap" and "imaps" (TLS)
 - labels: the labels or folder you want to process. Use "*" to process all labels and sublabels
 - markasread: mark the processed mails as "read"
 - enabled: the flag to enable or disable this service

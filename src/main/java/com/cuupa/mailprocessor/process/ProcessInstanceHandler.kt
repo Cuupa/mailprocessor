@@ -1,12 +1,15 @@
 package com.cuupa.mailprocessor.process
 
+import com.cuupa.mailprocessor.services.input.Attachment
 import com.cuupa.mailprocessor.services.semantic.Metadata
 import org.apache.commons.lang3.builder.ToStringBuilder
 import org.apache.commons.lang3.builder.ToStringStyle
 import org.camunda.bpm.engine.delegate.DelegateExecution
 
-class ProcessInstanceHandler(
-        delegateExecution: DelegateExecution?) : AbstractProcessInstanceHandler(delegateExecution!!) {
+class ProcessInstanceHandler(delegateExecution: DelegateExecution?) : AbstractProcessInstanceHandler(delegateExecution!!) {
+
+    val isScanMail: Boolean
+        get() = getAsString(ProcessProperty.MAIL_TYPE.name) == "scan"
 
     var archived: Boolean
         get() = getAsBooleanDefaultFalse(ProcessProperty.ARCHIVED.name)
@@ -23,6 +26,9 @@ class ProcessInstanceHandler(
     var fileContent: ByteArray
         get() = getAsByteArray(ProcessProperty.FILE_CONTENT.name) ?: ByteArray(0)
         set(value) = set(ProcessProperty.FILE_CONTENT.name, value)
+
+    val attachments: List<Attachment>
+        get() = getAsListOf(ProcessProperty.EMAIL_ATTACHMENTS.name)
 
     var username: String
         get() = getAsString(ProcessProperty.USERNAME.name) ?: ""
@@ -70,7 +76,6 @@ class ProcessInstanceHandler(
     }
 
     override fun toString(): String {
-        return ToStringBuilder.reflectionToString(delegateExecution.variables,
-                ToStringStyle.MULTI_LINE_STYLE)
+        return ToStringBuilder.reflectionToString(delegateExecution.variables, ToStringStyle.MULTI_LINE_STYLE)
     }
 }

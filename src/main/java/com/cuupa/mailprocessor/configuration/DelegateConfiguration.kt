@@ -3,7 +3,7 @@ package com.cuupa.mailprocessor.configuration
 import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.delegates.*
 import com.cuupa.mailprocessor.services.TranslateService
-import com.cuupa.mailprocessor.services.input.ScanService
+import com.cuupa.mailprocessor.services.input.scan.ScanService
 import com.cuupa.mailprocessor.services.semantic.ExternSemanticService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean

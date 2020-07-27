@@ -1,6 +1,8 @@
 package com.cuupa.mailprocessor.services.input
 
-open class Document {
+import java.io.Serializable
+
+open class Document : Serializable {
     lateinit var user: String
     lateinit var filename: String
     var content: ByteArray? = null

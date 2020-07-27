@@ -21,7 +21,8 @@ When creating an issue or a pull request, please be as detailed as possible.
 
 If you think this project is awesome, you can spend me a beer or a coffee.
 
-<a href="https://www.buymeacoffee.com/Cuupa" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="51" heigth="2017"></a>
+![BuyMeACoffee](https://img.shields.io/badge/Support%20%20me-Buy%20me%20a%20coffee-success?logo=buymeacoffee&link=https://buymeacoff.ee/Cuupa)
+[Direct link](https://buymeacoff.ee/Cuupa)
 ## How it works
 This project uses [Camunda BPMN](https://camunda.org) for orchestration  and DMN for decision tables.
 The project is a spring boot project, so it works as a jar file as well as deployed to a tomcat/websphere/glassfish/etc application server.

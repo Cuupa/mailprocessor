@@ -2,6 +2,7 @@ package com.cuupa.mailprocessor.process
 
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import java.util.*
+import kotlin.collections.ArrayList
 
 abstract class AbstractProcessInstanceHandler(protected val delegateExecution: DelegateExecution) {
     //FIXME: this can't work
@@ -51,9 +52,9 @@ abstract class AbstractProcessInstanceHandler(protected val delegateExecution: D
         return getAsT<MutableList<T>?>(propertyName) ?: mutableListOf()
     }
 
-    protected fun getAsListOfString(propertyName: String): List<String> {
+    protected fun getAsListOfString(propertyName: String): ArrayList<String> {
         return if (delegateExecution.hasVariable(propertyName)) {
-            getAsT(propertyName)
+            getAsT(propertyName) ?: ArrayList()
         } else ArrayList()
     }
 

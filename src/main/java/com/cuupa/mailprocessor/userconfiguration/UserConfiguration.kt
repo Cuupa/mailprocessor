@@ -15,10 +15,6 @@ class UserConfiguration {
     @Expose
     var locale: Locale = Locale.getDefault()
 
-    @SerializedName("reload")
-    @Expose
-    var isReload = false
-
     @SerializedName("emailproperties")
     @Expose
     var emailProperties: EmailProperties = EmailProperties()
@@ -35,15 +31,9 @@ class UserConfiguration {
     @Expose
     var reminderProperties: ReminderProperties = ReminderProperties()
 
-    fun reload(reload: Boolean): UserConfiguration {
-        isReload = reload
-        return this
-    }
-
     override fun toString(): String {
         return ToStringBuilder(this).append("username", username)
                 .append("locale", locale)
-                .append("reload", isReload)
                 .append("emailproperties", emailProperties)
                 .append("scanproperties", scanProperties)
                 .append("archiveproperties", archiveProperties)

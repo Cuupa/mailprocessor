@@ -25,7 +25,6 @@ class EmailService {
         val messages = mutableListOf<EMail>()
         config.labels?.forEach {
             val messagesLoad = loadMailsForFolder(it, store, username)
-            log.info("loaded ${messagesLoad.size} mails from folder $it")
             messages.addAll(messagesLoad)
         }
         return messages
@@ -51,7 +50,7 @@ class EmailService {
                 if (message != null) {
                     if (isSubjectEquals(subject, message) && isReceivedDateEquals(receivedDate, message)) {
                         message.setFlag(Flags.Flag.SEEN, true)
-                        break
+                        return
                     }
                 }
             }
@@ -81,11 +80,10 @@ class EmailService {
             folder.fetch(messages, fetchProfile)
 
             messages?.filterNotNull()?.forEach {
-                if (it.isSet(Flags.Flag.SEEN)) {
+                if (!it.isSet(Flags.Flag.SEEN)) {
                     val content = getContent(it)
                     val eMail = createEmail(it, content, username)
                     messageList.add(eMail)
-                    log.info("Loaded Mail ${eMail.subject} from label ${eMail.label}")
                 }
             }
             offset += chunkSize

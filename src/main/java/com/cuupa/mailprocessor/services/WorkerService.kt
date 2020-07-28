@@ -64,6 +64,7 @@ class WorkerService(private val runtimeService: RuntimeService,
                                                       ProcessProperty.USERNAME.name to it.user,
                                                       ProcessProperty.EMAIL_LABEL.name to it.label,
                                                       ProcessProperty.EMAIL_SUBJECT.name to it.subject,
+                                                      ProcessProperty.RECEIVED_DATE.name to it.receivedDate,
                                                       ProcessProperty.EMAIL_ATTACHMENTS.name to it.attachments,
                                                       ProcessProperty.MAIL_TYPE.name to "email")
 

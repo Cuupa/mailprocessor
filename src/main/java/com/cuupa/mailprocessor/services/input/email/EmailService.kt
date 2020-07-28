@@ -31,6 +31,40 @@ class EmailService {
         return messages
     }
 
+    fun markMailAsRead(subject: String, label: String, receivedDate: LocalDateTime?, emailProperties: EmailProperties) {
+        getStoreAndConnect(emailProperties).use { store ->
+            AutoClosableIMAPFolder(store.getStore().getFolder(label)).use { folder ->
+                folder.open(Folder.READ_WRITE)
+                markMailAsRead(subject, receivedDate, folder)
+            }
+        }
+    }
+
+    private fun markMailAsRead(subject: String, receivedDate: LocalDateTime?, folder: AutoClosableIMAPFolder) {
+        val largestUid: Long = folder.uidNext - 1
+        var offset: Long = 0
+        while (offset < largestUid) {
+            val messages = getMessages(folder, largestUid, offset)
+            folder.fetch(messages, fetchProfile)
+            for (i in messages!!.indices.reversed()) {
+                val message = messages[i]
+                if (message != null) {
+                    if (isSubjectEquals(subject, message) && isReceivedDateEquals(receivedDate, message)) {
+                        message.setFlag(Flags.Flag.SEEN, true)
+                        break
+                    }
+                }
+            }
+            offset += chunkSize
+        }
+    }
+
+    private fun isReceivedDateEquals(receivedDate: LocalDateTime?, message: Message): Boolean = LocalDateTime.ofInstant(
+        message.receivedDate.toInstant(),
+        ZoneId.systemDefault()) == receivedDate
+
+    private fun isSubjectEquals(subject: String, message: Message): Boolean = message.subject == subject
+
     private fun loadMailsForFolder(folderName: String, store: AutoClosableStore, username: String): List<EMail> {
         val folder = AutoClosableIMAPFolder(store.getStore().getFolder(folderName))
         folder.open(Folder.READ_ONLY)
@@ -69,12 +103,11 @@ class EmailService {
         val eMail = EMail()
         eMail.subject = it.subject
         eMail.label = it.folder.fullName
-        eMail.receivedDate = it.receivedDate
+        eMail.receivedDate = LocalDateTime.ofInstant(it.receivedDate.toInstant(), ZoneId.systemDefault())
         eMail.content = content
         eMail.user = username
         eMail.from = (it.from[0] as InternetAddress).address
-        eMail.filename = "${formatter.format(LocalDateTime.ofInstant(it.receivedDate.toInstant(),
-                                                                     ZoneId.systemDefault()))} - ${eMail.subject!!}.eml"
+        eMail.filename = "${dateTimeFormatter.format(eMail.receivedDate)} - ${eMail.subject!!}.eml"
         eMail.attachments.addAll(getAttachments(eMail.content, username))
         return eMail
     }
@@ -134,6 +167,6 @@ class EmailService {
         private val fetchProfile = FetchProfile()
         private const val chunkSize = 500
         private val log = LogFactory.getLog(EmailService::class.java)
-        private val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH_mm_ss")
+        private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH_mm_ss")
     }
 }

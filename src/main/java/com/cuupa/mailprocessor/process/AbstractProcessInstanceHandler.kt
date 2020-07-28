@@ -1,28 +1,29 @@
 package com.cuupa.mailprocessor.process
 
 import org.camunda.bpm.engine.delegate.DelegateExecution
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 
 abstract class AbstractProcessInstanceHandler(protected val delegateExecution: DelegateExecution) {
     //FIXME: this can't work
-    protected fun add(key: String, value: Any?) {
-        if (delegateExecution.hasVariable(key) && delegateExecution.getVariable(key) != null) {
-            val variableCasted = getAsT<MutableMap<String, Any?>>(key)
-            variableCasted[key] = value
-            delegateExecution.setVariable(key, variableCasted)
+    protected fun add(property: ProcessProperty, value: Any?) {
+        if (delegateExecution.hasVariable(property.name) && delegateExecution.getVariable(property.name) != null) {
+            val variableCasted = getAsT<MutableMap<String, Any?>>(property)
+            variableCasted[property.name] = value
+            delegateExecution.setVariable(property.name, variableCasted)
         } else {
-            delegateExecution.setVariable(key, listOf(value))
+            delegateExecution.setVariable(property.name, listOf(value))
         }
     }
 
-    protected fun addToList(key: String, value: Any?) {
-        if (delegateExecution.hasVariable(key) && delegateExecution.getVariable(key) != null) {
-            val variableCasted = getAsT<MutableList<Any?>>(key)
-            delegateExecution.setVariable(key, addIfApplicable(value, variableCasted))
+    protected fun addToList(property: ProcessProperty, value: Any?) {
+        if (delegateExecution.hasVariable(property.name) && delegateExecution.getVariable(property.name) != null) {
+            val variableCasted = getAsT<MutableList<Any?>>(property)
+            delegateExecution.setVariable(property.name, addIfApplicable(value, variableCasted))
         } else {
             val list = mutableListOf<Any?>()
-            delegateExecution.setVariable(key, addIfApplicable(value, list))
+            delegateExecution.setVariable(property.name, addIfApplicable(value, list))
         }
     }
 
@@ -38,45 +39,51 @@ abstract class AbstractProcessInstanceHandler(protected val delegateExecution: D
         return list
     }
 
-    protected operator fun set(key: String?, value: Any?) {
-        delegateExecution.setVariable(key, value)
+    protected operator fun set(property: ProcessProperty, value: Any?) {
+        delegateExecution.setVariable(property.name, value)
     }
 
-    protected fun getAsString(propertyName: String): String? {
-        return if (delegateExecution.hasVariable(propertyName)) {
+    protected fun getAsString(propertyName: ProcessProperty): String? {
+        return if (delegateExecution.hasVariable(propertyName.name)) {
             getAsT<String>(propertyName)
         } else null
     }
 
-    protected fun <T> getAsListOf(propertyName: String): List<T> {
+    protected fun getAsLocalDateTime(propertyName: ProcessProperty): LocalDateTime? {
+        return if (delegateExecution.hasVariable(propertyName.name)) {
+            getAsT<LocalDateTime>(propertyName)
+        } else null
+    }
+
+    protected fun <T> getAsListOf(propertyName: ProcessProperty): List<T> {
         return getAsT<MutableList<T>?>(propertyName) ?: mutableListOf()
     }
 
-    protected fun getAsListOfString(propertyName: String): List<String> {
-        return if (delegateExecution.hasVariable(propertyName)) {
+    protected fun getAsListOfString(propertyName: ProcessProperty): List<String> {
+        return if (delegateExecution.hasVariable(propertyName.name)) {
             getAsT(propertyName) ?: ArrayList()
         } else ArrayList()
     }
 
-    private fun <T> getAsT(propertyName: String): T {
-        return delegateExecution.getVariable(propertyName) as T
+    private fun <T> getAsT(propertyName: ProcessProperty): T {
+        return delegateExecution.getVariable(propertyName.name) as T
     }
 
-    protected fun getAsMap(propertyName: String): Map<String, Any> {
-        return if (delegateExecution.hasVariable(propertyName)) {
+    protected fun getAsMap(propertyName: ProcessProperty): Map<String, Any> {
+        return if (delegateExecution.hasVariable(propertyName.name)) {
             getAsT(propertyName) ?: mapOf()
         } else HashMap()
     }
 
-    protected fun getAsByteArray(propertyName: String): ByteArray? {
-        return if (delegateExecution.hasVariable(propertyName)) {
+    protected fun getAsByteArray(propertyName: ProcessProperty): ByteArray? {
+        return if (delegateExecution.hasVariable(propertyName.name)) {
             getAsT(propertyName)
         } else ByteArray(0)
     }
 
-    protected fun getAsBooleanDefaultFalse(name: String): Boolean {
-        return if (delegateExecution.hasVariable(name)) {
-            return delegateExecution.getVariable(name) as Boolean? ?: false
+    protected fun getAsBooleanDefaultFalse(propertyName: ProcessProperty): Boolean {
+        return if (delegateExecution.hasVariable(propertyName.name)) {
+            return delegateExecution.getVariable(propertyName.name) as Boolean? ?: false
         } else {
             false
         }

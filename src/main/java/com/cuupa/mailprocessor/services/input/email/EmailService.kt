@@ -7,6 +7,9 @@ import org.apache.commons.io.IOUtils
 import org.apache.juli.logging.LogFactory
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.mail.*
 import javax.mail.internet.InternetAddress
@@ -70,7 +73,8 @@ class EmailService {
         eMail.content = content
         eMail.user = username
         eMail.from = (it.from[0] as InternetAddress).address
-        eMail.filename = "${eMail.subject!!}.eml"
+        eMail.filename = "${formatter.format(LocalDateTime.ofInstant(it.receivedDate.toInstant(),
+                                                                     ZoneId.systemDefault()))} - ${eMail.subject!!}.eml"
         eMail.attachments.addAll(getAttachments(eMail.content, username))
         return eMail
     }
@@ -130,5 +134,6 @@ class EmailService {
         private val fetchProfile = FetchProfile()
         private const val chunkSize = 500
         private val log = LogFactory.getLog(EmailService::class.java)
+        private val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH_mm_ss")
     }
 }

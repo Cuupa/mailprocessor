@@ -16,14 +16,16 @@ class ArchivingSuccessDelegate(private val scanService: ScanService,
             return
         }
 
-        val scanProperties = configuration.getConfigurationForUser(handler.username).scanProperties
-        scanService.moveScan(handler.fileName,
-                             scanProperties.path,
-                             scanProperties.port,
-                             handler.fileContent,
-                             scanProperties.successFolder,
-                             scanProperties.username,
-                             scanProperties.password)
+        if (handler.isScanMail) {
+            val scanProperties = configuration.getConfigurationForUser(handler.username).scanProperties
+            scanService.moveScan(handler.fileName,
+                                 scanProperties.path,
+                                 scanProperties.port,
+                                 handler.fileContent,
+                                 scanProperties.successFolder,
+                                 scanProperties.username,
+                                 scanProperties.password)
+        }
         log.warn("Successfully archived ${handler.fileName} to ${handler.archivedFilename}")
     }
 

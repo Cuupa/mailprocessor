@@ -2,6 +2,7 @@ package com.cuupa.mailprocessor.configuration
 
 import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.delegates.*
+import com.cuupa.mailprocessor.services.TextExtractorService
 import com.cuupa.mailprocessor.services.TranslateService
 import com.cuupa.mailprocessor.services.input.scan.ScanService
 import com.cuupa.mailprocessor.services.semantic.ExternSemanticService
@@ -26,9 +27,12 @@ open class DelegateConfiguration {
     @Autowired
     private val scanService: ScanService? = null
 
+    @Autowired
+    private val textExtractorService: TextExtractorService? = null
+
     @Bean
     open fun plaintextDelegate(): PlaintextDelegate {
-        return PlaintextDelegate()
+        return PlaintextDelegate(textExtractorService!!)
     }
 
     @Bean

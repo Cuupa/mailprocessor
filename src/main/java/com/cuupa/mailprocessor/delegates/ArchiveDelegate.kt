@@ -19,12 +19,12 @@ class ArchiveDelegate(private val mailprocessorConfiguration: MailprocessorConfi
         FileProtocolFactory.getForPath(configurationForUser.archiveProperties.path).use { fileProtocol ->
             fileProtocol!!.init(configurationForUser.archiveProperties.username,
                                 configurationForUser.archiveProperties.password)
-            val filename = handler.topics.joinToString("_", "[", "]_") + handler.fileName?.replace(" ", "_")
-            val topicNameFolder = getTopicNameFolder(handler.topics, configurationForUser.locale)
 
+            val topicNameFolder = getTopicNameFolder(handler.topics, configurationForUser.locale)
             val path = fileProtocol.createDirectories(configurationForUser.archiveProperties.path,
                                                       handler.pathToSave!! + topicNameFolder)
 
+            val filename = handler.topics.joinToString("_", "[", "]_") + handler.fileName?.replace(" ", "_")
             handler.archived = !fileProtocol.exists(path, filename) && fileProtocol.save(path,
                                                                                          filename,
                                                                                          handler.fileContent)

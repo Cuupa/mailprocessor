@@ -16,14 +16,16 @@ class ArchivingErrorDelegate(private val scanService: ScanService,
             return
         }
 
-        val scanProperties = configuration.getConfigurationForUser(handler.username).scanProperties
-        scanService.moveScan(handler.fileName,
-                             scanProperties.path,
-                             scanProperties.port,
-                             handler.fileContent,
-                             scanProperties.errorFolder,
-                             scanProperties.username,
-                             scanProperties.password)
+        if (handler.isScanMail) {
+            val scanProperties = configuration.getConfigurationForUser(handler.username).scanProperties
+            scanService.moveScan(handler.fileName,
+                                 scanProperties.path,
+                                 scanProperties.port,
+                                 handler.fileContent,
+                                 scanProperties.errorFolder,
+                                 scanProperties.username,
+                                 scanProperties.password)
+        }
         log.warn("Error archiving ${handler.fileName}")
     }
 

@@ -1,0 +1,38 @@
+[{
+  "username": "username",
+  "locale": "en_EN",
+  "emailproperties": {
+    "servername": "imap.mail.com",
+    "port": 993,
+    "username": "username@mail.com",
+    "password": "password",
+    "protocol": "imaps",
+    "labels": ["inbox", "label1", "label2"],
+    "markasread": true,
+    "enabled": false
+  },
+  "scanproperties": {
+    "path": "\\path\\to\\documents",
+    "port": 0,
+    "errorfolder": "path\\to\\error",
+    "successfolder": "path\\to\\success",
+    "username": "username",
+    "password": "password",
+    "scannerprefix": ["scannerprefix"],
+    "filetypes": ["pdf"],
+    "enabled": true
+  },
+  "archiveproperties": {
+    "path": "https://webdav.network.share",
+    "port": 443,
+    "username": "username",
+    "password": "password"
+  },
+  "reminderproperties": {
+    "botname": "botname",
+    "token": "token",
+    "chatId": "chatId",
+    "url": "http://url.call",
+    "enabled": false
+  }
+}]

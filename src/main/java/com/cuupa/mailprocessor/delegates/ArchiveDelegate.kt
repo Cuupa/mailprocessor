@@ -3,11 +3,12 @@ package com.cuupa.mailprocessor.delegates
 import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
 import com.cuupa.mailprocessor.services.TranslateService
-import com.cuupa.mailprocessor.services.archive.FileProtocol
 import com.cuupa.mailprocessor.services.archive.FileProtocolFactory
+import com.cuupa.mailprocessor.utli.StringConverter
 import org.apache.juli.logging.LogFactory
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
+import java.nio.charset.StandardCharsets
 import java.util.*
 
 class ArchiveDelegate(private val mailprocessorConfiguration: MailprocessorConfiguration,
@@ -20,18 +21,19 @@ class ArchiveDelegate(private val mailprocessorConfiguration: MailprocessorConfi
         FileProtocolFactory.getForPath(configurationForUser.archiveProperties.path).use { fileProtocol ->
             fileProtocol!!.init(configurationForUser.archiveProperties.username,
                                 configurationForUser.archiveProperties.password)
-            val filename = handler.topics.joinToString("_", "[", "]_") + handler.fileName?.replace(" ", "_")
+
             val topicNameFolder = getTopicNameFolder(handler.topics, configurationForUser.locale)
+            val path = fileProtocol.createDirectories(configurationForUser.archiveProperties.path,
+                                                      handler.pathToSave!! + topicNameFolder)
 
-            val path = createCollections(configurationForUser.archiveProperties.path,
-                                         handler.pathToSave!! + topicNameFolder,
-                                         fileProtocol)
+            val filename = handler.topics.joinToString("_", "[", "]_") + handler.fileName?.replace(" ", "_")
 
-            handler.archived = !fileProtocol.exists(path, filename) && fileProtocol.save(path,
-                                                                                         filename,
-                                                                                         handler.fileContent)
+            val encodedFilename = stringConverter.convertTo(filename, StandardCharsets.UTF_8)
+            handler.archived = !fileProtocol.exists(path, encodedFilename) && fileProtocol.save(path,
+                                                                                                encodedFilename,
+                                                                                                handler.fileContent)
             if (handler.archived) {
-                handler.fileName = filename
+                handler.archivedFilename = encodedFilename
             }
         }
     }
@@ -44,22 +46,8 @@ class ArchiveDelegate(private val mailprocessorConfiguration: MailprocessorConfi
         }
     }
 
-    private fun createCollections(url: String, path: String, fileProtocol: FileProtocol): String {
-        val pathTemp = StringBuilder("/")
-        Arrays.stream(path.split("/".toRegex()).toTypedArray())
-                .filter { cs: String? -> !cs.isNullOrBlank() }
-                .forEach { e: String ->
-                    pathTemp.append(e)
-                    pathTemp.append("/")
-                    val urlWithPath = url + pathTemp.toString().substring(0, pathTemp.toString().length - 1)
-                    if (!fileProtocol.exists(urlWithPath, "")) {
-                        fileProtocol.createDirectory(urlWithPath)
-                    }
-                }
-        return url + pathTemp.toString()
-    }
-
     companion object {
         private val LOG = LogFactory.getLog(ArchiveDelegate::class.java)
+        private val stringConverter = StringConverter()
     }
 }

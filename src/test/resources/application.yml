@@ -1,9 +1,4 @@
-#default values. Can be overridden with the -D in the jvm-arguments
-config_path: /opt/mailprocessor/config.json
-semantic_url: "http://localhost:8081/api/rest/1.0/classifyText"
-server_port: 8080
-
-server.port: ${server_port}
+server.port: 8080
 
 logging.level:
   root: ERROR
@@ -12,8 +7,8 @@ logging.level:
   org.apache.ibatis: ERROR
 
 mailprocessor:
-  config: ${configPath}
-  semanticUrl: ${semanticUrl}
+  config: /opt/mailprocessor/config.json
+  semanticUrl: "http://localhost:8081/api/rest/1.0/classifyText"
 
 camunda:
   admin-user:

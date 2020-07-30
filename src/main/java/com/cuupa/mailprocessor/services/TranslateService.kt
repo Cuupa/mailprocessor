@@ -9,12 +9,6 @@ import java.util.*
 
 class TranslateService {
 
-    private val translations = mutableMapOf<Locale, Map<String, String>>()
-
-    private val equalRegex = "=".toRegex()
-
-    private val dotRegex = "\\.".toRegex()
-
     init {
         Files.list(Paths.get("src/main/resources/locales")).forEach {
             val locale = LocaleUtils.toLocale(it.toFile().name.split(dotRegex)[0])
@@ -33,5 +27,11 @@ class TranslateService {
 
     fun translate(toTranslate: String, locale: Locale): String {
         return translations[locale]?.getOrDefault(toTranslate, toTranslate) ?: toTranslate
+    }
+
+    companion object {
+        private val translations = mutableMapOf<Locale, Map<String, String>>()
+        private val equalRegex = "=".toRegex()
+        private val dotRegex = "\\.".toRegex()
     }
 }

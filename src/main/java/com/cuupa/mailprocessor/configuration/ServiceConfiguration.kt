@@ -37,12 +37,17 @@ open class ServiceConfiguration {
 
     @Bean
     open fun workerService(): WorkerService {
-        return WorkerService(runtimeService, mailprocessorConfiguration, scanService())
+        return WorkerService(runtimeService, mailprocessorConfiguration, scanService(), emailService())
     }
 
     @Bean
     open fun scanService(): ScanService {
         return ScanService()
+    }
+
+    @Bean
+    open fun emailService(): EmailService {
+        return EmailService()
     }
 
     @Bean
@@ -53,5 +58,10 @@ open class ServiceConfiguration {
     @Bean
     open fun reminderService(): ReminderService {
         return ReminderService()
+    }
+
+    @Bean
+    open fun textExtractorService(): TextExtractorService {
+        return TextExtractorService()
     }
 }

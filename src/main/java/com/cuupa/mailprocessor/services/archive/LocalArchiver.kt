@@ -42,15 +42,22 @@ class LocalArchiver : FileProtocol {
             Files.list(Paths.get(path))
                     .map { e: Path ->
                         ArchiveResource(e.fileName.toString(), getContentType(e))
-                    }
-                    .collect(Collectors.toList())
+                    }.collect(Collectors.toList())
         } catch (e: IOException) {
             ArrayList()
         }
     }
 
     override fun get(name: String, path: String): InputStream {
-        TODO("Not yet implemented")
+        return Files.newInputStream(Paths.get(path + name))
+    }
+
+    override fun delete(path: String, filename: String): Boolean {
+        return Files.deleteIfExists(Paths.get(path + filename))
+    }
+
+    override fun createDirectories(url: String, path: String): String {
+        return Files.createDirectories(Paths.get(url + path)).toFile().absolutePath
     }
 
     private fun getContentType(e: Path): String {

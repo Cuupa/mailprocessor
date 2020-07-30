@@ -2,7 +2,10 @@ package com.cuupa.mailprocessor.configuration
 
 import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.delegates.*
+import com.cuupa.mailprocessor.services.TextExtractorService
 import com.cuupa.mailprocessor.services.TranslateService
+import com.cuupa.mailprocessor.services.input.email.EmailService
+import com.cuupa.mailprocessor.services.input.scan.ScanService
 import com.cuupa.mailprocessor.services.semantic.ExternSemanticService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -22,9 +25,18 @@ open class DelegateConfiguration {
     @Autowired
     private val translateService: TranslateService? = null
 
+    @Autowired
+    private val scanService: ScanService? = null
+
+    @Autowired
+    private val emailService: EmailService? = null
+
+    @Autowired
+    private val textExtractorService: TextExtractorService? = null
+
     @Bean
     open fun plaintextDelegate(): PlaintextDelegate {
-        return PlaintextDelegate()
+        return PlaintextDelegate(textExtractorService!!)
     }
 
     @Bean
@@ -50,5 +62,15 @@ open class DelegateConfiguration {
     @Bean
     open fun defaultValueDelegate(): DefaultValueDelegate {
         return DefaultValueDelegate()
+    }
+
+    @Bean
+    open fun handleArchivingErrorDelegate(): ArchivingErrorDelegate {
+        return ArchivingErrorDelegate(scanService!!, mailprocessorConfiguration!!)
+    }
+
+    @Bean
+    open fun handleArchivingSuccessDelegate(): ArchivingSuccessDelegate {
+        return ArchivingSuccessDelegate(scanService!!, emailService!!, mailprocessorConfiguration!!)
     }
 }

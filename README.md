@@ -44,7 +44,7 @@ The path to the configuration is specified in the application.yml.
         "port": 993,
         "username": "username@mail.com",
         "password": "password",
-        "protocol": "imap",
+        "protocol": "imaps",
         "labels": ["inbox", "label1", "label2"],
         "markasread": true,
         "enabled": false

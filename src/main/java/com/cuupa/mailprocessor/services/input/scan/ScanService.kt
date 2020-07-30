@@ -98,7 +98,7 @@ class ScanService {
     }
 
     private fun isCorrectFileType(fileResource: FileResource, fileTypes: List<String>): Boolean {
-        if (fileTypes.isEmpty()){
+        if (fileTypes.isEmpty() || !fileResource.isFile){
             return false
         }
         if (fileTypes.size == 1 && fileTypes.contains("*")) {

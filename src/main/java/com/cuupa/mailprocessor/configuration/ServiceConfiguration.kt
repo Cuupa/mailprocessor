@@ -1,12 +1,12 @@
 package com.cuupa.mailprocessor.configuration
 
 import com.cuupa.mailprocessor.MailprocessorConfiguration
-import com.cuupa.mailprocessor.services.ReminderService
 import com.cuupa.mailprocessor.services.TextExtractorService
 import com.cuupa.mailprocessor.services.TranslateService
 import com.cuupa.mailprocessor.services.WorkerService
 import com.cuupa.mailprocessor.services.input.email.EmailService
 import com.cuupa.mailprocessor.services.input.scan.ScanService
+import com.cuupa.mailprocessor.services.reminder.ReminderService
 import com.cuupa.mailprocessor.services.semantic.ExternSemanticService
 import org.camunda.bpm.engine.RuntimeService
 import org.springframework.beans.factory.annotation.Autowired

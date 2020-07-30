@@ -2,7 +2,10 @@ package com.cuupa.mailprocessor.services.archive
 
 import org.apache.commons.lang3.builder.ToStringBuilder
 
-class ArchiveResource internal constructor(val name: String, private val contentType: String) {
+class FileResource internal constructor(val name: String, private val contentType: String) {
+    val isFile: Boolean
+        get() = directoryContentType != contentType
+
     val isPdf: Boolean
         get() = pdfContentType == contentType
 
@@ -15,6 +18,7 @@ class ArchiveResource internal constructor(val name: String, private val content
 
     companion object {
         private const val pdfContentType = "application/pdf"
+        private const val directoryContentType = "httpd/unix-directory"
     }
 
 }

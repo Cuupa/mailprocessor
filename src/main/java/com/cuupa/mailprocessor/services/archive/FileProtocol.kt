@@ -12,7 +12,7 @@ interface FileProtocol : AutoCloseable {
 
     fun createDirectory(path: String): Boolean
 
-    fun list(path: String): List<ArchiveResource>
+    fun list(path: String): List<FileResource>
 
     fun get(path: String, filename: String): InputStream
 

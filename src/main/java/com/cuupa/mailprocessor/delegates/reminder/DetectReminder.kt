@@ -20,11 +20,16 @@ class DetectReminder(private val configuration: MailprocessorConfiguration) : Ja
             return
         }
 
-        val dueDate = handler.metadata.find { element -> element.value == "dueDate" }
+        val dueDate = handler.metadata.find { it.value == "dueDate" }
         if (dueDate != null) {
-            handler.hasReminder = true
             val toInstant = LocalDateTime.of(LocalDate.parse(dueDate.value, formatter), LocalTime.of(8, 0))
-            handler.reminderDate = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(toInstant)
+            if(toInstant.isAfter(LocalDateTime.now())) {
+                handler.hasReminder = true
+                handler.reminderDate = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(toInstant)
+            } else {
+                handler.hasReminder = false
+            }
+
         } else if (handler.reminderDate.isNullOrEmpty() && handler.hasReminder) {
             handler.reminderDate = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(LocalDateTime.now())
         }

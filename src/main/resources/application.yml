@@ -12,8 +12,8 @@ logging.level:
   org.apache.ibatis: ERROR
 
 mailprocessor:
-  config: ${configPath}
-  semanticUrl: ${semanticUrl}
+  config: ${config_path}
+  semanticUrl: ${semantic_url}
 
 camunda:
   admin-user:

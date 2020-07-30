@@ -17,7 +17,7 @@ class WorkerService(private val runtimeService: RuntimeService,
                     private val scanService: ScanService,
                     private val emailService: EmailService) {
 
-    @Scheduled(cron = "0 */30 * * * *")
+    @Scheduled(cron = "*/30 * * * * *")
     fun execute() {
         val userConfigurationList = mailprocessorConfiguration.configurations
         userConfigurationList.forEach { config ->

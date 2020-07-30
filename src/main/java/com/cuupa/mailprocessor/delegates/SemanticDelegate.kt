@@ -20,7 +20,7 @@ class SemanticDelegate(private val externSemanticService: ExternSemanticService)
 
     private fun getSender(semanticResult: SemanticResult): String? {
         return if (semanticResult.sender == "UNKNOWN") {
-            semanticResult.metaData.first { it.name == "sender" }.value
+            semanticResult.metaData.firstOrNull { it.name == "sender" }?.value ?: "UNKNOWN"
         } else {
             semanticResult.sender
         }

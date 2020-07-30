@@ -1,8 +1,10 @@
-package com.cuupa.mailprocessor.services.input
+package com.cuupa.mailprocessor.services.input.scan
 
 import com.cuupa.mailprocessor.services.archive.ArchiveResource
 import com.cuupa.mailprocessor.services.archive.FileProtocol
 import com.cuupa.mailprocessor.services.archive.FileProtocolFactory
+import com.cuupa.mailprocessor.services.input.Document
+import com.cuupa.mailprocessor.services.input.PDF
 import com.cuupa.mailprocessor.userconfiguration.ScanProperties
 import org.apache.commons.io.IOUtils
 

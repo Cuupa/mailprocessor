@@ -9,6 +9,9 @@ import java.time.LocalDateTime
 
 class ProcessInstanceHandler(delegateExecution: DelegateExecution?) : AbstractProcessInstanceHandler(delegateExecution!!) {
 
+    val processInstanceId: String
+        get() = delegateExecution.processInstanceId
+
     val receivedDate: LocalDateTime?
         get() = getAsLocalDateTime(ProcessProperty.RECEIVED_DATE)
 

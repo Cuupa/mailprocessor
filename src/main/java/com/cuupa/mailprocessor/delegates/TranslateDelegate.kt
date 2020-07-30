@@ -11,14 +11,10 @@ class TranslateDelegate(private val configuration: MailprocessorConfiguration,
 
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
-        handler.topics = handler.topics
-                .map { e: String ->
-                    translateService.translate(e, configuration.getConfigurationForUser(handler
-                            .username).locale)
-                }
-        if (!handler.sender.isNullOrEmpty()) {
-            handler.sender = translateService.translate(handler.sender!!, configuration.getConfigurationForUser(handler
-                    .username).locale)
+        val locale = configuration.getConfigurationForUser(handler.username).locale
+        handler.topics = handler.topics.map { translateService.translate(it, locale) }
+        if (handler.sender != null) {
+            handler.sender = translateService.translate(handler.sender!!, locale)
         }
     }
 }

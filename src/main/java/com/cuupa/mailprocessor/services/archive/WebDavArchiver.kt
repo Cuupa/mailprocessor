@@ -1,5 +1,6 @@
 package com.cuupa.mailprocessor.services.archive
 
+import com.cuupa.mailprocessor.utli.UrlStringUnifier
 import com.github.sardine.DavResource
 import com.github.sardine.Sardine
 import com.github.sardine.SardineFactory
@@ -9,12 +10,6 @@ import java.net.URI
 import java.util.*
 
 class WebDavArchiver : FileProtocol {
-
-    private var sardine: Sardine? = null
-
-    private val colonRegex = ":".toRegex()
-
-    private val colon = ":"
 
     override fun init(username: String?, password: String?) {
         sardine = if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
@@ -44,7 +39,7 @@ class WebDavArchiver : FileProtocol {
 
     override fun createDirectory(path: String): Boolean {
         return try {
-            sardine!!.createDirectory(getUrl(path, ""))
+            sardine!!.createDirectory(getUrl(path, emptyString))
             true
         } catch (e: IOException) {
             false
@@ -53,7 +48,8 @@ class WebDavArchiver : FileProtocol {
 
     override fun list(path: String): List<ArchiveResource> {
         return try {
-            sardine!!.list(path, 1).map { e: DavResource -> ArchiveResource(e.name, e.contentType) }
+            sardine!!.list(getUrl(path, emptyString), 1)
+                    .map { e: DavResource -> ArchiveResource(e.name, e.contentType) }
         } catch (e: IOException) {
             ArrayList()
         }
@@ -73,14 +69,14 @@ class WebDavArchiver : FileProtocol {
     }
 
     override fun createDirectories(url: String, path: String): String {
-        val pathTemp = StringBuilder("/")
-        Arrays.stream(path.split("/".toRegex()).toTypedArray())
+        val pathTemp = StringBuilder(seperator)
+        Arrays.stream(path.split(seperatorRegex).toTypedArray())
                 .filter { cs: String? -> !cs.isNullOrBlank() }
                 .forEach { e: String ->
                     pathTemp.append(e)
-                    pathTemp.append("/")
+                    pathTemp.append(seperator)
                     val urlWithPath = url + pathTemp.toString().substring(0, pathTemp.toString().length - 1)
-                    if (!exists(urlWithPath, "")) {
+                    if (!exists(urlWithPath, emptyString)) {
                         createDirectory(urlWithPath)
                     }
                 }
@@ -88,22 +84,26 @@ class WebDavArchiver : FileProtocol {
     }
 
     private fun getUrl(path: String, name: String): String {
-        val pathReplaced = path.replace(" ", "%20")
-        val nameReplaced = name.replace(" ", "%20")
+        val pathReplaced = unifier.unify(path)
+        val nameReplaced = unifier.unify(name)
         val scheme = getScheme(pathReplaced)
         val host = getHost(pathReplaced)
-        val port = getPort(pathReplaced.replace(scheme, "").replace("://", ""))
-        val filename = pathReplaced.replace("://", "")
-                .replace(":", "")
-                .replace(scheme, "")
-                .replace(host, "")
-                .replace("$port", "") + getName(nameReplaced)
+        val port = getPort(pathReplaced.replace(scheme, emptyString).replace(schemaSeperator, emptyString))
+        val filename = getFilename(pathReplaced, scheme, host, port, nameReplaced)
         return URI(scheme, null, host, port, filename, null, null).toURL().toString()
+    }
+
+    private fun getFilename(filename: String, scheme: String, host: String, port: Int, nameReplaced: String): String {
+        return filename.replace(schemaSeperator, emptyString)
+                .replace(colon, emptyString)
+                .replace(scheme, emptyString)
+                .replace(host, emptyString)
+                .replace("$port", emptyString) + getName(nameReplaced)
     }
 
     private fun getName(name: String): String {
         return if (name.isNullOrEmpty()) {
-            ""
+            emptyString
         } else {
             "/$name"
         }
@@ -116,15 +116,15 @@ class WebDavArchiver : FileProtocol {
 
         val addressArray = path.split(colonRegex)
         val port = addressArray[addressArray.size - 1]
-        return if (port.contains("/")) {
-            port.split("/".toRegex())[0].toInt()
+        return if (port.contains(seperator)) {
+            port.split(seperatorRegex)[0].toInt()
         } else {
             port.toInt()
         }
     }
 
     private fun getHost(path: String): String {
-        val addressWithoutScheme: String = path.split("://".toRegex())[1]
+        val addressWithoutScheme: String = path.split(schemaSeperatorRegex)[1]
         return if (addressWithoutScheme.contains(colon)) {
             addressWithoutScheme.split(colonRegex).toTypedArray()[0]
         } else addressWithoutScheme
@@ -136,5 +136,18 @@ class WebDavArchiver : FileProtocol {
 
     override fun close() {
         sardine?.shutdown()
+    }
+
+    companion object {
+        private val unifier = UrlStringUnifier()
+        private var sardine: Sardine? = null
+
+        private val emptyString = ""
+        private val seperator = "/"
+        private val seperatorRegex = seperator.toRegex()
+        private val colon = ":"
+        private val colonRegex = colon.toRegex()
+        private val schemaSeperator = "://"
+        private val schemaSeperatorRegex = schemaSeperator.toRegex()
     }
 }

@@ -18,21 +18,23 @@ import javax.mail.internet.MimeMessage
 class EmailService {
 
     fun loadMails(username: String, config: EmailProperties): List<EMail> {
-        if (config.username.isNullOrEmpty()) {
+        if (isConfigValid(config)) {
             return listOf()
         }
         val store = getStoreAndConnect(config)
         val messages = mutableListOf<EMail>()
-        config.labels?.forEach {
+        config.labels?.map {
             val messagesLoad = loadMailsForFolder(it, store, username)
             messages.addAll(messagesLoad)
         }
         return messages
     }
 
+    private fun isConfigValid(config: EmailProperties) = (config.username.isNullOrEmpty() || config.password.isNullOrEmpty() || config.servername.isNullOrEmpty() || config.protocol.isNullOrEmpty())
+
     fun markMailAsRead(subject: String, label: String, receivedDate: LocalDateTime?, emailProperties: EmailProperties) {
-        getStoreAndConnect(emailProperties).use { store ->
-            AutoClosableIMAPFolder(store.getStore().getFolder(label)).use { folder ->
+        getStoreAndConnect(emailProperties).use {
+            AutoClosableIMAPFolder(it.getStore().getFolder(label)).use { folder ->
                 folder.open(Folder.READ_WRITE)
                 markMailAsRead(subject, receivedDate, folder)
             }
@@ -45,13 +47,11 @@ class EmailService {
         while (offset < largestUid) {
             val messages = getMessages(folder, largestUid, offset)
             folder.fetch(messages, fetchProfile)
-            for (i in messages!!.indices.reversed()) {
+            for (i in messages.indices.reversed()) {
                 val message = messages[i]
-                if (message != null) {
-                    if (isSubjectEquals(subject, message) && isReceivedDateEquals(receivedDate, message)) {
-                        message.setFlag(Flags.Flag.SEEN, true)
-                        return
-                    }
+                if (isSubjectEquals(subject, message) && isReceivedDateEquals(receivedDate, message)) {
+                    message.setFlag(Flags.Flag.SEEN, true)
+                    return
                 }
             }
             offset += chunkSize
@@ -79,13 +79,10 @@ class EmailService {
             val messages = getMessages(folder, largestUid, offset)
             folder.fetch(messages, fetchProfile)
 
-            messages?.filterNotNull()?.forEach {
-                if (!it.isSet(Flags.Flag.SEEN)) {
-                    val content = getContent(it)
-                    val eMail = createEmail(it, content, username)
-                    messageList.add(eMail)
-                }
-            }
+            messageList.addAll(messages.filter { !it.isSet(Flags.Flag.SEEN) }.map {
+                createEmail(it, getContent(it), username)
+            })
+
             offset += chunkSize
         }
         return messageList
@@ -111,29 +108,32 @@ class EmailService {
     }
 
     private fun getAttachments(content: ByteArray?, username: String): MutableList<Attachment> {
-        val inputStream = ByteArrayInputStream(content)
-        val mimeMessage = MimeMessage(null, inputStream).content
+        val mimeMessage = MimeMessage(null, ByteArrayInputStream(content)).content
+        if (mimeMessage !is Multipart) {
+            return mutableListOf()
+        }
         val attachments = mutableListOf<Attachment>()
-        // TODO: Strings
-        if (mimeMessage is Multipart) {
+        attachments.addAll(getAttachments(mimeMessage, username))
+        return attachments
+    }
 
-            for (partIndex in 0 until mimeMessage.count) {
-                val bodyPart = mimeMessage.getBodyPart(partIndex)
-                if (Part.ATTACHMENT != bodyPart.disposition) {
-                    // TODO: Part.INLINE
-                    continue
-                }
-                val attachment = Attachment()
-                attachment.filename = bodyPart.fileName
-                attachment.content = IOUtils.toByteArray(bodyPart.inputStream)
-                attachment.user = username
-                attachments.add(attachment)
+    private fun getAttachments(mimeMessage: Multipart, username: String): MutableList<Attachment> {
+        val attachments = mutableListOf<Attachment>()
+        for (partIndex in 0 until mimeMessage.count) {
+            val bodyPart = mimeMessage.getBodyPart(partIndex)
+            if (Part.ATTACHMENT != bodyPart.disposition) {
+                continue
             }
+            val attachment = Attachment()
+            attachment.filename = bodyPart.fileName
+            attachment.content = IOUtils.toByteArray(bodyPart.inputStream)
+            attachment.user = username
+            attachments.add(attachment)
         }
         return attachments
     }
 
-    private fun getMessages(folder: AutoClosableIMAPFolder, largestUid: Long, offset: Long): Array<Message?>? {
+    private fun getMessages(folder: AutoClosableIMAPFolder, largestUid: Long, offset: Long): List<Message> {
         val start = Math.max(1, largestUid - offset - chunkSize + 1)
         val end = Math.max(1, largestUid - offset)
         return folder.getMessagesByUID(start, end)

@@ -6,16 +6,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 abstract class AbstractProcessInstanceHandler(protected val delegateExecution: DelegateExecution) {
-    //FIXME: this can't work
-    protected fun add(property: ProcessProperty, value: Any?) {
-        if (delegateExecution.hasVariable(property.name) && delegateExecution.getVariable(property.name) != null) {
-            val variableCasted = getAsT<MutableMap<String, Any?>>(property)
-            variableCasted[property.name] = value
-            delegateExecution.setVariable(property.name, variableCasted)
-        } else {
-            delegateExecution.setVariable(property.name, listOf(value))
-        }
-    }
 
     protected fun addToList(property: ProcessProperty, value: Any?) {
         if (delegateExecution.hasVariable(property.name) && delegateExecution.getVariable(property.name) != null) {

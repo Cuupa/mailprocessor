@@ -24,15 +24,15 @@ class AutoClosableIMAPFolder(private val folder: Folder?) : AutoCloseable {
         folder?.open(state)
     }
 
-    fun getMessagesByUID(start: Long, end: Long): Array<Message?> {
+    fun getMessagesByUID(start: Long, end: Long): List<Message> {
         return if (folder is IMAPFolder) {
-            folder.getMessagesByUID(start, end)
+            folder.getMessagesByUID(start, end).toList()
         } else {
-            arrayOfNulls(0)
+            listOf()
         }
     }
 
-    fun fetch(messages: Array<Message?>?, fetchProfile: FetchProfile) {
-        folder?.fetch(messages, fetchProfile)
+    fun fetch(messages: List<Message>, fetchProfile: FetchProfile) {
+        folder?.fetch(messages.toTypedArray(), fetchProfile)
     }
 }

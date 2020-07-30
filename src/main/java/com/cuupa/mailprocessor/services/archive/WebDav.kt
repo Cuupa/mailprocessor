@@ -4,12 +4,13 @@ import com.cuupa.mailprocessor.utli.UrlStringUnifier
 import com.github.sardine.DavResource
 import com.github.sardine.Sardine
 import com.github.sardine.SardineFactory
+import org.apache.juli.logging.LogFactory
 import java.io.IOException
 import java.io.InputStream
 import java.net.URI
 import java.util.*
 
-class WebDavArchiver : FileProtocol {
+class WebDav : FileProtocol {
 
     override fun init(username: String?, password: String?) {
         sardine = if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
@@ -46,17 +47,22 @@ class WebDavArchiver : FileProtocol {
         }
     }
 
-    override fun list(path: String): List<ArchiveResource> {
+    override fun list(path: String): List<FileResource> {
         return try {
             sardine!!.list(getUrl(path, emptyString), 1)
-                    .map { e: DavResource -> ArchiveResource(e.name, e.contentType) }
+                    .map { e: DavResource -> FileResource(e.name, e.contentType) }
         } catch (e: IOException) {
             ArrayList()
         }
     }
 
     override fun get(path: String, filename: String): InputStream {
-        return sardine!!.get(getUrl(path, filename))
+        try {
+            return sardine!!.get(getUrl(path, filename))
+        } catch(exception: Exception){
+            log.error("Failed to retrieve InputStream for $path/$filename", exception)
+            throw exception
+        }
     }
 
     override fun delete(path: String, filename: String): Boolean {
@@ -84,12 +90,10 @@ class WebDavArchiver : FileProtocol {
     }
 
     private fun getUrl(path: String, name: String): String {
-        val pathReplaced = unifier.unify(path)
-        val nameReplaced = unifier.unify(name)
-        val scheme = getScheme(pathReplaced)
-        val host = getHost(pathReplaced)
-        val port = getPort(pathReplaced.replace(scheme, emptyString).replace(schemaSeperator, emptyString))
-        val filename = getFilename(pathReplaced, scheme, host, port, nameReplaced)
+        val scheme = getScheme(path)
+        val host = getHost(path)
+        val port = getPort(path.replace(scheme, emptyString).replace(schemaSeperator, emptyString))
+        val filename = getFilename(path, scheme, host, port, name)
         return URI(scheme, null, host, port, filename, null, null).toURL().toString()
     }
 
@@ -139,6 +143,8 @@ class WebDavArchiver : FileProtocol {
     }
 
     companion object {
+        private val log = LogFactory.getLog(WebDav::class.java)
+
         private val unifier = UrlStringUnifier()
         private var sardine: Sardine? = null
 

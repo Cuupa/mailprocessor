@@ -15,9 +15,9 @@ object FileProtocolFactory {
     fun getForPath(path: String): FileProtocol? {
         Assert.hasText(path, "no path provided")
         if (isWebDav(path)) {
-            return WebDavArchiver()
+            return WebDav()
         } else if (isLocal(path)) {
-            return LocalArchiver()
+            return Local()
         }
         return null
     }

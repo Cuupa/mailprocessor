@@ -1,8 +1,8 @@
 package com.cuupa.mailprocessor.services.input.scan
 
-import com.cuupa.mailprocessor.services.archive.ArchiveResource
 import com.cuupa.mailprocessor.services.archive.FileProtocol
 import com.cuupa.mailprocessor.services.archive.FileProtocolFactory
+import com.cuupa.mailprocessor.services.archive.FileResource
 import com.cuupa.mailprocessor.services.input.Document
 import com.cuupa.mailprocessor.services.input.PDF
 import com.cuupa.mailprocessor.userconfiguration.ScanProperties
@@ -20,7 +20,7 @@ class ScanService {
                 return listOf()
             }
             fileProtocol.init(config.username, config.password)
-            return fileProtocol.list(path).filter { it.isPdf }.filter {
+            return fileProtocol.list(path).filter { isCorrectFileType(it, config.fileTypes) }.filter {
                 isCorrectScanner(it, config.scannerPrefix)
             }.map { createPdfObject(user, path, fileProtocol, it) }
         }
@@ -73,19 +73,20 @@ class ScanService {
             }
         }
     }
+
     private fun createPdfObject(user: String,
                                 path: String,
                                 fileProtocol: FileProtocol,
-                                archiveResource: ArchiveResource): PDF {
-        val inputStream = fileProtocol.get(path, archiveResource.name)
+                                fileResource: FileResource): PDF {
+        val inputStream = fileProtocol.get(path, fileResource.name)
         val pdf = PDF()
         pdf.content = IOUtils.toByteArray(inputStream)
-        pdf.filename = archiveResource.name
+        pdf.filename = fileResource.name
         pdf.user = user
         return pdf
     }
 
-    private fun isCorrectScanner(archiveResource: ArchiveResource, scannerPrefix: List<String>): Boolean {
+    private fun isCorrectScanner(fileResource: FileResource, scannerPrefix: List<String>): Boolean {
         if (scannerPrefix.isEmpty()) {
             return false
         }
@@ -93,6 +94,16 @@ class ScanService {
         if (scannerPrefix.size == 1 && scannerPrefix.contains("*")) {
             return true
         }
-        return scannerPrefix.find { archiveResource.name.startsWith(it) } != null
+        return scannerPrefix.find { fileResource.name.startsWith(it) } != null
+    }
+
+    private fun isCorrectFileType(fileResource: FileResource, fileTypes: List<String>): Boolean {
+        if (fileTypes.isEmpty()){
+            return false
+        }
+        if (fileTypes.size == 1 && fileTypes.contains("*")) {
+            return true
+        }
+        return fileTypes.find { fileResource.name.endsWith(it) } != null
     }
 }

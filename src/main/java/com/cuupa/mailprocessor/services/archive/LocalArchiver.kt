@@ -49,15 +49,15 @@ class LocalArchiver : FileProtocol {
     }
 
     override fun get(name: String, path: String): InputStream {
-        TODO("Not yet implemented")
+        return Files.newInputStream(Paths.get(path + name))
     }
 
     override fun delete(path: String, filename: String): Boolean {
-        TODO("Not yet implemented")
+        return Files.deleteIfExists(Paths.get(path + filename))
     }
 
     override fun createDirectories(url: String, path: String): String {
-        TODO("Not yet implemented")
+        return Files.createDirectories(Paths.get(url + path)).toFile().absolutePath
     }
 
     private fun getContentType(e: Path): String {

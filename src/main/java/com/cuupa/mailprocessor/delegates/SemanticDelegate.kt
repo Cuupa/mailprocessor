@@ -14,15 +14,18 @@ class SemanticDelegate(private val externSemanticService: ExternSemanticService)
         externSemanticService.getSemanticResult(handler.plainText.joinToString(" ", "", "")).forEach {
             handler.addTopic(it.topicName)
             handler.sender = getSender(it)
-            handler.addMetaData(it.metaData.filter { e: Metadata -> "sender" != e.name })
+            handler.addMetaData(it.metaData.filter(isNotSender()))
         }
     }
 
     private fun getSender(semanticResult: SemanticResult): String? {
         return if (semanticResult.sender == "UNKNOWN") {
-            semanticResult.metaData.firstOrNull { it.name == "sender" }?.value ?: "UNKNOWN"
+            semanticResult.metaData.firstOrNull(isSender())?.value ?: "UNKNOWN"
         } else {
             semanticResult.sender
         }
     }
+
+    private fun isSender(): (Metadata) -> Boolean = { "sender" == it.name }
+    private fun isNotSender(): (Metadata) -> Boolean = { "sender" != it.name }
 }

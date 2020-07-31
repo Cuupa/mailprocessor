@@ -19,6 +19,9 @@ This is a work-in-progress and done in my spare time.
 If you want to participate, feel free to create pull requests, fork this project, create new issues or hit me up with suggestions.
 When creating an issue or a pull request, please be as detailed as possible.
 
+"I want to participate, but I know nothing about programming 😔"
+- No problem. You can contribute by providing translations for the [mappings](https://github.com/Cuupa/mailprocessor/tree/master/src/main/resources/locales) or contribute by providing feedback, make some suggestions eg.
+
 If you think this project is awesome, you can spend me a beer or a coffee.
 
 ![BuyMeACoffee](https://img.shields.io/badge/Support%20%20me-Buy%20me%20a%20coffee-success?logo=buymeacoffee&link=https://buymeacoff.ee/Cuupa)

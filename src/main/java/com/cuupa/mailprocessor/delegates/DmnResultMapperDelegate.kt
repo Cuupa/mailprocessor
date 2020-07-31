@@ -25,11 +25,12 @@ class DmnResultMapperDelegate : JavaDelegate {
         val matcher = regexPlaceholder.matcher(newPath)
         while (matcher.find()) {
             val varName = matcher.group()
-            val collect = handler.metadata.filter { e: Metadata -> e.name == varName.replace("%", "") }
+            val collect = handler.metadata.filter(isMetadataMatching(varName))
             newPath = newPath.replace(varName, collect.joinToString("_", "", "") { it.value })
         }
         return newPath
     }
+
 
     private fun getPathToSave(dmn_result: Map<String, Any>): String {
         return if (dmn_result.contains(ProcessProperty.PATH_TO_SAVE.name)) {
@@ -46,6 +47,8 @@ class DmnResultMapperDelegate : JavaDelegate {
             false
         }
     }
+
+    private fun isMetadataMatching(varName: String): (Metadata) -> Boolean = { it.name == varName.replace("%", "") }
 
     companion object {
         private val senderRegex = "%sender%".toRegex()

@@ -43,13 +43,11 @@ class ScanService {
     }
 
     fun moveScan(filename: String?,
-                 path: String?,
-                 port: Int,
                  filecontent: ByteArray?,
-                 folder: String?,
-                 username: String?,
-                 password: String?): Boolean {
-        if (filename.isNullOrEmpty() || path.isNullOrEmpty() || filecontent == null) {
+                 scanProperties: ScanProperties,
+                 targetPath: String): Boolean {
+        val path = scanProperties.path
+        if (filename.isNullOrEmpty() || path.isNullOrEmpty()) {
             return false
         }
         FileProtocolFactory.getForPath(path).use { fileProtocol ->
@@ -57,17 +55,11 @@ class ScanService {
                 return false
             }
 
-            fileProtocol.init(username, password)
+            fileProtocol.init(scanProperties.username, scanProperties.password)
 
-            val finalPath = if (port > 0) {
-                "$path:$port"
-            } else {
-                path
-            }
-
-            val directories = fileProtocol.createDirectories(finalPath, folder!!)
-            return if (fileProtocol.save(directories, filename, filecontent)) {
-                fileProtocol.delete(path, filename)
+            val directories = fileProtocol.createDirectories(path, targetPath)
+            return if (fileProtocol.save(directories, filename, filecontent ?: ByteArray(0))) {
+                fileProtocol.delete("$path/${scanProperties.path}", filename)
             } else {
                 false
             }
@@ -98,7 +90,7 @@ class ScanService {
     }
 
     private fun isCorrectFileType(fileResource: FileResource, fileTypes: List<String>): Boolean {
-        if (fileTypes.isEmpty() || !fileResource.isFile){
+        if (fileTypes.isEmpty() || !fileResource.isFile) {
             return false
         }
         if (fileTypes.size == 1 && fileTypes.contains("*")) {

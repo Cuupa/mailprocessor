@@ -20,13 +20,12 @@ class ArchivingSuccessDelegate(private val scanService: ScanService,
         val configurationForUser = configuration.getConfigurationForUser(handler.username)
         if (handler.isScanMail) {
             val scanProperties = configurationForUser.scanProperties
-            scanService.moveScan(handler.fileName,
-                                 scanProperties.path,
-                                 scanProperties.port,
-                                 handler.fileContent,
-                                 scanProperties.successFolder,
-                                 scanProperties.username,
-                                 scanProperties.password)
+            val scanMoved = scanService.moveScan(handler.fileName, handler.fileContent, scanProperties,
+                                                 scanProperties.successFolder!!)
+
+            if (!scanMoved) {
+                log.error("Error moving document ${handler.fileName} to ${scanProperties.successFolder}")
+            }
         } else {
             emailService.markMailAsRead(handler.emailSubject,
                                         handler.emailLabel,

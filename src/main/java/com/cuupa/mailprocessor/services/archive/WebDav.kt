@@ -119,7 +119,7 @@ class WebDav : File {
                 .replace(colon, emptyString)
                 .replace(scheme, emptyString)
                 .replace(host, emptyString)
-                .replace("$port", emptyString) + getName(nameReplaced)
+                .replace("$port", emptyString) + getName(nameReplaced.replace("/", ","))
     }
 
     private fun getName(name: String): String {

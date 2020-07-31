@@ -16,5 +16,5 @@ enum class ProcessProperty {
     DMN_RESULT,
     HAS_REMINDER,
     REMINDER_DATE,
-    ARCHIVED
+    ARCHIVED, ERRORS
 }

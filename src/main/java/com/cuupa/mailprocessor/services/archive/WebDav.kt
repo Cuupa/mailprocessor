@@ -1,6 +1,5 @@
 package com.cuupa.mailprocessor.services.archive
 
-import com.cuupa.mailprocessor.utli.UrlStringUnifier
 import com.github.sardine.DavResource
 import com.github.sardine.Sardine
 import com.github.sardine.SardineFactory

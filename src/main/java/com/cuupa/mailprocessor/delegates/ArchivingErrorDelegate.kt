@@ -2,7 +2,7 @@ package com.cuupa.mailprocessor.delegates
 
 import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
-import com.cuupa.mailprocessor.services.input.ScanService
+import com.cuupa.mailprocessor.services.input.scan.ScanService
 import org.apache.juli.logging.LogFactory
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
@@ -16,15 +16,20 @@ class ArchivingErrorDelegate(private val scanService: ScanService,
             return
         }
 
-        val scanProperties = configuration.getConfigurationForUser(handler.username).scanProperties
-        scanService.moveScan(handler.fileName,
-                             scanProperties.path,
-                             scanProperties.port,
-                             handler.fileContent,
-                             scanProperties.errorFolder,
-                             scanProperties.username,
-                             scanProperties.password)
+        if (handler.isScanMail) {
+            processScanError(handler)
+        }
+        log.warn(handler.errors.joinToString("\n", "", ""))
         log.warn("Error archiving ${handler.fileName}")
+    }
+
+    private fun processScanError(handler: ProcessInstanceHandler) {
+        val scanProperties = configuration.getConfigurationForUser(handler.username).scanProperties
+        val scanMoved = scanService.moveScan(handler.fileName, handler.fileContent, scanProperties, scanProperties.errorFolder!!)
+
+        if (!scanMoved) {
+            log.error("Error moving document ${handler.fileName} to ${scanProperties.errorFolder}")
+        }
     }
 
     companion object {

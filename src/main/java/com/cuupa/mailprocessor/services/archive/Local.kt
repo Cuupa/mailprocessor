@@ -9,7 +9,7 @@ import java.nio.file.Paths
 import java.util.*
 import java.util.stream.Collectors
 
-class LocalArchiver : FileProtocol {
+class Local : File {
 
     override fun init(username: String?, password: String?) {
         // Not implemented
@@ -37,27 +37,27 @@ class LocalArchiver : FileProtocol {
         }
     }
 
-    override fun list(path: String): List<ArchiveResource> {
+    override fun list(path: String): List<FileResource> {
         return try {
             Files.list(Paths.get(path))
                     .map { e: Path ->
-                        ArchiveResource(e.fileName.toString(), getContentType(e))
+                        FileResource(e.fileName.toString(), getContentType(e))
                     }.collect(Collectors.toList())
         } catch (e: IOException) {
             ArrayList()
         }
     }
 
-    override fun get(name: String, path: String): InputStream {
-        TODO("Not yet implemented")
+    override fun get(path: String, filename: String): InputStream {
+        return Files.newInputStream(Paths.get(path + filename))
     }
 
     override fun delete(path: String, filename: String): Boolean {
-        TODO("Not yet implemented")
+        return Files.deleteIfExists(Paths.get(path + filename))
     }
 
     override fun createDirectories(url: String, path: String): String {
-        TODO("Not yet implemented")
+        return Files.createDirectories(Paths.get(url + path)).toFile().absolutePath
     }
 
     private fun getContentType(e: Path): String {

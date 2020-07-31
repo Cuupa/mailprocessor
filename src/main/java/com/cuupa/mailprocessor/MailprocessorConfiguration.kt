@@ -9,17 +9,15 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
 
-class MailprocessorConfiguration(configpath: String?) {
+class MailprocessorConfiguration(configpath: String) {
     val configurations: MutableList<UserConfiguration> = ArrayList()
 
     val users: List<String>
         get() = configurations.filter { config -> !config.username.isNullOrEmpty() }.map { it -> it.username!! }
 
     fun getConfigurationForUser(user: String): UserConfiguration {
-        return configurations.stream()
-                .filter { config: UserConfiguration -> config.username == user }
-                .findAny()
-                .orElse(UserConfiguration())
+        return configurations.firstOrNull { config: UserConfiguration -> config.username == user }
+                ?: UserConfiguration()
     }
 
     companion object {

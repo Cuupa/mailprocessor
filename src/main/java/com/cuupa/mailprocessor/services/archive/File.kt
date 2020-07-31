@@ -2,7 +2,7 @@ package com.cuupa.mailprocessor.services.archive
 
 import java.io.InputStream
 
-interface FileProtocol : AutoCloseable {
+interface File : AutoCloseable {
 
     fun init(username: String?, password: String?)
 
@@ -12,7 +12,7 @@ interface FileProtocol : AutoCloseable {
 
     fun createDirectory(path: String): Boolean
 
-    fun list(path: String): List<ArchiveResource>
+    fun list(path: String): List<FileResource>
 
     fun get(path: String, filename: String): InputStream
 

@@ -19,10 +19,14 @@ This is a work-in-progress and done in my spare time.
 If you want to participate, feel free to create pull requests, fork this project, create new issues or hit me up with suggestions.
 When creating an issue or a pull request, please be as detailed as possible.
 
+"I want to participate, but I know nothing about programming 😔"
+- No problem. You can contribute by providing translations for the [mappings](https://github.com/Cuupa/mailprocessor/tree/master/src/main/resources/locales) or contribute by providing feedback, make some suggestions eg.
+
 If you think this project is awesome, you can spend me a beer or a coffee.
 
 ![BuyMeACoffee](https://img.shields.io/badge/Support%20%20me-Buy%20me%20a%20coffee-success?logo=buymeacoffee&link=https://buymeacoff.ee/Cuupa)
 
+[Direct link](https://buymeacoff.ee/Cuupa)
 ## How it works
 This project uses [Camunda BPMN](https://camunda.org) for orchestration  and DMN for decision tables.
 The project is a spring boot project, so it works as a jar file as well as deployed to a tomcat/websphere/glassfish/etc application server.
@@ -43,7 +47,7 @@ The path to the configuration is specified in the application.yml.
         "port": 993,
         "username": "username@mail.com",
         "password": "password",
-        "protocol": "imap",
+        "protocol": "imaps",
         "labels": ["inbox", "label1", "label2"],
         "markasread": true,
         "enabled": false
@@ -80,12 +84,12 @@ The path to the configuration is specified in the application.yml.
 - locale: the locale the topics should be translated to. Can be left out or deleted if there is no translation to be done
 
 #### emailproperties
-This section is about the configuration of fetching emails
+This section is about the configuration of fetching emails. It will only process unread emails.
 - servername: the servername of your mailprovider
 - port: the port the mailserver provides
 - username: the username for your mailaccount
 - password: the password for your mailaccount. I strongly encurage you to use a one-time-password like gmail offers
-- protocol: the protocol which you use to talk to your mailserver. IMAP (recommended) or POP3
+- protocol: the protocol which you use to talk to your mailserver. IMAP (recommended) or POP3. IMAP differntiates between "imap" and "imaps" (TLS)
 - labels: the labels or folder you want to process. Use "*" to process all labels and sublabels
 - markasread: mark the processed mails as "read"
 - enabled: the flag to enable or disable this service

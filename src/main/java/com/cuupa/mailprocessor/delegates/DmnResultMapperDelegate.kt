@@ -6,13 +6,8 @@ import com.cuupa.mailprocessor.services.semantic.Metadata
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
 import java.util.regex.Pattern
-import java.util.stream.Collectors
 
 class DmnResultMapperDelegate : JavaDelegate {
-
-    private val senderRegex = "%sender%".toRegex()
-
-    private val regexPlaceholder = Pattern.compile("\\%[a-zA-Z]*\\%")
 
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
@@ -30,14 +25,12 @@ class DmnResultMapperDelegate : JavaDelegate {
         val matcher = regexPlaceholder.matcher(newPath)
         while (matcher.find()) {
             val varName = matcher.group()
-            val collect = handler.metadata
-                    .filter { e: Metadata -> e.name == varName.replace("%", "") }
-            newPath = newPath.replace(varName, collect.stream()
-                    .map { obj: Metadata -> obj.value }
-                    .collect(Collectors.joining("_")))
+            val collect = handler.metadata.filter(isMetadataMatching(varName))
+            newPath = newPath.replace(varName, collect.joinToString("_", "", "") { it.value })
         }
         return newPath
     }
+
 
     private fun getPathToSave(dmn_result: Map<String, Any>): String {
         return if (dmn_result.contains(ProcessProperty.PATH_TO_SAVE.name)) {
@@ -53,5 +46,12 @@ class DmnResultMapperDelegate : JavaDelegate {
         } else {
             false
         }
+    }
+
+    private fun isMetadataMatching(varName: String): (Metadata) -> Boolean = { it.name == varName.replace("%", "") }
+
+    companion object {
+        private val senderRegex = "%sender%".toRegex()
+        private val regexPlaceholder = Pattern.compile("\\%[a-zA-Z]*\\%")
     }
 }

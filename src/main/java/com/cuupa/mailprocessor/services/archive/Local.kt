@@ -48,8 +48,8 @@ class Local : FileProtocol {
         }
     }
 
-    override fun get(name: String, path: String): InputStream {
-        return Files.newInputStream(Paths.get(path + name))
+    override fun get(path: String, filename: String): InputStream {
+        return Files.newInputStream(Paths.get(path + filename))
     }
 
     override fun delete(path: String, filename: String): Boolean {

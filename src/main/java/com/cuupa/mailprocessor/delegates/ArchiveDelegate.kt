@@ -5,7 +5,6 @@ import com.cuupa.mailprocessor.process.ErrorProperties
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
 import com.cuupa.mailprocessor.services.TranslateService
 import com.cuupa.mailprocessor.services.archive.FileFactory
-import org.apache.juli.logging.LogFactory
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
 import java.util.*

@@ -17,21 +17,13 @@ import java.time.format.DateTimeFormatter
 
 class ReminderService {
 
-    fun remind(processInstanceId: String,
-               fileName: String,
-               reminderDate: String,
-               metadata: List<Metadata>,
-               content: ByteArray,
-               reminderProperties: ReminderProperties) {
+    fun remind(processInstanceId: String, fileName: String, reminderDate: String, metadata: List<Metadata>,
+               content: ByteArray, reminderProperties: ReminderProperties) {
         executeReminder(processInstanceId, reminderProperties, fileName, reminderDate, metadata, content)
     }
 
-    fun executeReminder(processInstanceId: String,
-                        reminderProperties: ReminderProperties,
-                        fileName: String,
-                        reminderDate: String,
-                        metadata: List<Metadata>,
-                        content: ByteArray) {
+    fun executeReminder(processInstanceId: String, reminderProperties: ReminderProperties, fileName: String,
+                        reminderDate: String, metadata: List<Metadata>, content: ByteArray) {
         if (!reminderProperties.isEnabled) {
             return
         }
@@ -42,21 +34,32 @@ class ReminderService {
             botsApi.registerBot(reminderBot)
         } catch (e: TelegramApiException) {
             log.error("Error creating Telegram reminder for user", e)
+            return
         }
 
         val dateString = LocalDateTime.parse(reminderDate).toLocalDate().format(formatter)
-        val message: SendMessage = SendMessage().setChatId(reminderProperties.chatId)
-                .setText(getTextForReminder(fileName, dateString, metadata))
+        val message = createMessage(reminderProperties, fileName, dateString, metadata)
         reminderBot.execute(message)
 
-        val document: SendDocument = SendDocument().setChatId(reminderProperties.chatId)
-                .setDocument(InputFile(ByteArrayInputStream(content), fileName))
+        val document = createCallbackAndButton(processInstanceId, createDocument(reminderProperties, content, fileName))
+        reminderBot.execute(document)
+    }
+
+    private fun createCallbackAndButton(processInstanceId: String, document: SendDocument): SendDocument {
         val rowInline = listOf(InlineKeyboardButton().setText("Confirm").setCallbackData(processInstanceId))
         val markupInline = InlineKeyboardMarkup()
         markupInline.keyboard = listOf(rowInline)
         document.replyMarkup = markupInline
-        reminderBot.execute(document)
+        return document
     }
+
+    private fun createDocument(reminderProperties: ReminderProperties, content: ByteArray,
+                               fileName: String) = SendDocument().setChatId(reminderProperties.chatId)
+        .setDocument(InputFile(ByteArrayInputStream(content), fileName))
+
+    private fun createMessage(reminderProperties: ReminderProperties, fileName: String, dateString: String,
+                              metadata: List<Metadata>) = SendMessage().setChatId(reminderProperties.chatId)
+        .setText(getTextForReminder(fileName, dateString, metadata))
 
     private fun getTextForReminder(fileName: String, reminderDate: String, metadata: List<Metadata>): String {
         return metadata.joinToString("\n",

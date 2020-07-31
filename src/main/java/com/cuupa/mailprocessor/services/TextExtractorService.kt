@@ -13,9 +13,13 @@ class TextExtractorService {
 
     private fun getAttachmentContent(attachments: List<Attachment>): List<String> {
         val value = mutableListOf<String>()
-        attachments.forEach { attachment ->
+        attachments.forEach(getAttachmentText(value))
+        return value
+    }
+
+    private fun getAttachmentText(value: MutableList<String>): (Attachment) -> Unit {
+        return { attachment ->
             value.addAll(Extractors.get(attachment.content!!))
         }
-        return value
     }
 }

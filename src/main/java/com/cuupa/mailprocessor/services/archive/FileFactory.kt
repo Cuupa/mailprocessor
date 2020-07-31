@@ -6,13 +6,13 @@ import java.util.regex.Pattern
 /**
  * Determines which FileProtocol to use. Currently supports WebDAV and local storage for windows and UNIX
  */
-object FileProtocolFactory {
+object FileFactory {
 
     private val patternWindows = Pattern.compile("([A-Z]):\\\\[a-zA-Z0-9\\.\\\\]*")
 
     private val patternUnix = Pattern.compile("/[a-zA-Z0-9/]*")
 
-    fun getForPath(path: String): FileProtocol? {
+    fun getForPath(path: String): File? {
         Assert.hasText(path, "no path provided")
         if (isWebDav(path)) {
             return WebDav()

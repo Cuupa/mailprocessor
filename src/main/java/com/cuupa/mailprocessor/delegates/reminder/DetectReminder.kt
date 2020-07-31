@@ -2,6 +2,7 @@ package com.cuupa.mailprocessor.delegates.reminder
 
 import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
+import com.cuupa.mailprocessor.services.semantic.Metadata
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
 import java.time.LocalDate
@@ -20,10 +21,10 @@ class DetectReminder(private val configuration: MailprocessorConfiguration) : Ja
             return
         }
 
-        val dueDate = handler.metadata.find { it.value == "dueDate" }
+        val dueDate = handler.metadata.find(dueDate())
         if (dueDate != null) {
             val toInstant = LocalDateTime.of(LocalDate.parse(dueDate.value, formatter), LocalTime.of(8, 0))
-            if(toInstant.isAfter(LocalDateTime.now())) {
+            if (toInstant.isAfter(LocalDateTime.now())) {
                 handler.hasReminder = true
                 handler.reminderDate = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(toInstant)
             } else {
@@ -34,4 +35,6 @@ class DetectReminder(private val configuration: MailprocessorConfiguration) : Ja
             handler.reminderDate = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(LocalDateTime.now())
         }
     }
+
+    private fun dueDate(): (Metadata) -> Boolean = { it.value == "dueDate" }
 }

@@ -11,12 +11,13 @@ class SemanticDelegate(private val externSemanticService: ExternSemanticService)
 
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
-        externSemanticService.getSemanticResult(handler.plainText.joinToString(" ", "", "")).forEach {
+        externSemanticService.getSemanticResult(getText(handler)).forEach {
             handler.addTopic(it.topicName)
             handler.sender = getSender(it)
             handler.addMetaData(it.metaData.filter(isNotSender()))
         }
     }
+
 
     private fun getSender(semanticResult: SemanticResult): String? {
         return if (semanticResult.sender == "UNKNOWN") {
@@ -26,6 +27,7 @@ class SemanticDelegate(private val externSemanticService: ExternSemanticService)
         }
     }
 
+    private fun getText(handler: ProcessInstanceHandler) = handler.plainText.joinToString(" ", "", "")
     private fun isSender(): (Metadata) -> Boolean = { "sender" == it.name }
     private fun isNotSender(): (Metadata) -> Boolean = { "sender" != it.name }
 }

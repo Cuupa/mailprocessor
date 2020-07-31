@@ -10,7 +10,7 @@ class ReminderBot(private val properties: ReminderProperties) : TelegramLongPoll
 
     override fun onUpdateReceived(p0: Update?) {
         if (p0?.callbackQuery?.data.isNullOrEmpty()) {
-
+            TODO("Not yet implemented")
         }
     }
 

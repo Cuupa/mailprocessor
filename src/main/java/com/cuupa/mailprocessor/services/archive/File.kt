@@ -2,7 +2,7 @@ package com.cuupa.mailprocessor.services.archive
 
 import java.io.InputStream
 
-interface FileProtocol : AutoCloseable {
+interface File : AutoCloseable {
 
     fun init(username: String?, password: String?)
 

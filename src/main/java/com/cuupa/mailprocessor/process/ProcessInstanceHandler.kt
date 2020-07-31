@@ -91,4 +91,12 @@ class ProcessInstanceHandler(delegateExecution: DelegateExecution?) : AbstractPr
     override fun toString(): String {
         return ToStringBuilder.reflectionToString(delegateExecution.variables, ToStringStyle.MULTI_LINE_STYLE)
     }
+
+    val errors: List<String>
+        get() = getAsListOfString(ProcessProperty.ERRORS)
+
+    fun addError(property: ErrorProperties, message: String): ProcessInstanceHandler {
+        addToList(ProcessProperty.ERRORS, property.message.format(message))
+        return this
+    }
 }

@@ -4,6 +4,7 @@ import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
 import com.cuupa.mailprocessor.services.input.email.EmailService
 import com.cuupa.mailprocessor.services.input.scan.ScanService
+import com.cuupa.mailprocessor.userconfiguration.UserConfiguration
 import org.apache.juli.logging.LogFactory
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
@@ -19,20 +20,30 @@ class ArchivingSuccessDelegate(private val scanService: ScanService,
         }
         val configurationForUser = configuration.getConfigurationForUser(handler.username)
         if (handler.isScanMail) {
-            val scanProperties = configurationForUser.scanProperties
-            val scanMoved = scanService.moveScan(handler.fileName, handler.fileContent, scanProperties,
-                                                 scanProperties.successFolder!!)
-
-            if (!scanMoved) {
-                log.error("Error moving document ${handler.fileName} to ${scanProperties.successFolder}")
-            }
+            processScanSuccess(configurationForUser, handler)
         } else {
-            emailService.markMailAsRead(handler.emailSubject,
-                                        handler.emailLabel,
-                                        handler.receivedDate,
-                                        configurationForUser.emailProperties)
+            processMailSuccess(handler, configurationForUser)
         }
         log.warn("Successfully archived ${handler.fileName} to ${handler.archivedFilename}")
+    }
+
+    private fun processMailSuccess(handler: ProcessInstanceHandler, configurationForUser: UserConfiguration) {
+        emailService.markMailAsRead(handler.emailSubject,
+                                    handler.emailLabel,
+                                    handler.receivedDate,
+                                    configurationForUser.emailProperties)
+    }
+
+    private fun processScanSuccess(configurationForUser: UserConfiguration, handler: ProcessInstanceHandler) {
+        val scanProperties = configurationForUser.scanProperties
+        val scanMoved = scanService.moveScan(handler.fileName,
+                                             handler.fileContent,
+                                             scanProperties,
+                                             scanProperties.successFolder!!)
+
+        if (!scanMoved) {
+            log.error("Error moving document ${handler.fileName} to ${scanProperties.successFolder}")
+        }
     }
 
     companion object {

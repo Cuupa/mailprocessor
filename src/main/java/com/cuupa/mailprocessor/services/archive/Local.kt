@@ -9,7 +9,7 @@ import java.nio.file.Paths
 import java.util.*
 import java.util.stream.Collectors
 
-class Local : FileProtocol {
+class Local : File {
 
     override fun init(username: String?, password: String?) {
         // Not implemented

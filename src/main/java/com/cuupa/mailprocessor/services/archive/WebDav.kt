@@ -4,14 +4,13 @@ import com.cuupa.mailprocessor.utli.UrlStringUnifier
 import com.github.sardine.DavResource
 import com.github.sardine.Sardine
 import com.github.sardine.SardineFactory
-import org.apache.cxf.common.util.UrlUtils
 import org.apache.juli.logging.LogFactory
 import java.io.IOException
 import java.io.InputStream
 import java.net.URI
 import java.util.*
 
-class WebDav : FileProtocol {
+class WebDav : File {
 
     private var sardine: Sardine? = null
 
@@ -32,9 +31,22 @@ class WebDav : FileProtocol {
         }
     }
 
+    /*
+     * This is a utility function which prevents the following code from creating directories which already exists
+     * On a Synology WebDAV, there's the possibility of a HTTP/403 or HTTP/404 if the directory already exists, but
+     * the call for "exists" fails
+     */
+    private fun _exists(path: String, filename: String): Boolean {
+        return try {
+            sardine!!.exists(getUrl(path, filename))
+        } catch (e: IOException) {
+            true
+        }
+    }
+
     override fun save(path: String, filename: String, data: ByteArray): Boolean {
         return try {
-            sardine!!.put(getUrl(unifier.unify(path), unifier.unify(filename)), data)
+            sardine!!.put(getUrl(path, filename), data)
             true
         } catch (e: IOException) {
             false
@@ -52,8 +64,7 @@ class WebDav : FileProtocol {
 
     override fun list(path: String): List<FileResource> {
         return try {
-            sardine!!.list(getUrl(path, emptyString), 1)
-                    .map { e: DavResource -> FileResource(e.name, e.contentType) }
+            sardine!!.list(getUrl(path, emptyString), 1).map { e: DavResource -> FileResource(e.name, e.contentType) }
         } catch (e: IOException) {
             ArrayList()
         }
@@ -62,7 +73,7 @@ class WebDav : FileProtocol {
     override fun get(path: String, filename: String): InputStream {
         try {
             return sardine!!.get(getUrl(path, filename))
-        } catch(exception: Exception){
+        } catch (exception: Exception) {
             log.error("Failed to retrieve InputStream for $path/$filename", exception)
             throw exception
         }
@@ -70,7 +81,7 @@ class WebDav : FileProtocol {
 
     override fun delete(path: String, filename: String): Boolean {
         return try {
-            sardine!!.delete(getUrl(path, unifier.unify(filename)))
+            sardine!!.delete(getUrl(path,filename))
             true
         } catch (e: IOException) {
             false
@@ -81,17 +92,20 @@ class WebDav : FileProtocol {
         val pathTemp = StringBuilder(separator)
         var urlWithPath = ""
         Arrays.stream(path.split(separatorRegex).toTypedArray())
-                .filter { cs: String? -> !cs.isNullOrBlank() }
-                .forEach { e: String ->
-                    pathTemp.append(e)
+                .filter(nonEmptyEntries())
+                .map { it.replace(" ", "%20") }
+                .forEach {
+                    pathTemp.append(it)
                     pathTemp.append(separator)
                     urlWithPath = url + pathTemp.toString().substring(0, pathTemp.toString().length - 1)
-                    if (!exists(urlWithPath, emptyString)) {
+                    if (!_exists(urlWithPath, emptyString)) {
                         createDirectory(urlWithPath)
                     }
                 }
         return urlWithPath
     }
+
+    private fun nonEmptyEntries() = { cs: String? -> !cs.isNullOrBlank() }
 
     private fun getUrl(path: String, name: String): String {
         val scheme = getScheme(path)
@@ -148,8 +162,6 @@ class WebDav : FileProtocol {
 
     companion object {
         private val log = LogFactory.getLog(WebDav::class.java)
-        private val unifier = UrlStringUnifier()
-
         private const val emptyString = ""
         private const val separator = "/"
         private val separatorRegex = separator.toRegex()

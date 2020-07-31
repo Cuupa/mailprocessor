@@ -1,7 +1,9 @@
 package com.cuupa.mailprocessor.process
 
 enum class ProcessProperty {
-    MAIL_TYPE, RECEIVED_DATE, USERNAME,
+    MAIL_TYPE,
+    RECEIVED_DATE,
+    USERNAME,
     TOPICS,
     SENDER,
     PLAIN_TEXT,
@@ -16,5 +18,6 @@ enum class ProcessProperty {
     DMN_RESULT,
     HAS_REMINDER,
     REMINDER_DATE,
-    ARCHIVED, ERRORS
+    ARCHIVED,
+    ERRORS
 }

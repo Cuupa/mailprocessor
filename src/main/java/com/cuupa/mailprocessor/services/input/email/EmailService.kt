@@ -24,8 +24,7 @@ class EmailService {
         val store = getStoreAndConnect(config)
         val messages = mutableListOf<EMail>()
         config.labels?.map {
-            val messagesLoad = loadMailsForFolder(it, store, username)
-            messages.addAll(messagesLoad)
+            messages.addAll(loadMailsForFolder(it, store, username))
         }
         return messages
     }

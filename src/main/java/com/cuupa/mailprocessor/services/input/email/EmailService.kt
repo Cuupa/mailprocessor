@@ -21,8 +21,8 @@ class EmailService {
 
     fun loadMails(username: String, config: EmailProperties): List<EMail> {
         return when {
-            isConfigValid(config) -> getMessagesAsync(config.labels!!, config, username)
-            else -> listOf()
+            isConfigInvalid(config) -> listOf()
+            else -> getMessagesAsync(config.labels!!, config, username)
         }
     }
 
@@ -36,7 +36,11 @@ class EmailService {
             val listOfJobs = mutableListOf<Deferred<List<EMail>>>()
             val job = GlobalScope.launch {
                 labels.forEach { label ->
-                    val async = GlobalScope.async { loadMailsForFolder(label, getStoreAndConnect(config), username) }
+                    val async = GlobalScope.async {
+                        getStoreAndConnect(config).use { store ->
+                            loadMailsForFolder(label, store, username)
+                        }
+                    }
                     listOfJobs.add(async)
                 }
             }
@@ -46,13 +50,12 @@ class EmailService {
         return messages
     }
 
-    private fun isConfigValid(
+    private fun isConfigInvalid(
             config: EmailProperties) = (config.username.isNullOrEmpty() || config.password.isNullOrEmpty() || config.servername.isNullOrEmpty() || config.protocol.isNullOrEmpty())
 
     fun markMailAsRead(subject: String, label: String, receivedDate: LocalDateTime?, emailProperties: EmailProperties) {
         getStoreAndConnect(emailProperties).use {
-            AutoClosableIMAPFolder(it.getStore().getFolder(label)).use { folder ->
-                folder.open(Folder.READ_WRITE)
+            AutoClosableIMAPFolder(it.getStore().getFolder(label)).open(Folder.READ_WRITE).use { folder ->
                 markMailAsRead(subject, receivedDate, folder)
             }
         }
@@ -86,14 +89,14 @@ class EmailService {
         return loadMessageFromFolder(folder, username)
     }
 
-    private fun loadMessageFromFolder(folder: AutoClosableIMAPFolder, username: String): MutableList<EMail> {
+    private fun loadMessageFromFolder(folder: AutoClosableIMAPFolder, username: String): List<EMail> {
         val largestUid = folder.uidNext - 1
         val messageList = mutableListOf<EMail>()
         var offset: Long = 0
 
         return if (folder.getUnreadMessageCount() == 0) {
-            log.info("No mails for \"${folder.name()}\" found")
-            mutableListOf()
+            log.info("No unread mails for \"${folder.name()}\" found")
+            listOf()
         } else {
 
             log.info("${Thread.currentThread().name}: Fetching mails from \"${folder.name()}\"")
@@ -110,7 +113,7 @@ class EmailService {
                 offset += chunkSize
             }
             log.info("${Thread.currentThread().name}: Mails from \"${folder.name()}\" successfully fetched")
-            messageList
+            messageList.toList()
         }
     }
 
@@ -138,7 +141,7 @@ class EmailService {
     }
 
     private fun getAttachments(content: ByteArray?, username: String): List<Attachment> {
-        return when (val mimeMessage = MimeMessage(null, ByteArrayInputStream(content)).content){
+        return when (val mimeMessage = MimeMessage(null, ByteArrayInputStream(content)).content) {
             is Multipart -> getAttachments(mimeMessage, username)
             else -> listOf()
         }

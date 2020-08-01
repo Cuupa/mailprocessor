@@ -14,20 +14,23 @@ class SemanticDelegate(private val externSemanticService: ExternSemanticService)
         externSemanticService.getSemanticResult(getText(handler)).forEach {
             handler.addTopic(it.topicName)
             handler.sender = getSender(it)
-            handler.addMetaData(it.metaData.filter(isNotSender()))
+            handler.addMetaData(it.metaData.filter(isNotSenderMetadata()))
         }
     }
 
-
     private fun getSender(semanticResult: SemanticResult): String? {
-        return if (semanticResult.sender == "UNKNOWN") {
-            semanticResult.metaData.firstOrNull(isSender())?.value ?: "UNKNOWN"
-        } else {
-            semanticResult.sender
+        return when (semanticResult.sender) {
+            unknown -> semanticResult.metaData.firstOrNull(isSenderMetadata())?.value ?: unknown
+            else -> semanticResult.sender
         }
     }
 
     private fun getText(handler: ProcessInstanceHandler) = handler.plainText.joinToString(" ", "", "")
-    private fun isSender(): (Metadata) -> Boolean = { "sender" == it.name }
-    private fun isNotSender(): (Metadata) -> Boolean = { "sender" != it.name }
+    private fun isSenderMetadata(): (Metadata) -> Boolean = { "sender" == it.name }
+    private fun isNotSenderMetadata(): (Metadata) -> Boolean = { "sender" != it.name }
+
+    companion object {
+        private const val unknown = "UNKNOWN"
+    }
+
 }

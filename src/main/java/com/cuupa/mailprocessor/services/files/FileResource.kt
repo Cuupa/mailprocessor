@@ -1,4 +1,4 @@
-package com.cuupa.mailprocessor.services.archive
+package com.cuupa.mailprocessor.services.files
 
 import org.apache.commons.lang3.builder.ToStringBuilder
 

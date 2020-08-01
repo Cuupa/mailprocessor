@@ -12,12 +12,9 @@ class ArchivingErrorDelegate(private val scanService: ScanService,
 
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
-        if (handler.archived) {
-            return
-        }
-
-        if (handler.isScanMail) {
-            processScanError(handler)
+        when {
+            handler.archived -> return
+            handler.isScanMail -> processScanError(handler)
         }
         log.warn(handler.errors.joinToString("\n", "", ""))
         log.warn("Error archiving ${handler.fileName}")
@@ -25,7 +22,10 @@ class ArchivingErrorDelegate(private val scanService: ScanService,
 
     private fun processScanError(handler: ProcessInstanceHandler) {
         val scanProperties = configuration.getConfigurationForUser(handler.username).scanProperties
-        val scanMoved = scanService.moveScan(handler.fileName, handler.fileContent, scanProperties, scanProperties.errorFolder!!)
+        val scanMoved = scanService.moveScan(handler.fileName,
+                                             handler.fileContent,
+                                             scanProperties,
+                                             scanProperties.errorFolder!!)
 
         if (!scanMoved) {
             log.error("Error moving document ${handler.fileName} to ${scanProperties.errorFolder}")

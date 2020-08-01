@@ -47,7 +47,7 @@ class EmailService {
             job.join()
             messages = listOfJobs.map { it.await() }.flatten()
         }
-        return messages
+        return messages.distinct()
     }
 
     private fun isConfigInvalid(

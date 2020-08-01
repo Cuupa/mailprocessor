@@ -9,4 +9,7 @@ class EMail : Document() {
     var label: String? = null
     var receivedDate: LocalDateTime? = null
     var attachments = mutableListOf<Attachment>()
+
+    val isValid
+        get() = !from.isNullOrEmpty() && receivedDate != null && (content?.isNotEmpty()?: false)
 }

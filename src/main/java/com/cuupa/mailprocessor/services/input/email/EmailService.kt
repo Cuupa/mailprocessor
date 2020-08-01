@@ -3,10 +3,12 @@ package com.cuupa.mailprocessor.services.input.email
 import com.cuupa.mailprocessor.services.input.Attachment
 import com.cuupa.mailprocessor.services.input.EMail
 import com.cuupa.mailprocessor.userconfiguration.EmailProperties
+import kotlinx.coroutines.*
 import org.apache.commons.io.IOUtils
 import org.apache.juli.logging.LogFactory
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -21,15 +23,34 @@ class EmailService {
         if (isConfigValid(config)) {
             return listOf()
         }
-        val store = getStoreAndConnect(config)
+        val labels = config.labels!!
+        return getMessagesAsync(labels, config, username)
+    }
+
+    private fun getMessagesSync(labels: List<String>, config: EmailProperties, username: String): MutableList<EMail> {
         val messages = mutableListOf<EMail>()
-        config.labels?.map {
-            messages.addAll(loadMailsForFolder(it, store, username))
+        labels.forEach { messages.addAll(loadMailsForFolder(it, getStoreAndConnect(config), username)) }
+        return messages
+    }
+
+    private fun getMessagesAsync(labels: List<String>, config: EmailProperties, username: String): MutableList<EMail> {
+        val listOfJobs = mutableListOf<Deferred<List<EMail>>>()
+        val messages = mutableListOf<EMail>()
+        runBlocking {
+            val job = GlobalScope.launch {
+                labels.forEach { label ->
+                    val async = GlobalScope.async { loadMailsForFolder(label, getStoreAndConnect(config), username) }
+                    listOfJobs.add(async)
+                }
+            }
+            job.join()
+            listOfJobs.forEach { messages.addAll(it.await()) }
         }
         return messages
     }
 
-    private fun isConfigValid(config: EmailProperties) = (config.username.isNullOrEmpty() || config.password.isNullOrEmpty() || config.servername.isNullOrEmpty() || config.protocol.isNullOrEmpty())
+    private fun isConfigValid(
+            config: EmailProperties) = (config.username.isNullOrEmpty() || config.password.isNullOrEmpty() || config.servername.isNullOrEmpty() || config.protocol.isNullOrEmpty())
 
     fun markMailAsRead(subject: String, label: String, receivedDate: LocalDateTime?, emailProperties: EmailProperties) {
         getStoreAndConnect(emailProperties).use {
@@ -73,6 +94,13 @@ class EmailService {
         val largestUid = folder.uidNext - 1
         val messageList = mutableListOf<EMail>()
         var offset: Long = 0
+
+        if (folder.getUnreadMessageCount() == 0) {
+            log.info("No mails for \"${folder.name()}\" found")
+            return mutableListOf()
+        }
+
+        log.info("${Thread.currentThread().name}: Fetching mails from \"${folder.name()}\"")
         for (i in 0..largestUid) {
 
             val messages = getMessages(folder, largestUid, offset)
@@ -80,17 +108,21 @@ class EmailService {
 
             messageList.addAll(messages.filter { !it.isSet(Flags.Flag.SEEN) }.map {
                 createEmail(it, getContent(it), username)
-            })
-
+            }.filter { it.isValid })
             offset += chunkSize
         }
+        log.info("${Thread.currentThread().name}: Mails from \"${folder.name()}\" successfully fetched")
         return messageList
     }
 
     private fun getContent(it: Message): ByteArray {
-        val outputStream = ByteArrayOutputStream()
-        it.writeTo(outputStream)
-        return outputStream.toByteArray()
+        return try {
+            val outputStream = ByteArrayOutputStream()
+            it.writeTo(outputStream)
+            outputStream.toByteArray()
+        } catch (exception: IOException) {
+            ByteArray(0)
+        }
     }
 
     private fun createEmail(it: Message, content: ByteArray, username: String): EMail {
@@ -151,7 +183,7 @@ class EmailService {
         properties.setProperty("mail.imaps.port", "${emailProperties.port}")
         properties.setProperty("mail.imaps.connectiontimeout", "5000")
         properties.setProperty("mail.imaps.timeout", "5000")
-        val session = Session.getDefaultInstance(properties, null)
+        val session = Session.getInstance(properties)
         return session.getStore(emailProperties.protocol)
     }
 

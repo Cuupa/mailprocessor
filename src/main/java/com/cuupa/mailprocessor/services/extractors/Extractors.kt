@@ -13,9 +13,9 @@ object Extractors {
         }
     }
 
-    private fun isEmail(content: ByteArray): Boolean = tika.detect(ByteArrayInputStream(content)) == rfc822
+    fun isEmail(content: ByteArray): Boolean = tika.detect(ByteArrayInputStream(content)) == rfc822
 
-    private fun isPdf(fileContent: ByteArray): Boolean = fileContent.size > 4 && isPdfHeaderValid(fileContent)
+    fun isPdf(fileContent: ByteArray): Boolean = fileContent.size > 4 && isPdfHeaderValid(fileContent)
 
     // header %PDF-
     private fun isPdfHeaderValid(

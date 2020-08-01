@@ -35,42 +35,31 @@ open class DelegateConfiguration {
     private val textExtractorService: TextExtractorService? = null
 
     @Bean
-    open fun plaintextDelegate(): PlaintextDelegate {
-        return PlaintextDelegate(textExtractorService!!)
-    }
+    open fun plaintextDelegate() = PlaintextDelegate(textExtractorService!!)
 
     @Bean
-    open fun semanticDelegate(): SemanticDelegate {
-        return SemanticDelegate(externSemanticService!!)
-    }
+    open fun semanticDelegate() = SemanticDelegate(externSemanticService!!)
 
     @Bean
-    open fun dmnResultMapperDelegate(): DmnResultMapperDelegate {
-        return DmnResultMapperDelegate()
-    }
+    open fun dmnResultMapperDelegate() = DmnResultMapperDelegate()
 
     @Bean
-    open fun translateTopicDelegate(): TranslateDelegate {
-        return TranslateDelegate(mailprocessorConfiguration!!, translateService!!)
-    }
+    open fun translateTopicDelegate() = TranslateDelegate(mailprocessorConfiguration!!, translateService!!)
 
     @Bean
-    open fun archiveDelegate(): ArchiveDelegate {
-        return ArchiveDelegate(mailprocessorConfiguration!!, translateService!!)
-    }
+    open fun archiveDelegate() = ArchiveDelegate(mailprocessorConfiguration!!, translateService!!)
 
     @Bean
-    open fun defaultValueDelegate(): DefaultValueDelegate {
-        return DefaultValueDelegate()
-    }
+    open fun defaultValueDelegate() = DefaultValueDelegate()
 
     @Bean
-    open fun handleArchivingErrorDelegate(): ArchivingErrorDelegate {
-        return ArchivingErrorDelegate(scanService!!, mailprocessorConfiguration!!)
-    }
+    open fun handleArchivingErrorDelegate() = ArchivingErrorDelegate(scanService!!, mailprocessorConfiguration!!)
 
     @Bean
-    open fun handleArchivingSuccessDelegate(): ArchivingSuccessDelegate {
-        return ArchivingSuccessDelegate(scanService!!, emailService!!, mailprocessorConfiguration!!)
-    }
+    open fun handleArchivingSuccessDelegate() = ArchivingSuccessDelegate(scanService!!,
+                                                                         emailService!!,
+                                                                         mailprocessorConfiguration!!)
+
+    @Bean
+    open fun embedTopicsDelegate() = EmbedTopicsDelegate()
 }

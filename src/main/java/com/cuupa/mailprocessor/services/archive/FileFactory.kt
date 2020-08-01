@@ -1,6 +1,5 @@
 package com.cuupa.mailprocessor.services.archive
 
-import org.springframework.util.Assert
 import java.util.regex.Pattern
 
 /**
@@ -12,22 +11,14 @@ object FileFactory {
 
     private val patternUnix = Pattern.compile("/[a-zA-Z0-9/]*")
 
-    fun getForPath(path: String): File? {
-        Assert.hasText(path, "no path provided")
-        if (isWebDav(path)) {
-            return WebDav()
-        } else if (isLocal(path)) {
-            return Local()
-        }
-        return null
+    fun getForPath(path: String) = when {
+        isWebDav(path) -> WebDav()
+        isLocal(path) -> Local()
+        else -> Invalid()
     }
 
-    private fun isLocal(path: String): Boolean {
-        return patternWindows.matcher(path.replace("/", "\\"))
-                .matches() || patternUnix.matcher(path).matches()
-    }
+    private fun isLocal(path: String) = patternWindows.matcher(path.replace("/", "\\"))
+        .matches() || patternUnix.matcher(path).matches()
 
-    private fun isWebDav(path: String): Boolean {
-        return path.startsWith("http://") || path.startsWith("https://")
-    }
+    private fun isWebDav(path: String) = path.startsWith("http://") || path.startsWith("https://")
 }

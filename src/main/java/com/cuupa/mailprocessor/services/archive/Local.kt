@@ -6,8 +6,7 @@ import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.*
-import java.util.stream.Collectors
+import kotlin.streams.toList
 
 class Local : File {
 
@@ -15,9 +14,7 @@ class Local : File {
         // Not implemented
     }
 
-    override fun exists(path: String, filename: String): Boolean {
-        return Files.exists(Paths.get(path + filename))
-    }
+    override fun exists(path: String, filename: String) = Files.exists(Paths.get(path + filename))
 
     override fun save(path: String, filename: String, data: ByteArray): Boolean {
         return try {
@@ -39,12 +36,11 @@ class Local : File {
 
     override fun list(path: String): List<FileResource> {
         return try {
-            Files.list(Paths.get(path))
-                    .map { e: Path ->
-                        FileResource(e.fileName.toString(), getContentType(e))
-                    }.collect(Collectors.toList())
+            Files.list(Paths.get(path)).map { e: Path ->
+                FileResource(e.fileName.toString(), getContentType(e))
+            }.toList()
         } catch (e: IOException) {
-            ArrayList()
+            listOf()
         }
     }
 

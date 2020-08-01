@@ -16,9 +16,6 @@ class ScanService {
         }
         val path = getPath(config)
         FileFactory.getForPath(path).use { file ->
-            if (file == null) {
-                return listOf()
-            }
             file.init(config.username, config.password)
             return getDocuments(file, path, config, user)
         }
@@ -40,10 +37,9 @@ class ScanService {
     }
 
     private fun getPathWithPort(config: ScanProperties): String {
-        return if (config.port == 0) {
-            "${config.path}"
-        } else {
-            "${config.path}:${config.port}"
+        return when (config.port) {
+            0 -> "${config.path}"
+            else -> "${config.path}:${config.port}"
         }
     }
 
@@ -53,13 +49,9 @@ class ScanService {
         if (filename.isNullOrEmpty() || path.isNullOrEmpty()) {
             return false
         }
-        FileFactory.getForPath(path).use { fileProtocol ->
-            if (fileProtocol == null) {
-                return false
-            }
-
-            fileProtocol.init(scanProperties.username, scanProperties.password)
-            return moveFile(fileProtocol, path, targetPath, filename, filecontent, scanProperties)
+        FileFactory.getForPath(path).use { file ->
+            file.init(scanProperties.username, scanProperties.password)
+            return moveFile(file, path, targetPath, filename, filecontent, scanProperties)
         }
     }
 
@@ -82,24 +74,19 @@ class ScanService {
     }
 
     private fun isCorrectScanner(fileResource: FileResource, scannerPrefix: List<String>): Boolean {
-        if (scannerPrefix.isEmpty()) {
-            return false
+        return when {
+            scannerPrefix.isEmpty() -> false
+            scannerPrefix.size == 1 && scannerPrefix.contains(asterisk) -> true
+            else -> scannerPrefix.find { fileResource.name.startsWith(it) } != null
         }
-
-        if (scannerPrefix.size == 1 && scannerPrefix.contains(asterisk)) {
-            return true
-        }
-        return scannerPrefix.find { fileResource.name.startsWith(it) } != null
     }
 
     private fun isCorrectFileType(fileResource: FileResource, fileTypes: List<String>): Boolean {
-        if (fileTypes.isEmpty() || !fileResource.isFile) {
-            return false
+        return when {
+            fileTypes.isEmpty() || !fileResource.isFile -> false
+            fileTypes.size == 1 && fileTypes.contains(asterisk) -> true
+            else -> fileTypes.find { fileResource.name.endsWith(it) } != null
         }
-        if (fileTypes.size == 1 && fileTypes.contains(asterisk)) {
-            return true
-        }
-        return fileTypes.find { fileResource.name.endsWith(it) } != null
     }
 
     companion object {

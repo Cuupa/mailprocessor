@@ -3,9 +3,8 @@ package com.cuupa.mailprocessor.services.semantic
 import org.apache.commons.lang3.builder.ToStringBuilder
 import java.io.Serializable
 
-class SemanticResult(val topicName: String) : Serializable {
+class SemanticResult(val topicName: String, val sender: String) : Serializable {
 
-    var sender: String? = null
     var metaData: MutableList<Metadata> = mutableListOf()
 
     override fun toString(): String {

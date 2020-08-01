@@ -15,14 +15,12 @@ class ArchivingSuccessDelegate(private val scanService: ScanService, private val
 
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
-        if (!handler.archived) {
-            return
-        }
         val configurationForUser = configuration.getConfigurationForUser(handler.username)
-        if (handler.isScanMail) {
-            processScanSuccess(configurationForUser.scanProperties, handler)
-        } else {
-            processMailSuccess(configurationForUser.emailProperties,handler)
+
+        when {
+            !handler.archived -> return
+            handler.isScanMail -> processScanSuccess(configurationForUser.scanProperties, handler)
+            else -> processMailSuccess(configurationForUser.emailProperties, handler)
         }
         log.warn("Successfully archived ${handler.fileName} to ${handler.archivedFilename}")
     }

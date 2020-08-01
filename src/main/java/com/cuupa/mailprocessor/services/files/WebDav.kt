@@ -120,10 +120,9 @@ class WebDav : File {
     }
 
     private fun getName(name: String): String {
-        return if (name.isEmpty()) {
-            emptyString
-        } else {
-            "/$name"
+        return when {
+            name.isEmpty() -> emptyString
+            else -> "/$name"
         }
     }
 
@@ -134,18 +133,18 @@ class WebDav : File {
 
         val addressArray = path.split(colonRegex)
         val port = addressArray[addressArray.size - 1]
-        return if (port.contains(separator)) {
-            port.split(separatorRegex)[0].toInt()
-        } else {
-            port.toInt()
+        return when {
+            port.contains(separator) -> port.split(separatorRegex)[0].toInt()
+            else -> port.toInt()
         }
     }
 
     private fun getHost(path: String): String {
         val addressWithoutScheme: String = path.split(schemaSeparatorRegex)[1]
-        return if (addressWithoutScheme.contains(colon)) {
-            addressWithoutScheme.split(colonRegex).toTypedArray()[0]
-        } else addressWithoutScheme
+        return when {
+            addressWithoutScheme.contains(colon) -> addressWithoutScheme.split(colonRegex).toTypedArray()[0]
+            else -> addressWithoutScheme
+        }
     }
 
     private fun getScheme(path: String): String {

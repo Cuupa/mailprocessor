@@ -1,4 +1,4 @@
-package com.cuupa.mailprocessor.services.archive
+package com.cuupa.mailprocessor.services.files
 
 import java.util.regex.Pattern
 

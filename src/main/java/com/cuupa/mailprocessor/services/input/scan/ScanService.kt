@@ -1,8 +1,8 @@
 package com.cuupa.mailprocessor.services.input.scan
 
-import com.cuupa.mailprocessor.services.archive.File
-import com.cuupa.mailprocessor.services.archive.FileFactory
-import com.cuupa.mailprocessor.services.archive.FileResource
+import com.cuupa.mailprocessor.services.files.File
+import com.cuupa.mailprocessor.services.files.FileFactory
+import com.cuupa.mailprocessor.services.files.FileResource
 import com.cuupa.mailprocessor.services.input.Document
 import com.cuupa.mailprocessor.services.input.PDF
 import com.cuupa.mailprocessor.userconfiguration.ScanProperties

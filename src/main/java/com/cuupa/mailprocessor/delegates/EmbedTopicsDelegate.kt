@@ -14,13 +14,16 @@ class EmbedTopicsDelegate : JavaDelegate {
         val handler = ProcessInstanceHandler(execution)
         if (Extractors.isPdf(handler.fileContent)) {
             embeddInPdf(handler)
-            log.info("Successfully wrote keywords ${handler.topics.joinToString(", ", "", "")} to file ${handler.fileName}")
+            log.info("Successfully wrote keywords ${handler.topics.joinToString(", ",
+                                                                                "",
+                                                                                "")} to file ${handler.fileName}")
         }
     }
 
     private fun embeddInPdf(handler: ProcessInstanceHandler) {
         PDDocument.load(handler.fileContent).use {
             it.documentInformation.keywords = handler.topics.joinToString(", ", "", "")
+            it.isAllSecurityToBeRemoved = true
             handler.fileContent = saveChanges(it)
         }
     }
@@ -31,7 +34,7 @@ class EmbedTopicsDelegate : JavaDelegate {
         return outputStream.toByteArray()
     }
 
-    companion object{
+    companion object {
         private val log = LogFactory.getLog(EmbedTopicsDelegate::class.java)
     }
 }

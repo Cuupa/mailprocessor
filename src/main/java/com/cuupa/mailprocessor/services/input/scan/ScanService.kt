@@ -1,10 +1,11 @@
 package com.cuupa.mailprocessor.services.input.scan
 
+import com.cuupa.mailprocessor.services.extractors.ZipExtractor
 import com.cuupa.mailprocessor.services.files.File
 import com.cuupa.mailprocessor.services.files.FileFactory
 import com.cuupa.mailprocessor.services.files.FileResource
 import com.cuupa.mailprocessor.services.input.Document
-import com.cuupa.mailprocessor.services.input.PDF
+import com.cuupa.mailprocessor.services.input.Zip
 import com.cuupa.mailprocessor.userconfiguration.ScanProperties
 import org.apache.commons.io.IOUtils
 
@@ -17,15 +18,15 @@ class ScanService {
         val path = getPath(config)
         FileFactory.getForPath(path).use { file ->
             file.init(config.username, config.password)
-            return getDocuments(file, path, config, user)
+            return getDocuments(file, path, config, user).map { expandZipFiles(it) }.flatten()
         }
     }
 
-    private fun getDocuments(file: File, path: String, config: ScanProperties, user: String): List<PDF> {
+    private fun getDocuments(file: File, path: String, config: ScanProperties, user: String): List<Document> {
         return file.list(path)
             .filter { isCorrectFileType(it, config.fileTypes) }
             .filter { isCorrectScanner(it, config.scannerPrefix) }
-            .map { createPdfObject(user, path, file, it) }
+            .map { createObject(user, path, file, it) }
     }
 
     private fun getPath(config: ScanProperties): String {
@@ -64,13 +65,25 @@ class ScanService {
         }
     }
 
-    private fun createPdfObject(user: String, path: String, file: File, fileResource: FileResource): PDF {
-        val inputStream = file.get(path, fileResource.name)
-        val pdf = PDF()
-        pdf.content = IOUtils.toByteArray(inputStream)
-        pdf.filename = fileResource.name
-        pdf.user = user
-        return pdf
+    private fun createObject(user: String, path: String, file: File, fileResource: FileResource): Document {
+        val document = Documents.get(IOUtils.toByteArray(file.get(path, fileResource.name)))
+        document.filename = fileResource.name
+        document.user = user
+        return document
+    }
+
+    private fun expandZipFiles(document: Document): List<Document> {
+        return when (document) {
+            !is Zip -> listOf(document)
+            else -> expand(document)
+        }
+    }
+
+    private fun expand(zip: Zip): List<Document> {
+        val documents = ZipExtractor().extract(zip.content!!)
+        documents.forEach { it.user = zip.user }
+        documents.forEach { it.originalFileName = zip.filename }
+        return documents
     }
 
     private fun isCorrectScanner(fileResource: FileResource, scannerPrefix: List<String>): Boolean {

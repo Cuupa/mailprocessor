@@ -19,5 +19,7 @@ enum class ProcessProperty {
     HAS_REMINDER,
     REMINDER_DATE,
     ARCHIVED,
-    ERRORS
+    ERRORS,
+    // Used for zipfiles
+    ORIGINAL_FILENAME
 }

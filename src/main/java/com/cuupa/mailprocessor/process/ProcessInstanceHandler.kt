@@ -7,7 +7,8 @@ import org.apache.commons.lang3.builder.ToStringStyle
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import java.time.LocalDateTime
 
-class ProcessInstanceHandler(delegateExecution: DelegateExecution?) : AbstractProcessInstanceHandler(delegateExecution!!) {
+class ProcessInstanceHandler(
+        delegateExecution: DelegateExecution?) : AbstractProcessInstanceHandler(delegateExecution!!) {
 
     val processInstanceId: String
         get() = delegateExecution.processInstanceId
@@ -23,6 +24,12 @@ class ProcessInstanceHandler(delegateExecution: DelegateExecution?) : AbstractPr
 
     val isScanMail: Boolean
         get() = getAsString(ProcessProperty.MAIL_TYPE) == "scan"
+
+    val isZipFile: Boolean
+        get() = getAsString(ProcessProperty.MAIL_TYPE) == "zip"
+
+    val originalFilename: String
+        get() = getAsString(ProcessProperty.ORIGINAL_FILENAME)?: ""
 
     var archived: Boolean
         get() = getAsBooleanDefaultFalse(ProcessProperty.ARCHIVED)

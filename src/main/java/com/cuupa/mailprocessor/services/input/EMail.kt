@@ -2,7 +2,9 @@ package com.cuupa.mailprocessor.services.input
 
 import java.time.LocalDateTime
 
-class EMail : Document() {
+class EMail(content: ByteArray?) : Document(content) {
+
+    constructor() : this(null)
 
     var from: String? = null
     var subject: String? = null

@@ -154,9 +154,8 @@ class EmailService {
             if (Part.ATTACHMENT != bodyPart.disposition) {
                 continue
             }
-            val attachment = Attachment()
+            val attachment = Attachment(IOUtils.toByteArray(bodyPart.inputStream))
             attachment.filename = bodyPart.fileName
-            attachment.content = IOUtils.toByteArray(bodyPart.inputStream)
             attachment.user = username
             attachments.add(attachment)
         }

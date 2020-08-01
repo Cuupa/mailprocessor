@@ -22,12 +22,18 @@ class ArchivingErrorDelegate(private val scanService: ScanService,
 
     private fun processScanError(handler: ProcessInstanceHandler) {
         val scanProperties = configuration.getConfigurationForUser(handler.username).scanProperties
-        val scanMoved = scanService.moveScan(handler.fileName,
+
+        val filename = when {
+            handler.isZipFile -> handler.originalFilename
+            else -> handler.fileName
+        }
+
+        val scanMoved = scanService.moveScan(filename,
                                              handler.fileContent,
                                              scanProperties,
                                              scanProperties.errorFolder!!)
 
-        if (!scanMoved) {
+        if (!scanMoved && !handler.isZipFile) {
             log.error("Error moving document ${handler.fileName} to ${scanProperties.errorFolder}")
         }
     }

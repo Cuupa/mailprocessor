@@ -22,7 +22,7 @@ class ExternSemanticService(private val restTemplate: RestTemplate, private val 
                 else -> listOf()
             }
         } catch (exception: ResourceAccessException) {
-            listOf(SemanticResult("OTHER", sender= "UNKNOWN"))
+            listOf(SemanticResult("OTHER", "UNKNOWN"))
         }
     }
 

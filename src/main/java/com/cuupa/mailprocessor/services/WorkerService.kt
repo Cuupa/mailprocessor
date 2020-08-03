@@ -18,7 +18,7 @@ class WorkerService(private val runtimeService: RuntimeService,
                     private val mailprocessorConfiguration: MailprocessorConfiguration,
                     private val scanService: ScanService, private val emailService: EmailService) {
 
-    @Scheduled(cron = "*/30 * * * * *")
+    @Scheduled(cron = "* */30 * * * *")
     fun execute() {
         val userConfigurationList = mailprocessorConfiguration.configurations
         userConfigurationList.forEach { config ->
@@ -69,7 +69,10 @@ class WorkerService(private val runtimeService: RuntimeService,
 
     private fun getScanProcessProperties(it: Document) = mutableMapOf(ProcessProperty.FILE_NAME.name to it.filename,
                                                                       ProcessProperty.FILE_CONTENT.name to it.content,
-                                                                      ProcessProperty.USERNAME.name to it.user)
+                                                                      ProcessProperty.USERNAME.name to it.user,
+                                                                      ProcessProperty.ARCHIVED.name to false
+
+    )
 
     private fun getEmailProperties(it: EMail) = mapOf(ProcessProperty.FILE_NAME.name to it.filename,
                                                       ProcessProperty.FILE_CONTENT.name to it.content,
@@ -78,7 +81,9 @@ class WorkerService(private val runtimeService: RuntimeService,
                                                       ProcessProperty.EMAIL_SUBJECT.name to it.subject,
                                                       ProcessProperty.RECEIVED_DATE.name to it.receivedDate,
                                                       ProcessProperty.EMAIL_ATTACHMENTS.name to it.attachments,
-                                                      ProcessProperty.MAIL_TYPE.name to "email")
+                                                      ProcessProperty.ARCHIVED.name to false,
+                                                      ProcessProperty.MAIL_TYPE.name to "email"
+    )
 
     companion object {
         private val LOG = LogFactory.getLog(WorkerService::class.java)

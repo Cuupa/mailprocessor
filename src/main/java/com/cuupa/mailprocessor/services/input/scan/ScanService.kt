@@ -44,8 +44,8 @@ class ScanService {
         }
     }
 
-    fun moveScan(filename: String?, filecontent: ByteArray?, scanProperties: ScanProperties,
-                 targetPath: String): Boolean {
+    fun moveScan(filename: String?, filecontent: ByteArray?, targetPath: String,
+                 scanProperties: ScanProperties): Boolean {
         val path = scanProperties.path
         if (filename.isNullOrEmpty() || path.isNullOrEmpty()) {
             return false

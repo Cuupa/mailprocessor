@@ -7,6 +7,7 @@ import com.cuupa.mailprocessor.services.TranslateService
 import com.cuupa.mailprocessor.services.input.email.EmailService
 import com.cuupa.mailprocessor.services.input.scan.ScanService
 import com.cuupa.mailprocessor.services.semantic.ExternSemanticService
+import org.camunda.bpm.engine.RuntimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -34,6 +35,9 @@ open class DelegateConfiguration {
     @Autowired
     private val textExtractorService: TextExtractorService? = null
 
+    @Autowired
+    private val runtimeService: RuntimeService? = null
+
     @Bean
     open fun plaintextDelegate() = PlaintextDelegate(textExtractorService!!)
 
@@ -53,11 +57,14 @@ open class DelegateConfiguration {
     open fun defaultValueDelegate() = DefaultValueDelegate()
 
     @Bean
-    open fun handleArchivingErrorDelegate() = ArchivingErrorDelegate(scanService!!, mailprocessorConfiguration!!)
+    open fun handleArchivingErrorDelegate() = ArchivingErrorDelegate(scanService!!,
+                                                                     runtimeService!!,
+                                                                     mailprocessorConfiguration!!)
 
     @Bean
     open fun handleArchivingSuccessDelegate() = ArchivingSuccessDelegate(scanService!!,
                                                                          emailService!!,
+                                                                         runtimeService!!,
                                                                          mailprocessorConfiguration!!)
 
     @Bean

@@ -36,8 +36,8 @@ class Local : File {
 
     override fun list(path: String): List<FileResource> {
         return try {
-            Files.list(Paths.get(path)).map { e: Path ->
-                FileResource(e.fileName.toString(), getContentType(e))
+            Files.list(Paths.get(path)).map {
+                FileResource(it.fileName.toString(), getContentType(it))
             }.toList()
         } catch (e: IOException) {
             listOf()

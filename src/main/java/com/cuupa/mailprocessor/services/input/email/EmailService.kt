@@ -1,9 +1,11 @@
 package com.cuupa.mailprocessor.services.input.email
 
+import com.cuupa.mailprocessor.functions.forEachParallel
 import com.cuupa.mailprocessor.services.input.Attachment
 import com.cuupa.mailprocessor.services.input.EMail
 import com.cuupa.mailprocessor.userconfiguration.EmailProperties
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.apache.commons.io.IOUtils
 import org.apache.juli.logging.LogFactory
 import java.io.ByteArrayInputStream
@@ -31,24 +33,20 @@ class EmailService {
     }
 
     private fun getMessagesAsync(labels: List<String>, config: EmailProperties, username: String): List<EMail> {
-        var messages = listOf<EMail>()
+        val messages = mutableListOf<EMail>()
         runBlocking {
-            val listOfJobs = mutableListOf<Deferred<List<EMail>>>()
-            val job = GlobalScope.launch {
-                labels.forEach { label ->
-                    val async = GlobalScope.async {
-                        getStoreAndConnect(config).use { store ->
-                            loadMailsForFolder(label, store, username)
-                        }
+            runBlocking(Dispatchers.Default) {
+                labels.forEachParallel { label ->
+                    getStoreAndConnect(config).use { store ->
+                        messages.addAll(loadMailsForFolder(label, store, username))
                     }
-                    listOfJobs.add(async)
                 }
             }
-            job.join()
-            messages = listOfJobs.map { it.await() }.flatten()
+
         }
         return messages.distinct()
     }
+
 
     private fun isConfigInvalid(
             config: EmailProperties) = (config.username.isNullOrEmpty() || config.password.isNullOrEmpty() || config.servername.isNullOrEmpty() || config.protocol.isNullOrEmpty())
@@ -154,9 +152,8 @@ class EmailService {
             if (Part.ATTACHMENT != bodyPart.disposition) {
                 continue
             }
-            val attachment = Attachment()
+            val attachment = Attachment(IOUtils.toByteArray(bodyPart.inputStream))
             attachment.filename = bodyPart.fileName
-            attachment.content = IOUtils.toByteArray(bodyPart.inputStream)
             attachment.user = username
             attachments.add(attachment)
         }

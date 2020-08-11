@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0zhqb8f" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.1.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0zhqb8f" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.2.0">
   <bpmn:process id="mailprocessor" name="mailprocessor" isExecutable="true" camunda:versionTag="1.0">
-    <bpmn:startEvent id="StartEvent_1">
+    <bpmn:startEvent id="StartEvent_1" camunda:asyncAfter="true">
       <bpmn:outgoing>SequenceFlow_00istqs</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_00istqs" sourceRef="StartEvent_1" targetRef="plaintextDelegate" />
-    <bpmn:serviceTask id="plaintextDelegate" name="Extract plain text" camunda:delegateExpression="#{plaintextDelegate}">
+    <bpmn:serviceTask id="plaintextDelegate" name="Extract plain text" camunda:asyncAfter="true" camunda:delegateExpression="#{plaintextDelegate}">
       <bpmn:incoming>SequenceFlow_00istqs</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0u6gtjb</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -18,7 +18,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_1m1ndrq" name="yes" sourceRef="text_found_gateway" targetRef="semanticDelegate">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{PLAIN_TEXT != null}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="semanticDelegate" name="Call semantic" camunda:delegateExpression="#{semanticDelegate}">
+    <bpmn:serviceTask id="semanticDelegate" name="Call semantic" camunda:asyncAfter="true" camunda:delegateExpression="#{semanticDelegate}">
       <bpmn:incoming>SequenceFlow_1m1ndrq</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1oxfhn2</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -26,20 +26,20 @@
     <bpmn:sequenceFlow id="SequenceFlow_0wqfbtm" name="no" sourceRef="text_found_gateway" targetRef="Activity_1ipbwdt">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{PLAIN_TEXT == null}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Task_0rzjwj2" name="Archive Document" camunda:delegateExpression="#{archiveDelegate}">
+    <bpmn:serviceTask id="Task_0rzjwj2" name="Archive Document" camunda:asyncAfter="true" camunda:delegateExpression="#{archiveDelegate}">
       <bpmn:incoming>Flow_0r69dsx</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0h6vusv</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:businessRuleTask id="Task_18f14i5" name="route document" camunda:resultVariable="DMN_RESULT" camunda:decisionRef="${USERNAME}" camunda:mapDecisionResult="singleResult">
+    <bpmn:businessRuleTask id="Task_18f14i5" name="route document" camunda:asyncAfter="true" camunda:resultVariable="DMN_RESULT" camunda:decisionRef="${USERNAME}" camunda:mapDecisionResult="singleResult">
       <bpmn:incoming>Flow_0s3snpb</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0j76y9n</bpmn:outgoing>
     </bpmn:businessRuleTask>
-    <bpmn:serviceTask id="Task_1bnkgad" name="Translate topics for locale" camunda:delegateExpression="#{translateTopicDelegate}">
+    <bpmn:serviceTask id="Task_1bnkgad" name="Translate topics for locale" camunda:asyncAfter="true" camunda:delegateExpression="#{translateTopicDelegate}">
       <bpmn:incoming>SequenceFlow_1yytic3</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1w5sbti</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_1w5sbti" sourceRef="Task_1bnkgad" targetRef="Activity_0ckylu3" />
-    <bpmn:serviceTask id="Task_0vbz037" name="Map DMN-result" camunda:delegateExpression="#{dmnResultMapperDelegate}">
+    <bpmn:serviceTask id="Task_0vbz037" name="Map DMN-result" camunda:asyncAfter="true" camunda:delegateExpression="#{dmnResultMapperDelegate}">
       <bpmn:incoming>SequenceFlow_0j76y9n</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1yytic3</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -65,7 +65,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0s3snpb" sourceRef="Gateway_05wynel" targetRef="Task_18f14i5" />
     <bpmn:sequenceFlow id="Flow_09ps3yv" sourceRef="Activity_1ipbwdt" targetRef="Gateway_05wynel" />
-    <bpmn:serviceTask id="Activity_1ipbwdt" name="Set default values" camunda:delegateExpression="#{defaultValueDelegate}">
+    <bpmn:serviceTask id="Activity_1ipbwdt" name="Set default values" camunda:asyncAfter="true" camunda:delegateExpression="#{defaultValueDelegate}">
       <bpmn:incoming>SequenceFlow_0wqfbtm</bpmn:incoming>
       <bpmn:outgoing>Flow_09ps3yv</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -84,17 +84,17 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{!ARCHIVED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_14iqrda" sourceRef="Activity_0yll3fz" targetRef="Event_1buth3m" />
-    <bpmn:serviceTask id="Activity_0yll3fz" name="Handle archiving errors" camunda:delegateExpression="#{handleArchivingErrorDelegate}">
+    <bpmn:serviceTask id="Activity_0yll3fz" name="Handle archiving errors" camunda:asyncAfter="true" camunda:delegateExpression="#{handleArchivingErrorDelegate}">
       <bpmn:incoming>Flow_107ks3l</bpmn:incoming>
       <bpmn:outgoing>Flow_14iqrda</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0j006yw" sourceRef="Activity_06q8lmy" targetRef="Task_088ovto" />
-    <bpmn:serviceTask id="Activity_06q8lmy" name="Handle successfull archived documents" camunda:delegateExpression="#{handleArchivingSuccessDelegate}">
+    <bpmn:serviceTask id="Activity_06q8lmy" name="Handle successfull archived documents" camunda:asyncAfter="true" camunda:delegateExpression="#{handleArchivingSuccessDelegate}">
       <bpmn:incoming>Flow_1ts1fnn</bpmn:incoming>
       <bpmn:outgoing>Flow_0j006yw</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0r69dsx" sourceRef="Activity_0ckylu3" targetRef="Task_0rzjwj2" />
-    <bpmn:serviceTask id="Activity_0ckylu3" name="Embed topics in file" camunda:delegateExpression="#{embedTopicsDelegate}">
+    <bpmn:serviceTask id="Activity_0ckylu3" name="Embed topics in file" camunda:asyncAfter="true" camunda:delegateExpression="#{embedTopicsDelegate}">
       <bpmn:incoming>SequenceFlow_1w5sbti</bpmn:incoming>
       <bpmn:outgoing>Flow_0r69dsx</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -103,20 +103,20 @@
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="mailprocessor">
       <bpmndi:BPMNEdge id="Flow_0r69dsx_di" bpmnElement="Flow_0r69dsx">
         <di:waypoint x="1390" y="127" />
-        <di:waypoint x="1450" y="127" />
+        <di:waypoint x="1440" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0j006yw_di" bpmnElement="Flow_0j006yw">
-        <di:waypoint x="1830" y="127" />
+        <di:waypoint x="1820" y="127" />
         <di:waypoint x="1900" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_14iqrda_di" bpmnElement="Flow_14iqrda">
-        <di:waypoint x="1830" y="240" />
+        <di:waypoint x="1820" y="240" />
         <di:waypoint x="2082" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_107ks3l_di" bpmnElement="Flow_107ks3l">
         <di:waypoint x="1630" y="152" />
         <di:waypoint x="1630" y="240" />
-        <di:waypoint x="1730" y="240" />
+        <di:waypoint x="1720" y="240" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1639" y="193" width="13" height="14" />
         </bpmndi:BPMNLabel>
@@ -150,7 +150,7 @@
         <di:waypoint x="970" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0h6vusv_di" bpmnElement="SequenceFlow_0h6vusv">
-        <di:waypoint x="1550" y="127" />
+        <di:waypoint x="1540" y="127" />
         <di:waypoint x="1605" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1w5sbti_di" bpmnElement="SequenceFlow_1w5sbti">
@@ -199,6 +199,9 @@
       <bpmndi:BPMNShape id="ServiceTask_13w0heh_di" bpmnElement="semanticDelegate">
         <dc:Bounds x="530" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1smsnpx_di" bpmnElement="Task_0rzjwj2">
+        <dc:Bounds x="1440" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BusinessRuleTask_00c716l_di" bpmnElement="Task_18f14i5">
         <dc:Bounds x="800" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -208,23 +211,17 @@
       <bpmndi:BPMNShape id="ServiceTask_1hlf27a_di" bpmnElement="Task_0vbz037">
         <dc:Bounds x="970" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_05wynel_di" bpmnElement="Gateway_05wynel" isMarkerVisible="true">
-        <dc:Bounds x="695" y="102" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ill0vw_di" bpmnElement="Activity_1ipbwdt">
-        <dc:Bounds x="530" y="220" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0w49bmj_di" bpmnElement="Activity_0ckylu3">
-        <dc:Bounds x="1290" y="87" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ServiceTask_1smsnpx_di" bpmnElement="Task_0rzjwj2">
-        <dc:Bounds x="1450" y="87" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_0flusey_di" bpmnElement="EndEvent_0flusey">
         <dc:Bounds x="2082" y="109" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="CallActivity_0zw0uzg_di" bpmnElement="Task_088ovto">
         <dc:Bounds x="1900" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_05wynel_di" bpmnElement="Gateway_05wynel" isMarkerVisible="true">
+        <dc:Bounds x="695" y="102" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ill0vw_di" bpmnElement="Activity_1ipbwdt">
+        <dc:Bounds x="530" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1htb5s0_di" bpmnElement="Gateway_1htb5s0" isMarkerVisible="true">
         <dc:Bounds x="1605" y="102" width="50" height="50" />
@@ -235,11 +232,14 @@
       <bpmndi:BPMNShape id="Event_1buth3m_di" bpmnElement="Event_1buth3m">
         <dc:Bounds x="2082" y="222" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0emvc8a_di" bpmnElement="Activity_0yll3fz">
-        <dc:Bounds x="1730" y="200" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0zdxaod_di" bpmnElement="Activity_06q8lmy">
-        <dc:Bounds x="1730" y="87" width="100" height="80" />
+        <dc:Bounds x="1720" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0w49bmj_di" bpmnElement="Activity_0ckylu3">
+        <dc:Bounds x="1290" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0emvc8a_di" bpmnElement="Activity_0yll3fz">
+        <dc:Bounds x="1720" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

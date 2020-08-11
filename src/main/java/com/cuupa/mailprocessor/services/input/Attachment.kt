@@ -1,3 +1,3 @@
 package com.cuupa.mailprocessor.services.input
 
-class Attachment : Document()
+class Attachment(content: ByteArray?) : Document(content)

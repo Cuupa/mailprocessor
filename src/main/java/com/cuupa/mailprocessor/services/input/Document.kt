@@ -2,10 +2,9 @@ package com.cuupa.mailprocessor.services.input
 
 import java.io.Serializable
 
-open class Document : Serializable {
+open class Document(var content:ByteArray?) : Serializable {
     lateinit var user: String
     lateinit var filename: String
-    var content: ByteArray? = null
 
     override fun equals(other: Any?): Boolean {
         return when (other) {

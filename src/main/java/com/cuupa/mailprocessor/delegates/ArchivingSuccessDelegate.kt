@@ -5,21 +5,21 @@ import com.cuupa.mailprocessor.process.ProcessInstanceHandler
 import com.cuupa.mailprocessor.services.input.email.EmailService
 import com.cuupa.mailprocessor.services.input.scan.ScanService
 import com.cuupa.mailprocessor.userconfiguration.EmailProperties
-import com.cuupa.mailprocessor.userconfiguration.ScanProperties
 import org.apache.juli.logging.LogFactory
+import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.delegate.DelegateExecution
-import org.camunda.bpm.engine.delegate.JavaDelegate
 
-class ArchivingSuccessDelegate(private val scanService: ScanService, private val emailService: EmailService,
-                               private val configuration: MailprocessorConfiguration) : JavaDelegate {
+class ArchivingSuccessDelegate(scanService: ScanService, private val emailService: EmailService,
+                               runtimeService: RuntimeService, private val configuration: MailprocessorConfiguration) :
+        ArchivingEventDelegate(scanService, runtimeService) {
 
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
         val configurationForUser = configuration.getConfigurationForUser(handler.username)
-
+        val scanProperties = configurationForUser.scanProperties
         when {
-            !handler.archived -> return
-            handler.isScanMail -> processScanSuccess(configurationForUser.scanProperties, handler)
+            handler.isScanMail -> processScan(scanProperties.successFolder, scanProperties, handler)
+            handler.isZipFile -> processZip(scanProperties.successFolder, scanProperties, handler)
             else -> processMailSuccess(configurationForUser.emailProperties, handler)
         }
         log.warn("Successfully archived ${handler.fileName} to ${handler.archivedFilename}")
@@ -31,19 +31,7 @@ class ArchivingSuccessDelegate(private val scanService: ScanService, private val
         }
     }
 
-    private fun processScanSuccess(scanProperties: ScanProperties, handler: ProcessInstanceHandler) {
-        val scanMoved = scanService.moveScan(handler.fileName,
-                                             handler.fileContent,
-                                             scanProperties,
-                                             scanProperties.successFolder!!)
-
-        if (!scanMoved) {
-            log.error("Error moving document ${handler.fileName} to ${scanProperties.successFolder}")
-        }
-    }
-
     companion object {
         private val log = LogFactory.getLog(ArchivingSuccessDelegate::class.java)
     }
-
 }

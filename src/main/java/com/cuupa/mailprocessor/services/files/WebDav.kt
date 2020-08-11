@@ -89,7 +89,7 @@ class WebDav : File {
         val pathTemp = StringBuilder(separator)
         var urlWithPath = ""
 
-        path.split(separatorRegex).toTypedArray().filter(nonEmptyEntries()).map { it.replace(" ", "%20") }.forEach {
+        path.split(separatorRegex).toTypedArray().filter(nonEmptyEntries()).map(replaceBlank()).forEach {
             pathTemp.append(it)
             pathTemp.append(separator)
             val toString = pathTemp.toString()
@@ -100,6 +100,8 @@ class WebDav : File {
         }
         return urlWithPath
     }
+
+    private fun replaceBlank(): (String) -> String = { it.replace(" ", "%20") }
 
     private fun nonEmptyEntries() = { cs: String? -> !cs.isNullOrBlank() }
 

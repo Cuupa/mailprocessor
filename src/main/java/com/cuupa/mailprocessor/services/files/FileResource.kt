@@ -13,6 +13,7 @@ class FileResource internal constructor(val name: String, private val contentTyp
         return ToStringBuilder(this).append("name", name)
                 .append("contentType", contentType)
                 .append("isPdf", isPdf)
+                .append("isFile", isFile)
                 .toString()
     }
 

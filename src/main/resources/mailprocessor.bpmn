@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0zhqb8f" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.1.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0zhqb8f" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.2.0">
   <bpmn:process id="mailprocessor" name="mailprocessor" isExecutable="true" camunda:versionTag="1.0">
     <bpmn:startEvent id="StartEvent_1" camunda:asyncAfter="true">
       <bpmn:outgoing>SequenceFlow_00istqs</bpmn:outgoing>
@@ -106,17 +106,17 @@
         <di:waypoint x="1440" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0j006yw_di" bpmnElement="Flow_0j006yw">
-        <di:waypoint x="1830" y="127" />
+        <di:waypoint x="1820" y="127" />
         <di:waypoint x="1900" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_14iqrda_di" bpmnElement="Flow_14iqrda">
-        <di:waypoint x="1830" y="240" />
+        <di:waypoint x="1820" y="240" />
         <di:waypoint x="2082" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_107ks3l_di" bpmnElement="Flow_107ks3l">
         <di:waypoint x="1630" y="152" />
         <di:waypoint x="1630" y="240" />
-        <di:waypoint x="1730" y="240" />
+        <di:waypoint x="1720" y="240" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1639" y="193" width="13" height="14" />
         </bpmndi:BPMNLabel>
@@ -150,7 +150,7 @@
         <di:waypoint x="970" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0h6vusv_di" bpmnElement="SequenceFlow_0h6vusv">
-        <di:waypoint x="1550" y="127" />
+        <di:waypoint x="1540" y="127" />
         <di:waypoint x="1605" y="127" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1w5sbti_di" bpmnElement="SequenceFlow_1w5sbti">
@@ -232,14 +232,14 @@
       <bpmndi:BPMNShape id="Event_1buth3m_di" bpmnElement="Event_1buth3m">
         <dc:Bounds x="2082" y="222" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0emvc8a_di" bpmnElement="Activity_0yll3fz">
-        <dc:Bounds x="1730" y="200" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0zdxaod_di" bpmnElement="Activity_06q8lmy">
         <dc:Bounds x="1720" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0w49bmj_di" bpmnElement="Activity_0ckylu3">
         <dc:Bounds x="1290" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0emvc8a_di" bpmnElement="Activity_0yll3fz">
+        <dc:Bounds x="1720" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

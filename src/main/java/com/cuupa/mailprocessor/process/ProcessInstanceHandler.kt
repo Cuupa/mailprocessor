@@ -1,6 +1,7 @@
 package com.cuupa.mailprocessor.process
 
 import com.cuupa.mailprocessor.services.input.Attachment
+import com.cuupa.mailprocessor.services.input.InputType
 import com.cuupa.mailprocessor.services.semantic.Metadata
 import org.apache.commons.lang3.builder.ToStringBuilder
 import org.apache.commons.lang3.builder.ToStringStyle
@@ -23,10 +24,10 @@ class ProcessInstanceHandler(
         get() = getAsString(ProcessProperty.EMAIL_LABEL) ?: ""
 
     val isScanMail: Boolean
-        get() = getAsString(ProcessProperty.MAIL_TYPE) == "scan"
+        get() = getAsString(ProcessProperty.MAIL_TYPE) == InputType.SCAN.name
 
     val isZipFile: Boolean
-        get() = getAsString(ProcessProperty.MAIL_TYPE) == "zip"
+        get() = getAsString(ProcessProperty.MAIL_TYPE) == InputType.ZIP.name
 
     val zipFileName: String
         get() = getAsString(ProcessProperty.ZIP_FILE_NAME)?: ""

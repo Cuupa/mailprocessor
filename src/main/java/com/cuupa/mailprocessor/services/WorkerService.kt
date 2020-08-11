@@ -4,6 +4,7 @@ import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.process.ProcessProperty
 import com.cuupa.mailprocessor.services.input.Document
 import com.cuupa.mailprocessor.services.input.EMail
+import com.cuupa.mailprocessor.services.input.InputType
 import com.cuupa.mailprocessor.services.input.Zip
 import com.cuupa.mailprocessor.services.input.email.EmailService
 import com.cuupa.mailprocessor.services.input.scan.ScanService
@@ -59,10 +60,10 @@ class WorkerService(private val runtimeService: RuntimeService,
                                        properties: MutableMap<String, Serializable?>): Map<String, Serializable?> {
         when (it) {
             is Zip -> {
-                properties[ProcessProperty.ORIGINAL_FILENAME.name] = it.originalFileName
-                properties[ProcessProperty.MAIL_TYPE.name] = "zip"
+                properties[ProcessProperty.ZIP_FILE_NAME.name] = it.originalFileName
+                properties[ProcessProperty.MAIL_TYPE.name] = InputType.ZIP.name
             }
-            else -> properties[ProcessProperty.MAIL_TYPE.name] = "scan"
+            else -> properties[ProcessProperty.MAIL_TYPE.name] = InputType.SCAN.name
         }
         return properties
     }
@@ -82,8 +83,7 @@ class WorkerService(private val runtimeService: RuntimeService,
                                                       ProcessProperty.RECEIVED_DATE.name to it.receivedDate,
                                                       ProcessProperty.EMAIL_ATTACHMENTS.name to it.attachments,
                                                       ProcessProperty.ARCHIVED.name to false,
-                                                      ProcessProperty.MAIL_TYPE.name to "email"
-    )
+                                                      ProcessProperty.MAIL_TYPE.name to InputType.EMAIL)
 
     companion object {
         private val LOG = LogFactory.getLog(WorkerService::class.java)

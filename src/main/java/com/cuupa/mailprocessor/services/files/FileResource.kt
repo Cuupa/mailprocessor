@@ -1,4 +1,4 @@
-package com.cuupa.mailprocessor.services.archive
+package com.cuupa.mailprocessor.services.files
 
 import org.apache.commons.lang3.builder.ToStringBuilder
 
@@ -13,6 +13,7 @@ class FileResource internal constructor(val name: String, private val contentTyp
         return ToStringBuilder(this).append("name", name)
                 .append("contentType", contentType)
                 .append("isPdf", isPdf)
+                .append("isFile", isFile)
                 .toString()
     }
 

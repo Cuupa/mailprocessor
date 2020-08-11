@@ -37,8 +37,7 @@ class ReminderService {
             return
         }
 
-        val dateString = LocalDateTime.parse(reminderDate).toLocalDate().format(formatter)
-        val message = createMessage(reminderProperties, fileName, dateString, metadata)
+        val message = createMessage(reminderProperties, fileName, reminderDate, metadata)
         reminderBot.execute(message)
 
         val document = createCallbackAndButton(processInstanceId, createDocument(reminderProperties, content, fileName))
@@ -57,9 +56,12 @@ class ReminderService {
                                fileName: String) = SendDocument().setChatId(reminderProperties.chatId)
         .setDocument(InputFile(ByteArrayInputStream(content), fileName))
 
-    private fun createMessage(reminderProperties: ReminderProperties, fileName: String, dateString: String,
-                              metadata: List<Metadata>) = SendMessage().setChatId(reminderProperties.chatId)
-        .setText(getTextForReminder(fileName, dateString, metadata))
+    private fun createMessage(reminderProperties: ReminderProperties, fileName: String, reminderDate: String,
+                              metadata: List<Metadata>): SendMessage? {
+        val dateString = LocalDateTime.parse(reminderDate).toLocalDate().format(formatter)
+        return SendMessage().setChatId(reminderProperties.chatId)
+            .setText(getTextForReminder(fileName, dateString, metadata))
+    }
 
     private fun getTextForReminder(fileName: String, reminderDate: String, metadata: List<Metadata>): String {
         return metadata.joinToString("\n",

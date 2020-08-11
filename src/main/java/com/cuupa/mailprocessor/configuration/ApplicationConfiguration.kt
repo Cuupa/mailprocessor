@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableAsync
 @Import(DelegateConfiguration::class, ServiceConfiguration::class, CamundaConfiguration::class)
 open class ApplicationConfiguration {
+
     @Value("\${mailprocessor.config}")
     private lateinit var configpath: String
 

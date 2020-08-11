@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestTemplate
+import java.lang.reflect.Type
 import java.util.*
 
 /**
@@ -16,17 +17,16 @@ class ExternSemanticService(private val restTemplate: RestTemplate, private val 
     fun getSemanticResult(plainText: String?): List<SemanticResult> {
         return try {
             val responseEntity = restTemplate.postForEntity(semanticUrl, plainText, String::class.java)
-
-            return if (responseEntity.statusCode.is2xxSuccessful) {
-                val listType = object : TypeToken<ArrayList<SemanticResult?>?>() {}.type
-                gson.fromJson(responseEntity.body, listType)
-            } else {
-                ArrayList()
+            return when {
+                responseEntity.statusCode.is2xxSuccessful -> gson.fromJson(responseEntity.body, listType)
+                else -> listOf()
             }
         } catch (exception: ResourceAccessException) {
-            val semanticResult = SemanticResult("OTHER")
-            semanticResult.sender = "UNKNOWN"
-            listOf(semanticResult)
+            listOf(SemanticResult("OTHER", "UNKNOWN"))
         }
+    }
+
+    companion object{
+        val listType: Type = object : TypeToken<ArrayList<SemanticResult?>?>() {}.type
     }
 }

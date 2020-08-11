@@ -13,8 +13,4 @@ class ReminderBot(private val properties: ReminderProperties) : TelegramLongPoll
             TODO("Not yet implemented")
         }
     }
-
-    companion object {
-        val confirm = "confirm_reminder"
-    }
 }

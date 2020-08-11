@@ -1,13 +1,15 @@
 package com.cuupa.mailprocessor.process
 
 import com.cuupa.mailprocessor.services.input.Attachment
+import com.cuupa.mailprocessor.services.input.InputType
 import com.cuupa.mailprocessor.services.semantic.Metadata
 import org.apache.commons.lang3.builder.ToStringBuilder
 import org.apache.commons.lang3.builder.ToStringStyle
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import java.time.LocalDateTime
 
-class ProcessInstanceHandler(delegateExecution: DelegateExecution?) : AbstractProcessInstanceHandler(delegateExecution!!) {
+class ProcessInstanceHandler(
+        delegateExecution: DelegateExecution?) : AbstractProcessInstanceHandler(delegateExecution!!) {
 
     val processInstanceId: String
         get() = delegateExecution.processInstanceId
@@ -22,7 +24,13 @@ class ProcessInstanceHandler(delegateExecution: DelegateExecution?) : AbstractPr
         get() = getAsString(ProcessProperty.EMAIL_LABEL) ?: ""
 
     val isScanMail: Boolean
-        get() = getAsString(ProcessProperty.MAIL_TYPE) == "scan"
+        get() = getAsString(ProcessProperty.MAIL_TYPE) == InputType.SCAN.name
+
+    val isZipFile: Boolean
+        get() = getAsString(ProcessProperty.MAIL_TYPE) == InputType.ZIP.name
+
+    val zipFileName: String
+        get() = getAsString(ProcessProperty.ZIP_FILE_NAME)?: ""
 
     var archived: Boolean
         get() = getAsBooleanDefaultFalse(ProcessProperty.ARCHIVED)
@@ -70,8 +78,8 @@ class ProcessInstanceHandler(delegateExecution: DelegateExecution?) : AbstractPr
         get() = getAsBooleanDefaultFalse(ProcessProperty.HAS_REMINDER)
         set(value) = set(ProcessProperty.HAS_REMINDER, value)
 
-    var fileName: String?
-        get() = getAsString(ProcessProperty.FILE_NAME)
+    var fileName: String
+        get() = getAsString(ProcessProperty.FILE_NAME) ?: ""
         set(value) = set(ProcessProperty.FILE_NAME, value)
 
     var archivedFilename: String?

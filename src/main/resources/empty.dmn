@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_05gs6bx" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.1.1">
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="Definitions_05gs6bx" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.1.1">
   <decision id="empty" name="empty">
     <decisionTable id="decisionTable_1" hitPolicy="FIRST">
       <input id="input_1" label="topics">
@@ -12,7 +12,7 @@
           <text></text>
         </inputExpression>
       </input>
-      <output id="output_1" label="path to save" name="PATH_TO_SAVE" typeRef="string" />
+      <output id="output_1" label="path to save" name="PATH_TO_SAVE" typeRef="string" biodi:width="326" />
       <output id="OutputClause_00jmc6v" label="has reminder" name="HAS_REMINDER" typeRef="boolean" />
       <rule id="DecisionRule_1xkfsfp">
         <description>Unknown to unknown</description>
@@ -27,6 +27,21 @@
         </outputEntry>
         <outputEntry id="LiteralExpression_1lgji5u">
           <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1vx92gm">
+        <description>Insurance to the "sender/policyNumber"</description>
+        <inputEntry id="UnaryTests_030lsch">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1l62b9j">
+          <text>"Insurance ldt"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ron7yl">
+          <text>"path/to/%sender%/%policyNumber%/"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1utwrmp">
+          <text>false</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_16udi40">

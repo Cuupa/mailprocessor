@@ -1,12 +1,16 @@
 package com.cuupa.mailprocessor.services.input.email
 
+import com.cuupa.mailprocessor.functions.forEachParallel
 import com.cuupa.mailprocessor.services.input.Attachment
 import com.cuupa.mailprocessor.services.input.EMail
 import com.cuupa.mailprocessor.userconfiguration.EmailProperties
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.apache.commons.io.IOUtils
 import org.apache.juli.logging.LogFactory
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -18,23 +22,38 @@ import javax.mail.internet.MimeMessage
 class EmailService {
 
     fun loadMails(username: String, config: EmailProperties): List<EMail> {
-        if (isConfigValid(config)) {
-            return listOf()
+        return when {
+            isConfigInvalid(config) -> listOf()
+            else -> getMessagesAsync(config.labels!!, config, username)
         }
-        val store = getStoreAndConnect(config)
-        val messages = mutableListOf<EMail>()
-        config.labels?.map {
-            messages.addAll(loadMailsForFolder(it, store, username))
-        }
-        return messages
     }
 
-    private fun isConfigValid(config: EmailProperties) = (config.username.isNullOrEmpty() || config.password.isNullOrEmpty() || config.servername.isNullOrEmpty() || config.protocol.isNullOrEmpty())
+    private fun getMessagesSync(labels: List<String>, config: EmailProperties, username: String): List<EMail> {
+        return labels.map { loadMailsForFolder(it, getStoreAndConnect(config), username) }.flatten()
+    }
+
+    private fun getMessagesAsync(labels: List<String>, config: EmailProperties, username: String): List<EMail> {
+        val messages = mutableListOf<EMail>()
+        runBlocking {
+            runBlocking(Dispatchers.Default) {
+                labels.forEachParallel { label ->
+                    getStoreAndConnect(config).use { store ->
+                        messages.addAll(loadMailsForFolder(label, store, username))
+                    }
+                }
+            }
+
+        }
+        return messages.distinct()
+    }
+
+
+    private fun isConfigInvalid(
+            config: EmailProperties) = (config.username.isNullOrEmpty() || config.password.isNullOrEmpty() || config.servername.isNullOrEmpty() || config.protocol.isNullOrEmpty())
 
     fun markMailAsRead(subject: String, label: String, receivedDate: LocalDateTime?, emailProperties: EmailProperties) {
         getStoreAndConnect(emailProperties).use {
-            AutoClosableIMAPFolder(it.getStore().getFolder(label)).use { folder ->
-                folder.open(Folder.READ_WRITE)
+            AutoClosableIMAPFolder(it.getStore().getFolder(label)).open(Folder.READ_WRITE).use { folder ->
                 markMailAsRead(subject, receivedDate, folder)
             }
         }
@@ -64,33 +83,46 @@ class EmailService {
     private fun isSubjectEquals(subject: String, message: Message): Boolean = message.subject == subject
 
     private fun loadMailsForFolder(folderName: String, store: AutoClosableStore, username: String): List<EMail> {
-        val folder = AutoClosableIMAPFolder(store.getStore().getFolder(folderName))
-        folder.open(Folder.READ_ONLY)
+        val folder = AutoClosableIMAPFolder(store.getStore().getFolder(folderName)).open(Folder.READ_ONLY)
         return loadMessageFromFolder(folder, username)
     }
 
-    private fun loadMessageFromFolder(folder: AutoClosableIMAPFolder, username: String): MutableList<EMail> {
+    private fun loadMessageFromFolder(folder: AutoClosableIMAPFolder, username: String): List<EMail> {
         val largestUid = folder.uidNext - 1
         val messageList = mutableListOf<EMail>()
         var offset: Long = 0
-        for (i in 0..largestUid) {
 
-            val messages = getMessages(folder, largestUid, offset)
-            folder.fetch(messages, fetchProfile)
+        return if (folder.getUnreadMessageCount() == 0) {
+            log.info("No unread mails for \"${folder.name()}\" found")
+            listOf()
+        } else {
 
-            messageList.addAll(messages.filter { !it.isSet(Flags.Flag.SEEN) }.map {
-                createEmail(it, getContent(it), username)
-            })
+            log.info("${Thread.currentThread().name}: Fetching mails from \"${folder.name()}\"")
+            for (i in 0..largestUid) {
 
-            offset += chunkSize
+                val messages = getMessages(folder, largestUid, offset)
+                folder.fetch(messages, fetchProfile)
+
+                val emails = messages.filter { !it.isSet(Flags.Flag.SEEN) }.map {
+                    createEmail(it, getContent(it), username)
+                }.filter { it.isValid }
+
+                messageList.addAll(emails)
+                offset += chunkSize
+            }
+            log.info("${Thread.currentThread().name}: Mails from \"${folder.name()}\" successfully fetched")
+            messageList.toList()
         }
-        return messageList
     }
 
     private fun getContent(it: Message): ByteArray {
-        val outputStream = ByteArrayOutputStream()
-        it.writeTo(outputStream)
-        return outputStream.toByteArray()
+        return try {
+            val outputStream = ByteArrayOutputStream()
+            it.writeTo(outputStream)
+            outputStream.toByteArray()
+        } catch (exception: IOException) {
+            ByteArray(0)
+        }
     }
 
     private fun createEmail(it: Message, content: ByteArray, username: String): EMail {
@@ -106,26 +138,22 @@ class EmailService {
         return eMail
     }
 
-    private fun getAttachments(content: ByteArray?, username: String): MutableList<Attachment> {
-        val mimeMessage = MimeMessage(null, ByteArrayInputStream(content)).content
-        if (mimeMessage !is Multipart) {
-            return mutableListOf()
+    private fun getAttachments(content: ByteArray?, username: String): List<Attachment> {
+        return when (val mimeMessage = MimeMessage(null, ByteArrayInputStream(content)).content) {
+            is Multipart -> getAttachments(mimeMessage, username)
+            else -> listOf()
         }
-        val attachments = mutableListOf<Attachment>()
-        attachments.addAll(getAttachments(mimeMessage, username))
-        return attachments
     }
 
-    private fun getAttachments(mimeMessage: Multipart, username: String): MutableList<Attachment> {
+    private fun getAttachments(mimeMessage: Multipart, username: String): List<Attachment> {
         val attachments = mutableListOf<Attachment>()
         for (partIndex in 0 until mimeMessage.count) {
             val bodyPart = mimeMessage.getBodyPart(partIndex)
             if (Part.ATTACHMENT != bodyPart.disposition) {
                 continue
             }
-            val attachment = Attachment()
+            val attachment = Attachment(IOUtils.toByteArray(bodyPart.inputStream))
             attachment.filename = bodyPart.fileName
-            attachment.content = IOUtils.toByteArray(bodyPart.inputStream)
             attachment.user = username
             attachments.add(attachment)
         }
@@ -151,7 +179,7 @@ class EmailService {
         properties.setProperty("mail.imaps.port", "${emailProperties.port}")
         properties.setProperty("mail.imaps.connectiontimeout", "5000")
         properties.setProperty("mail.imaps.timeout", "5000")
-        val session = Session.getDefaultInstance(properties, null)
+        val session = Session.getInstance(properties)
         return session.getStore(emailProperties.protocol)
     }
 

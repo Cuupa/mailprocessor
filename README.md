@@ -106,7 +106,8 @@ This section is about the configuration for fetching scans from a local or a net
 - username: the username for connecting to the network share. Leave empty or delete this property if the documents are stored on a local folder
 - password: the password for connecting to the network share. Leave empty or delete this property if the documents are stored on a local folder
 - scannerprefix: the prefix of the filename your scanner produces. Use "\*" if you want to process all files. Comes in handy if you're using several scanners and only want to process the output of of a specific subset of scanners
-- filetypes: the filetypes you want to process. Use "\*" to process all files
+- filetypes: the filetypes you ## Custom DMN-Table
+For the routing to work, you need to add want to process. Use "\*" to process all files
 - enabled: the flag to enable or disable this service
 
 #### archiveproperties

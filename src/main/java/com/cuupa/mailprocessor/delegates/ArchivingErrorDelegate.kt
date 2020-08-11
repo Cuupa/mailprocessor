@@ -17,9 +17,8 @@ class ArchivingErrorDelegate(scanService: ScanService, runtimeService: RuntimeSe
         val scanProperties = configuration.getConfigurationForUser(handler.username).scanProperties
 
         when {
-            handler.archived -> return
-            handler.isScanMail -> processScan(scanProperties.errorFolder!!, scanProperties, handler)
-            handler.isZipFile -> processZip(scanProperties.errorFolder!!, scanProperties, handler)
+            handler.isScanMail -> processScan(scanProperties.errorFolder, scanProperties, handler)
+            handler.isZipFile -> processZip(scanProperties.errorFolder, scanProperties, handler)
         }
         log.warn(handler.errors.joinToString("\n", "", ""))
         log.warn("Error archiving ${handler.fileName}")

@@ -21,5 +21,5 @@ enum class ProcessProperty {
     ARCHIVED,
     ERRORS,
     // Used for zipfiles
-    ORIGINAL_FILENAME
+    ZIP_FILE_NAME
 }

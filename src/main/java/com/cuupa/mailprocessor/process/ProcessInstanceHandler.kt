@@ -28,8 +28,8 @@ class ProcessInstanceHandler(
     val isZipFile: Boolean
         get() = getAsString(ProcessProperty.MAIL_TYPE) == "zip"
 
-    val originalFilename: String
-        get() = getAsString(ProcessProperty.ORIGINAL_FILENAME)?: ""
+    val zipFileName: String
+        get() = getAsString(ProcessProperty.ZIP_FILE_NAME)?: ""
 
     var archived: Boolean
         get() = getAsBooleanDefaultFalse(ProcessProperty.ARCHIVED)
@@ -77,8 +77,8 @@ class ProcessInstanceHandler(
         get() = getAsBooleanDefaultFalse(ProcessProperty.HAS_REMINDER)
         set(value) = set(ProcessProperty.HAS_REMINDER, value)
 
-    var fileName: String?
-        get() = getAsString(ProcessProperty.FILE_NAME)
+    var fileName: String
+        get() = getAsString(ProcessProperty.FILE_NAME) ?: ""
         set(value) = set(ProcessProperty.FILE_NAME, value)
 
     var archivedFilename: String?

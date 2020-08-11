@@ -18,9 +18,8 @@ class ArchivingSuccessDelegate(scanService: ScanService, private val emailServic
         val configurationForUser = configuration.getConfigurationForUser(handler.username)
         val scanProperties = configurationForUser.scanProperties
         when {
-            !handler.archived -> return
-            handler.isScanMail -> processScan(scanProperties.successFolder!!, scanProperties, handler)
-            handler.isZipFile -> processZip(scanProperties.successFolder!!, scanProperties, handler)
+            handler.isScanMail -> processScan(scanProperties.successFolder, scanProperties, handler)
+            handler.isZipFile -> processZip(scanProperties.successFolder, scanProperties, handler)
             else -> processMailSuccess(configurationForUser.emailProperties, handler)
         }
         log.warn("Successfully archived ${handler.fileName} to ${handler.archivedFilename}")

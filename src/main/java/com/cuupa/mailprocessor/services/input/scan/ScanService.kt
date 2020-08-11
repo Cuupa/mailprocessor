@@ -1,5 +1,6 @@
 package com.cuupa.mailprocessor.services.input.scan
 
+import com.cuupa.mailprocessor.functions.mapParallel
 import com.cuupa.mailprocessor.services.extractors.ZipExtractor
 import com.cuupa.mailprocessor.services.files.File
 import com.cuupa.mailprocessor.services.files.FileFactory
@@ -7,12 +8,13 @@ import com.cuupa.mailprocessor.services.files.FileResource
 import com.cuupa.mailprocessor.services.input.Document
 import com.cuupa.mailprocessor.services.input.Zip
 import com.cuupa.mailprocessor.userconfiguration.ScanProperties
+import kotlinx.coroutines.*
 import org.apache.commons.io.IOUtils
 
 class ScanService {
 
     fun loadScans(user: String, config: ScanProperties): List<Document> {
-        if (config.path.isNullOrEmpty()) {
+        if (config.root.isNullOrEmpty()) {
             return listOf()
         }
         val path = getPath(config)
@@ -23,30 +25,33 @@ class ScanService {
     }
 
     private fun getDocuments(file: File, path: String, config: ScanProperties, user: String): List<Document> {
-        return file.list(path)
-            .filter { isCorrectFileType(it, config.fileTypes) }
-            .filter { isCorrectScanner(it, config.scannerPrefix) }
-            .map { createObject(user, path, file, it) }
+        return runBlocking(Dispatchers.Default) {
+            return@runBlocking file.list(path)
+                .filter { isCorrectFileType(it, config.fileTypes) }
+                .filter { isCorrectScanner(it, config.scannerPrefix) }
+                .mapParallel { createObject(user, path, file, it) }
+        }
     }
 
+
     private fun getPath(config: ScanProperties): String {
-        return if (config.folder.isNullOrEmpty()) {
+        return if (config.workFolder.isNullOrEmpty()) {
             getPathWithPort(config)
         } else {
-            "${getPathWithPort(config)}/${config.folder}"
+            "${getPathWithPort(config)}/${config.workFolder}"
         }
     }
 
     private fun getPathWithPort(config: ScanProperties): String {
         return when (config.port) {
-            0 -> "${config.path}"
-            else -> "${config.path}:${config.port}"
+            0 -> "${config.root}"
+            else -> "${config.root}:${config.port}"
         }
     }
 
     fun moveScan(filename: String?, filecontent: ByteArray?, targetPath: String,
                  scanProperties: ScanProperties): Boolean {
-        val path = scanProperties.path
+        val path = scanProperties.root
         if (filename.isNullOrEmpty() || path.isNullOrEmpty()) {
             return false
         }
@@ -59,7 +64,7 @@ class ScanService {
     private fun moveFile(file: File, path: String, targetPath: String, filename: String, content: ByteArray?,
                          properties: ScanProperties): Boolean {
         return if (file.save(file.createDirectories(path, targetPath), filename, content ?: ByteArray(0))) {
-            file.delete("${properties.path}/${properties.folder}", filename)
+            file.delete("${properties.root}/${properties.workFolder}", filename)
         } else {
             false
         }

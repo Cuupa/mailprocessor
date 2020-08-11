@@ -4,11 +4,11 @@ import org.apache.tika.Tika
 import org.apache.tika.metadata.Metadata
 import java.io.ByteArrayInputStream
 
-class EmailExtractor : TextExtractor {
+class EmailExtractor(private val tika: Tika) : TextExtractor {
 
     override fun extract(content: ByteArray): List<String> {
         val metadata = Metadata()
-        val fileContent = Tika().parseToString(ByteArrayInputStream(content), metadata)
+        val fileContent = tika.parseToString(ByteArrayInputStream(content), metadata)
         val metadataValue = concatMailMetadata(metadata)
         return listOf(metadataValue, fileContent)
     }

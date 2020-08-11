@@ -8,7 +8,7 @@ object Extractors {
     fun get(content: ByteArray): List<String> {
         return when {
             isPdf(content) -> PdfExtractor().extract(content)
-            isEmail(content) -> EmailExtractor().extract(content)
+            isEmail(content) -> EmailExtractor(tika).extract(content)
             else -> listOf()
         }
     }

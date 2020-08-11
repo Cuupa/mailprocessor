@@ -7,11 +7,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder
 class ScanProperties : ConfigurationProperties() {
     @SerializedName("path")
     @Expose
-    var path: String? = null
+    var root: String? = null
 
     @SerializedName("folder")
     @Expose
-    var folder: String? = null
+    var workFolder: String? = null
+        get() = field ?: ""
 
     @SerializedName("port")
     @Expose
@@ -19,15 +20,15 @@ class ScanProperties : ConfigurationProperties() {
 
     @SerializedName("errorfolder")
     @Expose
-    var errorFolder: String? = null
+    var errorFolder: String = ""
 
     @SerializedName("successfolder")
     @Expose
-    var successFolder: String? = null
+    var successFolder: String = ""
 
     @SerializedName("username")
     @Expose
-    var username: String? = null
+    var username: String = ""
 
     @SerializedName("password")
     @Expose
@@ -46,7 +47,7 @@ class ScanProperties : ConfigurationProperties() {
     var isEnabled = false
 
     fun path(path: String?): ScanProperties {
-        this.path = path
+        this.root = path
         return this
     }
 
@@ -55,7 +56,7 @@ class ScanProperties : ConfigurationProperties() {
         return this
     }
 
-    fun username(username: String?): ScanProperties {
+    fun username(username: String): ScanProperties {
         this.username = username
         return this
     }
@@ -66,13 +67,13 @@ class ScanProperties : ConfigurationProperties() {
     }
 
     override fun toString(): String {
-        return ToStringBuilder(this).append("path", path)
-                .append("port", port)
-                .append("username", username)
-                .append("password", getPasswordStared(password!!))
-                .append("scannerprefix", scannerPrefix)
-                .append("filetypes", fileTypes)
-                .append("enabled", isEnabled)
-                .toString()
+        return ToStringBuilder(this).append("path", root)
+            .append("port", port)
+            .append("username", username)
+            .append("password", getPasswordStared(password!!))
+            .append("scannerprefix", scannerPrefix)
+            .append("filetypes", fileTypes)
+            .append("enabled", isEnabled)
+            .toString()
     }
 }

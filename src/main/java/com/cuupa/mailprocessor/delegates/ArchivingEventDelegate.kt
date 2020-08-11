@@ -1,13 +1,12 @@
 package com.cuupa.mailprocessor.delegates
 
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
-import com.cuupa.mailprocessor.process.ProcessProperty
+import com.cuupa.mailprocessor.services.files.FileFactory
 import com.cuupa.mailprocessor.services.input.scan.ScanService
 import com.cuupa.mailprocessor.userconfiguration.ScanProperties
 import org.apache.juli.logging.LogFactory
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.delegate.JavaDelegate
-import org.camunda.bpm.engine.runtime.ProcessInstance
 
 abstract class ArchivingEventDelegate(private val scanService: ScanService,
                                       private val runtimeService: RuntimeService) : JavaDelegate {
@@ -20,28 +19,22 @@ abstract class ArchivingEventDelegate(private val scanService: ScanService,
         }
     }
 
-    private fun getRunningProcessInstances(originalFilename: String, mailType: String): List<ProcessInstance> {
-        return runtimeService.createProcessInstanceQuery()
-            .active()
-            .variableValueEquals(ProcessProperty.MAIL_TYPE.name, mailType)
-            .variableValueEquals(ProcessProperty.ORIGINAL_FILENAME.name, originalFilename)
-            .list()?: listOf()
-    }
-
-    protected fun processZip(target: String, scanProperties: ScanProperties, handler: ProcessInstanceHandler) {
-        val list = getRunningProcessInstances(handler.originalFilename, "zip")
-
-        when {
-            list.isEmpty() -> {
-                moveScan(handler.fileName!!, handler.fileContent, target, scanProperties)
-                moveScan(handler.originalFilename, handler.fileContent, target, scanProperties)
+    private fun moveScanIfExists(filename: String, content: ByteArray, target: String, scanProperties: ScanProperties) {
+        FileFactory.getForPath(scanProperties.root!!).use { file ->
+            file.init(scanProperties.username, scanProperties.password)
+            if (file.exists("${scanProperties.root}/${scanProperties.workFolder}", filename)) {
+                moveScan(filename, content, target, scanProperties)
             }
-            else -> moveScan(handler.fileName!!, handler.fileContent, target, scanProperties)
         }
     }
 
+    protected fun processZip(target: String, scanProperties: ScanProperties, handler: ProcessInstanceHandler) {
+        moveScan(handler.fileName, handler.fileContent, target, scanProperties)
+        moveScanIfExists(handler.zipFileName, handler.fileContent, "${scanProperties.workFolder}/zip", scanProperties)
+    }
+
     protected fun processScan(target: String, scanProperties: ScanProperties, handler: ProcessInstanceHandler) {
-        moveScan(handler.fileName!!, handler.fileContent, target, scanProperties)
+        moveScan(handler.fileName, handler.fileContent, target, scanProperties)
     }
 
     companion object {

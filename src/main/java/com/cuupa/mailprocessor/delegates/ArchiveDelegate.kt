@@ -16,25 +16,28 @@ class ArchiveDelegate(private val mailprocessorConfiguration: MailprocessorConfi
         val handler = ProcessInstanceHandler(delegateExecution)
         val config = mailprocessorConfiguration.getConfigurationForUser(handler.username)
         val archiveProperties = config.archiveProperties
-        FileFactory.getForPath(archiveProperties.path).use { file ->
-            file.init(archiveProperties.username, archiveProperties.password)
+        FileFactory.getForPath(archiveProperties.path)
+                .use { file ->
+                    file.init(archiveProperties.username, archiveProperties.password)
 
-            val path = file.createDirectories(archiveProperties.path,
-                                              "${handler.pathToSave}${getTopicNameFolder(handler.topics,
-                                                                                         config.locale)}")
+                    val temp = "/homes/simon.thiel/Schreibtisch${handler.pathToSave}${
+                        getTopicNameFolder(handler.topics, config.locale)
+                    }"
 
-            val filename = handler.topics.joinToString("_", "[", "]_") + handler.fileName
-            val fileAlreadyExists = file.exists(path, filename)
+                    val path = file.createDirectories(archiveProperties.path, temp)
 
-            when {
-                !fileAlreadyExists -> handler.archived = file.save(path, filename, handler.fileContent)
-                else -> handleFileAlreadyExists(handler, path, filename)
-            }
-            when {
-                handler.archived -> handler.archivedFilename = filename
-                !handler.archived && !fileAlreadyExists -> handelArchiveError(handler, path, filename)
-            }
-        }
+                    val filename = handler.topics.joinToString("_", "[", "]_") + handler.fileName
+                    val fileAlreadyExists = file.exists(path, filename)
+
+                    when {
+                        !fileAlreadyExists -> handler.archived = file.save(path, filename, handler.fileContent)
+                        else -> handleFileAlreadyExists(handler, path, filename)
+                    }
+                    when {
+                        handler.archived -> handler.archivedFilename = filename
+                        !handler.archived && !fileAlreadyExists -> handelArchiveError(handler, path, filename)
+                    }
+                }
     }
 
     private fun handelArchiveError(handler: ProcessInstanceHandler, path: String, encodedFilename: String) {

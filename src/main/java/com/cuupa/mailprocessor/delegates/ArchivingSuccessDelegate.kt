@@ -22,7 +22,9 @@ class ArchivingSuccessDelegate(scanService: ScanService, private val emailServic
             handler.isZipFile -> processZip(scanProperties.successFolder, scanProperties, handler)
             else -> processMailSuccess(configurationForUser.emailProperties, handler)
         }
-        log.warn("Successfully archived ${handler.fileName} to ${handler.archivedFilename}")
+        if (log.isWarnEnabled) {
+            log.warn("Successfully archived ${handler.fileName} to ${handler.archivedFilename}")
+        }
     }
 
     private fun processMailSuccess(emailProperties: EmailProperties, handler: ProcessInstanceHandler) {

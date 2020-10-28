@@ -7,7 +7,7 @@ server.port: ${server_port}
 
 logging.level:
   root: ERROR
-  com.cuupa.mailprocessor: WARN
+  com.cuupa.mailprocessor: DEBUG
 
 mailprocessor:
   config: ${config_path}

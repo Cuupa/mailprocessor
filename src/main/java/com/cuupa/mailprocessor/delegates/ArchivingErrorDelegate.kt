@@ -20,8 +20,10 @@ class ArchivingErrorDelegate(scanService: ScanService, runtimeService: RuntimeSe
             handler.isScanMail -> processScan(scanProperties.errorFolder, scanProperties, handler)
             handler.isZipFile -> processZip(scanProperties.errorFolder, scanProperties, handler)
         }
-        log.warn(handler.errors.joinToString("\n", "", ""))
-        log.warn("Error archiving ${handler.fileName}")
+        if(log.isWarnEnabled) {
+            log.warn(handler.errors.joinToString("\n", "", ""))
+            log.warn("Error archiving ${handler.fileName}")
+        }
     }
 
     companion object {

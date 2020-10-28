@@ -24,7 +24,7 @@
         <camunda.springboot.starter>7.13.0</camunda.springboot.starter>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <kotlin.version>1.3.72</kotlin.version>
+        <kotlin.version>1.4.0</kotlin.version>
     </properties>
 
     <dependencies>
@@ -101,6 +101,14 @@
             <artifactId>sardine</artifactId>
             <version>5.10</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.7</version>
+        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
         <dependency>

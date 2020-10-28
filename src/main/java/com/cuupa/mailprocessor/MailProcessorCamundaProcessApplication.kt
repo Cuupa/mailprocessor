@@ -13,8 +13,8 @@ class MailProcessorCamundaProcessApplication : SpringBootProcessApplication() {
     }
 
     private fun printBanner() {
-        var banner = "\n"
-        banner += """|  __ \                           |  ____|           (_)           
+        val banner = """
+|  __ \                           |  ____|           (_)
 | |__) | __ ___   ___ ___  ___ ___| |__   _ __   __ _ _ _ __   ___ 
 |  ___/ '__/ _ \ / __/ _ \/ __/ __|  __| | '_ \ / _` | | '_ \ / _ \
 | |   | | | (_) | (_|  __/\__ \__ \ |____| | | | (_| | | | | |  __/

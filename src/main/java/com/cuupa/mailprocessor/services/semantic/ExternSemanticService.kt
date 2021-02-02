@@ -10,13 +10,13 @@ import java.util.*
 /**
  * Calls the extern semantic serivce to classify the text
  */
-class ExternSemanticService(private val restTemplate: RestTemplate, private val semanticUrl: String) {
+class ExternSemanticService(private val restTemplate: RestTemplate, private val semanticUrl: String?) {
 
     private val gson = Gson()
 
     fun getSemanticResult(plainText: String?): List<SemanticResult> {
         return try {
-            val responseEntity = restTemplate.postForEntity(semanticUrl, plainText, String::class.java)
+            val responseEntity = restTemplate.postForEntity(semanticUrl!!, plainText, String::class.java)
             return when {
                 responseEntity.statusCode.is2xxSuccessful -> gson.fromJson(responseEntity.body, listType)
                 else -> listOf()

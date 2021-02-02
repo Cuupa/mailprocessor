@@ -1,16 +1,19 @@
 package com.cuupa.mailprocessor.delegates
 
-import com.cuupa.mailprocessor.MailprocessorConfiguration
+import com.cuupa.mailprocessor.configuration.MailprocessorConfiguration
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
 import com.cuupa.mailprocessor.services.input.scan.ScanService
-import com.cuupa.mailprocessor.userconfiguration.ScanProperties
 import org.apache.juli.logging.LogFactory
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.delegate.DelegateExecution
 
-class ArchivingErrorDelegate(scanService: ScanService, runtimeService: RuntimeService,
-                             private val configuration: MailprocessorConfiguration) : ArchivingEventDelegate(scanService,
-                                                                                                             runtimeService) {
+class ArchivingErrorDelegate(
+    scanService: ScanService, runtimeService: RuntimeService,
+    private val configuration: MailprocessorConfiguration
+) : ArchivingEventDelegate(
+    scanService,
+    runtimeService
+) {
 
     override fun execute(delegateExecution: DelegateExecution) {
         val handler = ProcessInstanceHandler(delegateExecution)
@@ -20,7 +23,7 @@ class ArchivingErrorDelegate(scanService: ScanService, runtimeService: RuntimeSe
             handler.isScanMail -> processScan(scanProperties.errorFolder, scanProperties, handler)
             handler.isZipFile -> processZip(scanProperties.errorFolder, scanProperties, handler)
         }
-        if(log.isWarnEnabled) {
+        if (log.isWarnEnabled) {
             log.warn(handler.errors.joinToString("\n", "", ""))
             log.warn("Error archiving ${handler.fileName}")
         }

@@ -17,27 +17,31 @@ class UserConfiguration {
 
     @SerializedName("emailproperties")
     @Expose
-    var emailProperties: EmailProperties = EmailProperties()
+    var emailProperties = EmailProperties()
 
     @SerializedName("scanproperties")
     @Expose
-    var scanProperties: ScanProperties = ScanProperties()
+    var scanProperties = ScanProperties()
 
     @SerializedName("archiveproperties")
     @Expose
-    var archiveProperties: ArchiveProperties = ArchiveProperties()
+    var archiveProperties = ArchiveProperties()
 
     @SerializedName("reminderproperties")
     @Expose
-    var reminderProperties: ReminderProperties = ReminderProperties()
+    var reminderProperties = ReminderProperties()
+
+    @SerializedName("decisiontable")
+    @Expose
+    var decisiontableProperties = DecisiontableProperties()
 
     override fun toString(): String {
         return ToStringBuilder(this).append("username", username)
-                .append("locale", locale)
-                .append("emailproperties", emailProperties)
-                .append("scanproperties", scanProperties)
-                .append("archiveproperties", archiveProperties)
-                .append("reminderproperties", reminderProperties)
-                .toString()
+            .append("locale", locale)
+            .append("emailproperties", emailProperties)
+            .append("scanproperties", scanProperties)
+            .append("archiveproperties", archiveProperties)
+            .append("reminderproperties", reminderProperties)
+            .toString()
     }
 }

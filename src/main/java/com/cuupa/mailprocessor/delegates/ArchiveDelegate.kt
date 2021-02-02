@@ -1,6 +1,6 @@
 package com.cuupa.mailprocessor.delegates
 
-import com.cuupa.mailprocessor.MailprocessorConfiguration
+import com.cuupa.mailprocessor.configuration.MailprocessorConfiguration
 import com.cuupa.mailprocessor.process.ErrorProperties
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
 import com.cuupa.mailprocessor.services.TranslateService

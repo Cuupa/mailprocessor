@@ -1,16 +1,16 @@
 package com.cuupa.mailprocessor.configuration
 
-import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.services.TextExtractorService
 import com.cuupa.mailprocessor.services.TranslateService
 import com.cuupa.mailprocessor.services.WorkerService
+import com.cuupa.mailprocessor.services.camunda.DmnDeployService
 import com.cuupa.mailprocessor.services.input.email.EmailService
 import com.cuupa.mailprocessor.services.input.scan.ScanService
 import com.cuupa.mailprocessor.services.reminder.ReminderService
 import com.cuupa.mailprocessor.services.semantic.ExternSemanticService
+import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.RuntimeService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestTemplate
@@ -18,18 +18,18 @@ import org.springframework.web.client.RestTemplate
 @Configuration
 open class ServiceConfiguration {
 
-    @Value("\${mailprocessor.semanticUrl}")
-    private val semanticUrl: String? = null
-
     @Autowired
     private lateinit var runtimeService: RuntimeService
 
     @Autowired
-    private lateinit var mailprocessorConfiguration: MailprocessorConfiguration
+    private lateinit var configuration: MailprocessorConfiguration
+
+    @Autowired
+    private lateinit var repositoryService: RepositoryService
 
     @Bean
     open fun externSemanticService(): ExternSemanticService {
-        return ExternSemanticService(restTemplate(), semanticUrl!!)
+        return ExternSemanticService(restTemplate(), configuration.semanticUrl)
     }
 
     @Bean
@@ -39,7 +39,7 @@ open class ServiceConfiguration {
 
     @Bean
     open fun workerService(): WorkerService {
-        return WorkerService(runtimeService, mailprocessorConfiguration, scanService(), emailService())
+        return WorkerService(runtimeService, configuration, scanService(), emailService())
     }
 
     @Bean
@@ -65,5 +65,10 @@ open class ServiceConfiguration {
     @Bean
     open fun textExtractorService(): TextExtractorService {
         return TextExtractorService()
+    }
+
+    @Bean
+    open fun dmnDeployService(): DmnDeployService {
+        return DmnDeployService(repositoryService, configuration.decisiontables)
     }
 }

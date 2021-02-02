@@ -1,7 +1,7 @@
 package com.cuupa.mailprocessor.configuration
 
 import com.cuupa.mailprocessor.MailProcessorCamundaProcessApplication
-import com.cuupa.mailprocessor.MailprocessorConfiguration
+import com.cuupa.mailprocessor.MailprocessorConfigurationLoader
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -25,6 +25,6 @@ open class ApplicationConfiguration {
 
     @Bean
     open fun configuration(): MailprocessorConfiguration {
-        return MailprocessorConfiguration(configpath)
+        return MailprocessorConfigurationLoader.load(configpath)
     }
 }

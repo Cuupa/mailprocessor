@@ -1,6 +1,6 @@
 package com.cuupa.mailprocessor.services
 
-import com.cuupa.mailprocessor.MailprocessorConfiguration
+import com.cuupa.mailprocessor.configuration.MailprocessorConfiguration
 import com.cuupa.mailprocessor.process.ProcessProperty
 import com.cuupa.mailprocessor.services.input.Document
 import com.cuupa.mailprocessor.services.input.EMail
@@ -21,7 +21,7 @@ class WorkerService(private val runtimeService: RuntimeService,
 
     @Scheduled(cron = "* */30 * * * *")
     fun execute() {
-        val userConfigurationList = mailprocessorConfiguration.configurations
+        val userConfigurationList = mailprocessorConfiguration.userConfiguration
         userConfigurationList.forEach { config ->
             if (config.emailProperties.isEnabled) {
                 executeEMail(config.username!!, config.emailProperties)

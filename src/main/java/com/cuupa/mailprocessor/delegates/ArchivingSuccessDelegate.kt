@@ -1,6 +1,6 @@
 package com.cuupa.mailprocessor.delegates
 
-import com.cuupa.mailprocessor.MailprocessorConfiguration
+import com.cuupa.mailprocessor.configuration.MailprocessorConfiguration
 import com.cuupa.mailprocessor.process.ProcessInstanceHandler
 import com.cuupa.mailprocessor.services.input.email.EmailService
 import com.cuupa.mailprocessor.services.input.scan.ScanService
@@ -9,8 +9,10 @@ import org.apache.juli.logging.LogFactory
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.delegate.DelegateExecution
 
-class ArchivingSuccessDelegate(scanService: ScanService, private val emailService: EmailService,
-                               runtimeService: RuntimeService, private val configuration: MailprocessorConfiguration) :
+class ArchivingSuccessDelegate(
+    scanService: ScanService, private val emailService: EmailService,
+    runtimeService: RuntimeService, private val configuration: MailprocessorConfiguration
+) :
         ArchivingEventDelegate(scanService, runtimeService) {
 
     override fun execute(delegateExecution: DelegateExecution) {

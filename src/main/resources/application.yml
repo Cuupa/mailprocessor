@@ -1,17 +1,12 @@
 #default values. Can be overridden with the -D in the jvm-arguments
-config_path: /opt/mailprocessor/config.json
-semantic_url: "http://localhost:8081/api/rest/1.0/classifyText"
-server_port: 8080
-
-server.port: ${server_port}
+server.port: 8080
 
 logging.level:
   root: ERROR
   com.cuupa.mailprocessor: WARN
 
 mailprocessor:
-  config: ${config_path}
-  semanticUrl: ${semantic_url}
+  config: /opt/mailprocessor/config.json
 
 camunda:
   bpm.job-execution.enabled: true

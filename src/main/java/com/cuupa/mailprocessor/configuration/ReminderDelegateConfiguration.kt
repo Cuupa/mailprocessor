@@ -1,6 +1,5 @@
 package com.cuupa.mailprocessor.configuration
 
-import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.delegates.reminder.DetectReminder
 import com.cuupa.mailprocessor.delegates.reminder.TriggerReminderDelegate
 import com.cuupa.mailprocessor.services.reminder.ReminderService

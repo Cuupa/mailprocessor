@@ -1,6 +1,5 @@
 package com.cuupa.mailprocessor.configuration
 
-import com.cuupa.mailprocessor.MailprocessorConfiguration
 import com.cuupa.mailprocessor.delegates.*
 import com.cuupa.mailprocessor.services.TextExtractorService
 import com.cuupa.mailprocessor.services.TranslateService

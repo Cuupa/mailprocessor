@@ -1,0 +1,34 @@
+---
+configuration:
+  - username: user.name
+    locale: en_EN
+
+    input:
+      email:
+        url: "imap.mail.com:993"
+        username: "username@mail.com"
+        password: "password"
+        protocol: "imaps"
+        labels:
+          - "inbox"
+          - "label1"
+          - "label2"
+        markasread: true
+        enabled: false
+
+      directory:
+        path: "https://webdav.thiel.cloud/Work/Test"
+        error: "https://webdav.network.share/error"
+        success: "https://webdav.network.share/success"
+        username: "simon.thiel"
+        password: "272591863004#Dx"
+        prefix:
+          - "*"
+        filetypes:
+          - "pdf"
+        enabled: true
+
+    output:
+      path: "https://webdav.network.share:443"
+      username: "username"
+      password: "password"

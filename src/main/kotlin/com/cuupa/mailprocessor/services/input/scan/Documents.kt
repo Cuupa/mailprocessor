@@ -7,9 +7,9 @@ object Documents {
 
     fun get(fileContent: ByteArray): Document {
         return when{
-            Extractors.isPdf(fileContent) -> PDF(fileContent)
+            //Extractors.isPdf(fileContent) -> PDF(fileContent)
             Extractors.isEmail(fileContent) -> EMail(fileContent)
-            Extractors.isZip(fileContent) -> Zip(fileContent)
+            //Extractors.isZip(fileContent) -> Zip(fileContent)
             else -> Unknown()
         }
     }

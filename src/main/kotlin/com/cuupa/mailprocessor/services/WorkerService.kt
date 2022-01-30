@@ -1,6 +1,7 @@
 package com.cuupa.mailprocessor.services
 
 import com.cuupa.mailprocessor.MailprocessorConfiguration
+import com.cuupa.mailprocessor.MailprocessorStartService
 import com.cuupa.mailprocessor.process.ProcessProperty
 import com.cuupa.mailprocessor.services.input.Document
 import com.cuupa.mailprocessor.services.input.EMail
@@ -16,7 +17,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import java.io.Serializable
 
 class WorkerService(
-    private val runtimeService: RuntimeService,
+    private val startService: MailprocessorStartService,
     private val mailprocessorConfiguration: MailprocessorConfiguration,
     private val scanService: ScanService, private val emailService: EmailService
 ) {
@@ -36,40 +37,12 @@ class WorkerService(
 
     private fun executeEMail(username: String, config: EmailConfiguration) {
         val emails = emailService.loadMails(username, config).map { getEmailProperties(it) }
-        emails.forEach {
-            try {
-                runtimeService.startProcessInstanceByKey("mailprocessor", it)
-            } catch (exception: Exception) {
-                LOG.error(exception)
-            }
-        }
+        emails.forEach { startService.startEmailProcess(it) }
     }
 
     private fun executeScanMail(username: String, config: DirectoryConfiguration) {
-        val scans = scanService.loadScans(username, config).map {
-            setScanOrZipProperties(it, getScanProcessProperties(it))
-        }
-        scans.forEach {
-            try {
-                runtimeService.startProcessInstanceByKey("mailprocessor", it)
-            } catch (exception: Exception) {
-                LOG.error(exception)
-            }
-        }
-    }
-
-    private fun setScanOrZipProperties(
-        document: Document,
-        properties: MutableMap<String, Serializable?>
-    ): Map<String, Serializable?> {
-        when (document) {
-            is Zip -> {
-                properties[ProcessProperty.ZIP_FILE_NAME.name] = document.originalFileName
-                properties[ProcessProperty.MAIL_TYPE.name] = InputType.ZIP.name
-            }
-            else -> properties[ProcessProperty.MAIL_TYPE.name] = InputType.SCAN.name
-        }
-        return properties
+        val scans = scanService.loadScans(username, config).map { getScanProcessProperties(it) }
+        scans.forEach { startService.startScanProcess(it) }
     }
 
     private fun getScanProcessProperties(document: Document) = mutableMapOf(

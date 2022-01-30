@@ -3,11 +3,14 @@ package com.cuupa.mailprocessor.process
 enum class ProcessProperty {
     MAIL_TYPE,
     RECEIVED_DATE,
+    PATCH_SHEETS,
+    HAS_PATCH_SHEET,
     USERNAME,
     TOPICS,
     SENDER,
     PLAIN_TEXT,
     FILE_CONTENT,
+    FILE_TYPE,
     FILE_NAME,
     EMAIL_LABEL,
     EMAIL_SUBJECT,
@@ -20,6 +23,4 @@ enum class ProcessProperty {
     REMINDER_DATE,
     ARCHIVED,
     ERRORS,
-    // Used for zipfiles
-    ZIP_FILE_NAME
 }

@@ -1,6 +1,8 @@
 package com.cuupa.mailprocessor.configuration
 
 import com.cuupa.mailprocessor.MailprocessorConfiguration
+import com.cuupa.mailprocessor.MailprocessorStartService
+import com.cuupa.mailprocessor.services.BarcodeReader
 import com.cuupa.mailprocessor.services.TextExtractorService
 import com.cuupa.mailprocessor.services.TranslateService
 import com.cuupa.mailprocessor.services.WorkerService
@@ -38,7 +40,12 @@ open class ServiceConfiguration {
 
     @Bean
     open fun workerService(): WorkerService {
-        return WorkerService(runtimeService, mailprocessorConfiguration, scanService(), emailService())
+        return WorkerService(startService(), mailprocessorConfiguration, scanService(), emailService())
+    }
+
+    @Bean
+    open fun startService(): MailprocessorStartService{
+        return MailprocessorStartService(runtimeService)
     }
 
     @Bean
@@ -60,4 +67,7 @@ open class ServiceConfiguration {
     open fun textExtractorService(): TextExtractorService {
         return TextExtractorService()
     }
+
+    @Bean
+    open fun barcodeReader() = BarcodeReader()
 }

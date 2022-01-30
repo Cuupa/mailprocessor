@@ -34,6 +34,8 @@
 
         <hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
         <sardine.version>5.10</sardine.version>
+
+        <xzing.version>3.4.1</xzing.version>
     </properties>
 
     <dependencyManagement>
@@ -149,6 +151,14 @@
             <artifactId>sardine</artifactId>
             <version>${sardine.version}</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${xzing.version}</version>
+        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
         <dependency>

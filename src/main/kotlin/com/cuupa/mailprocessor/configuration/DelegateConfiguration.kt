@@ -1,5 +1,6 @@
 package com.cuupa.mailprocessor.configuration
 
+import com.cuupa.mailprocessor.delegates.preprocessing.scan.DetectDpiDelegate
 import com.cuupa.mailprocessor.delegates.preprocessing.scan.DetectPatchSheetDelegate
 import com.cuupa.mailprocessor.services.BarcodeReader
 import org.springframework.context.annotation.Bean
@@ -10,4 +11,7 @@ open class DelegateConfiguration {
 
     @Bean("detectPatchSheetDelegate")
     open fun detectPatchSheetDelegate(barcodeReader: BarcodeReader) = DetectPatchSheetDelegate(barcodeReader)
+
+    @Bean("detectDPIDelegate")
+    open fun detectDPIDelegate() = DetectDpiDelegate()
 }

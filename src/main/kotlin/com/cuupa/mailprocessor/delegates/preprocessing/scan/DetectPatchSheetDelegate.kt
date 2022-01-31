@@ -13,7 +13,9 @@ class DetectPatchSheetDelegate(private val barcodeReader: BarcodeReader) : JavaD
 
     override fun execute(execution: DelegateExecution?) {
         val variables = ProcessVariables(execution)
-        val barcodes = barcodeReader.readBarcode(variables.content, variables.filetype).filter { isPatchSheet(it) }
+        val barcodes = barcodeReader
+            .readBarcode(variables.content, variables.filetype, variables.pageDPIs)
+            .filter { isPatchSheet(it) }
 
         variables.hasPatchSheet = barcodes.isNotEmpty()
         variables.patchSheets = barcodes

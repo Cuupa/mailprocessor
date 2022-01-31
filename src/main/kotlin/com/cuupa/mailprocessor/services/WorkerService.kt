@@ -46,23 +46,12 @@ class WorkerService(
     }
 
     private fun getScanProcessProperties(document: Document) = mutableMapOf(
-        ProcessProperty.FILE_NAME.name to document.filename,
         ProcessProperty.FILE_CONTENT.name to document.content,
-        ProcessProperty.USERNAME.name to document.user,
-        ProcessProperty.ARCHIVED.name to false
 
     )
 
     private fun getEmailProperties(email: EMail) = mapOf(
-        ProcessProperty.FILE_NAME.name to email.filename,
         ProcessProperty.FILE_CONTENT.name to email.content,
-        ProcessProperty.USERNAME.name to email.user,
-        ProcessProperty.EMAIL_LABEL.name to email.label,
-        ProcessProperty.EMAIL_SUBJECT.name to email.subject,
-        ProcessProperty.RECEIVED_DATE.name to email.receivedDate,
-        ProcessProperty.EMAIL_ATTACHMENTS.name to email.attachments,
-        ProcessProperty.ARCHIVED.name to false,
-        ProcessProperty.MAIL_TYPE.name to InputType.EMAIL.name
     )
 
     companion object {

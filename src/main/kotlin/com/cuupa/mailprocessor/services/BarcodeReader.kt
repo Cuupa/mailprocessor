@@ -1,5 +1,6 @@
 package com.cuupa.mailprocessor.services
 
+import com.cuupa.mailprocessor.delegates.preprocessing.scan.DPI
 import com.cuupa.mailprocessor.delegates.preprocessing.scan.FileType
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.MultiFormatReader
@@ -8,15 +9,14 @@ import com.google.zxing.RGBLuminanceSource
 import com.google.zxing.common.HybridBinarizer
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.rendering.PDFRenderer
-import java.awt.Color
 import java.awt.image.BufferedImage
 
 
 class BarcodeReader {
 
-    fun readBarcode(content: ByteArray?, type: FileType): List<BarcodeResult> {
+    fun readBarcode(content: ByteArray?, type: FileType, dpi: List<DPI>): List<BarcodeResult> {
         val pages: List<BufferedImage> = if (type == FileType.PDF) {
-            getImagesFromPDF(content)
+            getImagesFromPDF(content, dpi)
         } else {
             listOf(BufferedImage(0, 0, 0))
         }
@@ -27,7 +27,7 @@ class BarcodeReader {
             val page = pages[i]
             try {
                 val barcodeContent = MultiFormatReader().decode(convertImageToBinaryBitmap(page))
-                barcodes.add(BarcodeResult(i, barcodeContent))
+                barcodes.add(BarcodeResult(i, Barcode(barcodeContent.barcodeFormat, barcodeContent.text)))
             } catch (ne: NotFoundException) {
                 // simply no barcode found
             }
@@ -49,31 +49,14 @@ class BarcodeReader {
         return BinaryBitmap(HybridBinarizer(source))
     }
 
-    private fun getImagesFromPDF(content: ByteArray?): List<BufferedImage> {
+    private fun getImagesFromPDF(content: ByteArray?, dpi: List<DPI>): List<BufferedImage> {
         PDDocument.load(content).use { document ->
             val renderer = PDFRenderer(document)
             val pageImages = mutableListOf<BufferedImage>()
             for (index in 0 until document.numberOfPages) {
-                pageImages.add(renderer.renderImageWithDPI(index, 300F))
+                pageImages.add(renderer.renderImageWithDPI(index, dpi[index].x))
             }
             return pageImages
         }
-    }
-
-    /**
-     * got from
-     * https://gist.github.com/boolean444/899d6fa2b18f6b8f0f56bf98ad15d5a8
-     */
-    private fun greyScale(img: BufferedImage): BufferedImage {
-        for (i in 0 until img.height) {
-            for (j in 0 until img.width) {
-                val r = Color(img.getRGB(j, i)).red
-                val g = Color(img.getRGB(j, i)).green
-                val b = Color(img.getRGB(j, i)).blue
-                val grayScaled = (r + g + b) / 3
-                img.setRGB(j, i, Color(grayScaled, grayScaled, grayScaled).rgb)
-            }
-        }
-        return img
     }
 }

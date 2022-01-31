@@ -33,23 +33,12 @@ class ColorToggleDelegate : JavaDelegate {
             // so let's just handle images with greyscale as the target color scheme
             val pagesToConvert = colorToggleProfiles
                 .filter { it.key == ColorSpace.CS_GRAY }
-                //.filter { it.value. }
                 .flatMap { it.value }
 
             val converted = convert(pagesToConvert)
 
             converted.forEach {
-                val image = LosslessFactory.createFromImage(document, it.image)
-                val width = document.getPage(it.pageIndex).mediaBox.width
-                val height = document.getPage(it.pageIndex).mediaBox.height
-
-                val oldPage = document.getPage(it.pageIndex)
-                val newPage = copy(oldPage, document)
-
-                PDPageContentStream(document, newPage).use { contentStream ->
-                    contentStream.drawImage(image, 0f, 0f, width, height)
-                }
-                //document.pages.add(newPage)
+                val (oldPage, newPage) = createPage(document, it)
                 document.pages.insertAfter(newPage, oldPage)
                 document.pages.remove(oldPage)
             }
@@ -61,14 +50,31 @@ class ColorToggleDelegate : JavaDelegate {
         }
     }
 
+    private fun createPage(
+        document: PDDocument,
+        it: PageImage
+    ): Pair<PDPage, PDPage> {
+        val image = LosslessFactory.createFromImage(document, it.image)
+
+        val oldPage = document.getPage(it.pageIndex)
+        val newPage = copy(oldPage, document)
+
+        PDPageContentStream(document, newPage).use { contentStream ->
+            val width = oldPage.mediaBox.width
+            val height = oldPage.mediaBox.height
+            contentStream.drawImage(image, 0f, 0f, width, height)
+        }
+        return Pair(oldPage, newPage)
+    }
+
     private fun copy(oldPage: PDPage, document: PDDocument): PDPage {
-        val importedPage = PDPage(COSDictionary(oldPage.cosObject))
         val dest = PDStream(document, oldPage.contents, COSName.FLATE_DECODE)
-        importedPage.setContents(dest)
-        importedPage.cropBox = oldPage.cropBox
-        importedPage.mediaBox = oldPage.mediaBox
-        importedPage.rotation = oldPage.rotation
-        return importedPage
+        return PDPage(COSDictionary(oldPage.cosObject)).apply {
+            setContents(dest)
+            cropBox = oldPage.cropBox
+            mediaBox = oldPage.mediaBox
+            rotation = oldPage.rotation
+        }
     }
 
     private fun convert(pagesToConvert: List<PageImage>): List<PageImage> {

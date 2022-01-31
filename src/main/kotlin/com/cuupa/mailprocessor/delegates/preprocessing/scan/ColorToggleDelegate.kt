@@ -2,6 +2,7 @@ package com.cuupa.mailprocessor.delegates.preprocessing.scan
 
 import com.cuupa.mailprocessor.process.ProcessVariables
 import com.cuupa.mailprocessor.services.BarcodeResult
+import com.cuupa.mailprocessor.services.files.util.PageImage
 import com.google.zxing.BarcodeFormat
 import org.apache.pdfbox.cos.COSDictionary
 import org.apache.pdfbox.cos.COSName
@@ -45,7 +46,6 @@ class ColorToggleDelegate : JavaDelegate {
 
             val outputStream = ByteArrayOutputStream()
             document.save(outputStream)
-            document.close()
             variables.content = outputStream.toByteArray()
         }
     }

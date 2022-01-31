@@ -1,7 +1,7 @@
 package com.cuupa.mailprocessor.services
 
-import com.cuupa.mailprocessor.delegates.preprocessing.scan.DPI
-import com.cuupa.mailprocessor.delegates.preprocessing.scan.FileType
+import com.cuupa.mailprocessor.services.files.util.DPI
+import com.cuupa.mailprocessor.services.files.util.FileType
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.NotFoundException

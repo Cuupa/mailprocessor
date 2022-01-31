@@ -3,10 +3,11 @@ package com.cuupa.mailprocessor.delegates.preprocessing.scan
 import com.cuupa.mailprocessor.process.ProcessVariables
 import com.cuupa.mailprocessor.services.Extensions.isNullOrEmpty
 import com.cuupa.mailprocessor.services.extractors.FiletypeDetector
+import com.cuupa.mailprocessor.services.files.util.FileType
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
 
-class FiletypeDetermineDelegate : JavaDelegate {
+class DetermineFiletypeDelegate : JavaDelegate {
 
     override fun execute(execution: DelegateExecution?) {
         val processVariables = ProcessVariables(execution)

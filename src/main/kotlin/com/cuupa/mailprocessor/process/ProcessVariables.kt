@@ -1,7 +1,7 @@
 package com.cuupa.mailprocessor.process
 
-import com.cuupa.mailprocessor.delegates.preprocessing.scan.DPI
-import com.cuupa.mailprocessor.delegates.preprocessing.scan.FileType
+import com.cuupa.mailprocessor.services.files.util.DPI
+import com.cuupa.mailprocessor.services.files.util.FileType
 import com.cuupa.mailprocessor.services.BarcodeResult
 import org.camunda.bpm.engine.delegate.DelegateExecution
 

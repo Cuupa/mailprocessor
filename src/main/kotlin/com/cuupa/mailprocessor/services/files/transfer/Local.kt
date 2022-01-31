@@ -1,4 +1,4 @@
-package com.cuupa.mailprocessor.services.files
+package com.cuupa.mailprocessor.services.files.transfer
 
 import java.io.ByteArrayInputStream
 import java.io.IOException
@@ -6,7 +6,6 @@ import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.streams.toList
 
 class Local : File {
 

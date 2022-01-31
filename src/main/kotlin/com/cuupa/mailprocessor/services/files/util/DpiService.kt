@@ -1,4 +1,4 @@
-package com.cuupa.mailprocessor.delegates.preprocessing.scan
+package com.cuupa.mailprocessor.services.files.util
 
 import org.apache.pdfbox.contentstream.PDFStreamEngine
 import org.apache.pdfbox.contentstream.operator.Operator

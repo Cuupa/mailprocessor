@@ -1,4 +1,4 @@
-package com.cuupa.mailprocessor.services.files
+package com.cuupa.mailprocessor.services.files.transfer
 
 import com.github.sardine.DavResource
 import com.github.sardine.Sardine

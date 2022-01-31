@@ -1,4 +1,4 @@
-package com.cuupa.mailprocessor.delegates.preprocessing.scan
+package com.cuupa.mailprocessor.services.files.util
 
 enum class FileType {
 

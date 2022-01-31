@@ -1,11 +1,9 @@
 package com.cuupa.mailprocessor.services.input.scan
 
-import com.cuupa.mailprocessor.services.extractors.ZipExtractor
-import com.cuupa.mailprocessor.services.files.File
-import com.cuupa.mailprocessor.services.files.FileFactory
-import com.cuupa.mailprocessor.services.files.FileResource
+import com.cuupa.mailprocessor.services.files.transfer.File
+import com.cuupa.mailprocessor.services.files.transfer.FileFactory
+import com.cuupa.mailprocessor.services.files.transfer.FileResource
 import com.cuupa.mailprocessor.services.input.Document
-import com.cuupa.mailprocessor.services.input.Zip
 import com.cuupa.mailprocessor.userconfiguration.DirectoryConfiguration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking

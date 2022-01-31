@@ -1,8 +1,7 @@
 package com.cuupa.mailprocessor.services
 
-import com.cuupa.mailprocessor.delegates.preprocessing.scan.DPI
-import com.cuupa.mailprocessor.delegates.preprocessing.scan.FileType
-import org.junit.jupiter.api.Assertions.*
+import com.cuupa.mailprocessor.services.files.util.DPI
+import com.cuupa.mailprocessor.services.files.util.FileType
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Paths

@@ -9,11 +9,11 @@ import java.nio.file.Paths
 
 class Local : File {
 
-    override fun init(username: String?, password: String?) {
-        // Not implemented
+    override fun init(username: String?, password: String?): File {
+        return this
     }
 
-    override fun exists(path: String, filename: String) = Files.exists(Paths.get(path + filename))
+    override fun exists(path: String?, filename: String?) = Files.exists(Paths.get(path + filename))
 
     override fun save(path: String, filename: String, data: ByteArray): Boolean {
         return try {

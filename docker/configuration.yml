@@ -8,6 +8,18 @@ classificator:
   enabled: false
   api-key: "YOUR-API-KEY"
 
+OCR:
+  # absolute input path
+  input: "https://path/to/drive"
+  # absolute output path
+  output: "https://path/to/result"
+  username: "username"
+  password: "password"
+  enabled: false
+
+decitiontables:
+  path: "path/to/dmns"
+
 configuration:
   - username: "user.name"
     locale: "en_EN"

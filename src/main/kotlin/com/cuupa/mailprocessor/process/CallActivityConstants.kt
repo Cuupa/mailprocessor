@@ -1,6 +1,6 @@
 package com.cuupa.mailprocessor.process
 
-object ModelConstants {
+object CallActivityConstants {
 
     const val PREPROCESSING = "preprocessing"
     const val SCAN_PREPROCESSING = "scan_preprocessing"

@@ -36,6 +36,7 @@
         <sardine.version>5.10</sardine.version>
 
         <xzing.version>3.4.1</xzing.version>
+        <swagger-annotations.version>2.1.12</swagger-annotations.version>
     </properties>
 
     <dependencyManagement>
@@ -130,6 +131,12 @@
             <groupId>javax.mail</groupId>
             <artifactId>javax.mail-api</artifactId>
             <version>${javax-mail.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-annotations.version}</version>
         </dependency>
 
         <dependency>

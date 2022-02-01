@@ -12,16 +12,20 @@ class WebDav : File {
 
     private lateinit var sardine: Sardine
 
-    override fun init(username: String?, password: String?) {
+    override fun init(username: String?, password: String?): File {
         sardine = when {
             username.isNullOrEmpty() || password.isNullOrEmpty() -> SardineFactory.begin()
             else -> SardineFactory.begin(username, password)
         }
         sardine.enableCompression()
+        return this
     }
 
-    override fun exists(path: String, filename: String): Boolean {
+    override fun exists(path: String?, filename: String?): Boolean {
         return try {
+            if (path == null) {
+                return false
+            }
             sardine.exists(getUrl(path, filename))
         } catch (e: IOException) {
             false
@@ -105,7 +109,7 @@ class WebDav : File {
 
     private fun nonEmptyEntries() = { cs: String? -> !cs.isNullOrBlank() }
 
-    private fun getUrl(path: String, name: String): String {
+    private fun getUrl(path: String, name: String?): String {
         val scheme = getScheme(path)
         val host = getHost(path)
         val port = getPort(path.replace(scheme, emptyString).replace(schemaSeparator, emptyString))
@@ -113,12 +117,17 @@ class WebDav : File {
         return URI(scheme, null, host, port, filename, null, null).toURL().toString()
     }
 
-    private fun getFilename(filename: String, scheme: String, host: String, port: Int, nameReplaced: String): String {
-        return filename.replace(schemaSeparator, emptyString)
+    private fun getFilename(path: String, scheme: String, host: String, port: Int, name: String?): String {
+        var value = path.replace(schemaSeparator, emptyString)
             .replace(colon, emptyString)
             .replace(scheme, emptyString)
             .replace(host, emptyString)
-            .replace("$port", emptyString) + getName(nameReplaced.replace("/", ","))
+            .replace("$port", emptyString)
+
+        if (name != null) {
+            value += getName(name.replace("/", ","))
+        }
+        return value
     }
 
     private fun getName(name: String): String {

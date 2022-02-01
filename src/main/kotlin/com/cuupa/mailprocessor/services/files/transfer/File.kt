@@ -4,9 +4,9 @@ import java.io.InputStream
 
 interface File : AutoCloseable {
 
-    fun init(username: String?, password: String?)
+    fun init(username: String?, password: String?): File
 
-    fun exists(path: String, filename: String): Boolean
+    fun exists(path: String?, filename: String?): Boolean
 
     fun save(path: String, filename: String, data: ByteArray): Boolean
 

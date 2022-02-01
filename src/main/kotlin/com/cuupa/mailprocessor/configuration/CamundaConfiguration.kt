@@ -15,14 +15,15 @@ import javax.sql.DataSource
  */
 @Configuration
 open class CamundaConfiguration {
+
     @Bean
     open fun dataSource(): DataSource {
-        val dataSource = SimpleDriverDataSource()
-        dataSource.setDriverClass(Driver::class.java)
-        dataSource.url = "jdbc:h2:mem:camunda;DB_CLOSE_DELAY=-1"
-        dataSource.username = "sa"
-        dataSource.password = ""
-        return dataSource
+        return SimpleDriverDataSource().apply {
+            setDriverClass(Driver::class.java)
+            url = "jdbc:h2:mem:camunda;DB_CLOSE_DELAY=-1"
+            username = "sa"
+            password = ""
+        }
     }
 
     @Bean
@@ -32,14 +33,14 @@ open class CamundaConfiguration {
 
     @Bean
     open fun processEngineConfiguration(): SpringProcessEngineConfiguration {
-        val config = SpringProcessEngineConfiguration()
-        config.processEngineName = "mailprocessor"
-        config.dataSource = dataSource()
-        config.transactionManager = transactionManager()
-        config.databaseSchemaUpdate = "true"
-        config.history = "full"
-        config.isJobExecutorActivate = true
-        return config
+        return SpringProcessEngineConfiguration().apply {
+            processEngineName = "mailprocessor"
+            dataSource = dataSource()
+            transactionManager = transactionManager()
+            databaseSchemaUpdate = "true"
+            history = "full"
+            isJobExecutorActivate = true
+        }
     }
 
     /*@Bean

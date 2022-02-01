@@ -1,6 +1,6 @@
 #default values. Can be overridden with the -D in the jvm-arguments
 
-config.path: "docker/configuration.yml"
+config.path: "docker/configuration.yml.bak"
 semantic.url: "http://localhost:8081/api/rest/1.0/classifyText"
 
 

@@ -1,7 +1,7 @@
 package com.cuupa.mailprocessor.services.input.scan
 
 import com.cuupa.mailprocessor.services.files.transfer.File
-import com.cuupa.mailprocessor.services.files.transfer.FileFactory
+import com.cuupa.mailprocessor.services.files.transfer.TransferProtocolFacade
 import com.cuupa.mailprocessor.services.files.transfer.FileResource
 import com.cuupa.mailprocessor.services.input.Document
 import com.cuupa.mailprocessor.userconfiguration.DirectoryConfiguration
@@ -14,7 +14,7 @@ class ScanService {
     fun loadScans(user: String, config: DirectoryConfiguration): List<Document> {
 
         config.path?.let { path ->
-            FileFactory.getForPath(path).use { file ->
+            TransferProtocolFacade.getForPath(path).use { file ->
                 file.init(config.username, config.password)
                 return getDocuments(file, path, config, user)
             }
@@ -41,7 +41,7 @@ class ScanService {
             if (path.isEmpty()) {
                 return false
             }
-            FileFactory.getForPath(path).use { file ->
+            TransferProtocolFacade.getForPath(path).use { file ->
                 file.init(scanProperties.username, scanProperties.password)
                 return moveFile(file, path, targetPath, filename!!, filecontent, scanProperties)
             }

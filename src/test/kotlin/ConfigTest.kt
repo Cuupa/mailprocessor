@@ -1,6 +1,6 @@
 package com.cuupa.mailprocessor.configuration
 
-import com.cuupa.mailprocessor.userconfiguration.Configuration
+import com.cuupa.mailprocessor.userconfiguration.*
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
@@ -14,7 +14,8 @@ class ConfigTest {
     fun shouldLoadConfig() {
         val config = getObjectMapper().readValue(
             File("/Users/simon/IdeaProjects/mailprocessor/docker/configuration.yml"),
-            Configuration::class.java)
+            Configuration::class.java
+        )
 
         assertNotNull(config)
     }

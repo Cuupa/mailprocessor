@@ -3,24 +3,23 @@ package com.cuupa.mailprocessor.delegates.preprocessing.scan
 import com.cuupa.mailprocessor.process.ProcessVariables
 import com.cuupa.mailprocessor.services.Extensions.isNullOrEmpty
 import com.cuupa.mailprocessor.services.extractors.FiletypeDetector
-import com.cuupa.mailprocessor.services.files.util.FileType
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
+import org.springframework.http.MediaType
 
 class DetermineFiletypeDelegate : JavaDelegate {
 
     override fun execute(execution: DelegateExecution?) {
         val processVariables = ProcessVariables(execution)
-        processVariables.filetype = determineFiletype(processVariables.content)
+        processVariables.contentType = determineFiletype(processVariables.content)
     }
 
-    private fun determineFiletype(content: ByteArray?): FileType {
-
+    private fun determineFiletype(content: ByteArray?): MediaType {
         return when {
-            content.isNullOrEmpty() -> FileType.NONE
-            FiletypeDetector.isPdf(content) -> FileType.PDF
-            FiletypeDetector.isTiff(content) -> FileType.TIFF
-            FiletypeDetector.isJpeg(content) -> FileType.JPEG
+            content.isNullOrEmpty() -> MediaType.APPLICATION_OCTET_STREAM
+            FiletypeDetector.isPdf(content) -> MediaType.APPLICATION_PDF
+            FiletypeDetector.isTiff(content) ->  MediaType("image", "tiff")
+            FiletypeDetector.isJpeg(content) -> MediaType.IMAGE_JPEG
             else -> throw RuntimeException("invalid filetype for '$content'")
         }
     }

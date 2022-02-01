@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_16nlxb0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:collaboration id="Collaboration_1nkirst">
-    <bpmn:participant id="Participant_06nlnks" processRef="Process_16av0jm" />
+    <bpmn:participant id="Participant_06nlnks" name="Converting" processRef="converting" />
     <bpmn:participant id="Participant_02u31xg" name="Converter Service" />
     <bpmn:messageFlow id="Flow_0h7xd73" sourceRef="Participant_02u31xg" targetRef="Activity_0rnbu4j" />
     <bpmn:messageFlow id="Flow_0g2dy6c" sourceRef="Activity_0rnbu4j" targetRef="Participant_02u31xg" />
     <bpmn:messageFlow id="Flow_0zu2ck4" sourceRef="Activity_12i7u1t" targetRef="Participant_02u31xg" />
     <bpmn:messageFlow id="Flow_1x8pr34" sourceRef="Participant_02u31xg" targetRef="Activity_12i7u1t" />
   </bpmn:collaboration>
-  <bpmn:process id="Process_16av0jm" isExecutable="true">
+  <bpmn:process id="converting" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_07lr5bi</bpmn:outgoing>
     </bpmn:startEvent>

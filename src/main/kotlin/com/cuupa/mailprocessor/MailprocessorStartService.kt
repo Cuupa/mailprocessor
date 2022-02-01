@@ -1,6 +1,6 @@
 package com.cuupa.mailprocessor
 
-import com.cuupa.mailprocessor.process.ModelConstants
+import com.cuupa.mailprocessor.process.CallActivityConstants
 import org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
@@ -10,13 +10,13 @@ class MailprocessorStartService(private val runtimeService: RuntimeService) {
 
     fun startScanProcess(variables: Map<String, Any?>) {
         val finalVariables = generalCalls(variables)
-        finalVariables[ModelConstants.PREPROCESSING] = ModelConstants.SCAN_PREPROCESSING
+        finalVariables[CallActivityConstants.PREPROCESSING] = CallActivityConstants.SCAN_PREPROCESSING
         start(finalVariables)
     }
 
     fun startEmailProcess(variables: Map<String, Any?>) {
         val finalVariables = generalCalls(variables)
-        finalVariables[ModelConstants.PREPROCESSING] = ModelConstants.EMAIL_PREPROCESSING
+        finalVariables[CallActivityConstants.PREPROCESSING] = CallActivityConstants.EMAIL_PREPROCESSING
         start(finalVariables)
     }
 
@@ -30,11 +30,11 @@ class MailprocessorStartService(private val runtimeService: RuntimeService) {
 
     private fun generalCalls(variables: Map<String, Any?>): MutableMap<String, Any?> {
         val generalVariables = variables.toMutableMap()
-        generalVariables[ModelConstants.CONVERTING] = ModelConstants.CONVERTING
-        generalVariables[ModelConstants.OCR] = ModelConstants.OCR
-        generalVariables[ModelConstants.CLASSIFICATION] = ModelConstants.CLASSIFICATION
-        generalVariables[ModelConstants.QA] = ModelConstants.QA
-        generalVariables[ModelConstants.ARCHIVING] = ModelConstants.ARCHIVING
+        generalVariables[CallActivityConstants.CONVERTING] = CallActivityConstants.CONVERTING
+        generalVariables[CallActivityConstants.OCR] = CallActivityConstants.OCR
+        generalVariables[CallActivityConstants.CLASSIFICATION] = CallActivityConstants.CLASSIFICATION
+        generalVariables[CallActivityConstants.QA] = CallActivityConstants.QA
+        generalVariables[CallActivityConstants.ARCHIVING] = CallActivityConstants.ARCHIVING
         return generalVariables
     }
 

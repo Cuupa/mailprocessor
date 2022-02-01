@@ -8,12 +8,12 @@ class Invalid : File {
         TODO("Invalid file")
     }
 
-    override fun init(username: String?, password: String?) {
-        TODO("Invalid file")
+    override fun init(username: String?, password: String?): File {
+        return this
     }
 
-    override fun exists(path: String, filename: String): Boolean {
-        TODO("Invalid file")
+    override fun exists(path: String?, filename: String?): Boolean {
+        TODO("Not yet implemented")
     }
 
     override fun save(path: String, filename: String, data: ByteArray): Boolean {

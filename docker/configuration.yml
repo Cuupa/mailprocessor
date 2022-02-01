@@ -1,11 +1,19 @@
 ---
-configuration:
-  - username: user.name
-    locale: en_EN
+converter:
+  url: "https://path.com/to/converter"
+  enabled: false
 
+classificator:
+  url: "https://path.com/to/classification"
+  enabled: false
+  api-key: "YOUR-API-KEY"
+
+configuration:
+  - username: "user.name"
+    locale: "en_EN"
     input:
       email:
-        url: "imap.mail.com:993"
+        url: "imap.mail.com"
         username: "username@mail.com"
         password: "password"
         protocol: "imaps"
@@ -13,22 +21,23 @@ configuration:
           - "inbox"
           - "label1"
           - "label2"
-        markasread: true
+        markasread: false
         enabled: false
 
       directory:
-        path: "https://webdav.thiel.cloud/Work/Test"
-        error: "https://webdav.network.share/error"
-        success: "https://webdav.network.share/success"
-        username: "simon.thiel"
-        password: "272591863004#Dx"
+        path: "/path"
+        error: "/error"
+        success: "/done"
+        username: "user.name"
+        password: "password"
         prefix:
           - "*"
         filetypes:
           - "pdf"
-        enabled: true
+          - "tiff"
+        enabled: false
 
     output:
-      path: "https://webdav.network.share:443"
+      path: "path/to/archive"
       username: "username"
       password: "password"

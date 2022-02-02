@@ -46,18 +46,18 @@
     <bpmn:sequenceFlow id="Flow_07lr5bi" sourceRef="StartEvent_1" targetRef="Activity_15wlijd" />
     <bpmn:sequenceFlow id="Flow_00m3gx9" sourceRef="Activity_15wlijd" targetRef="Gateway_1tzn9tf" />
     <bpmn:sequenceFlow id="Flow_1qmisbc" name="convert" sourceRef="Gateway_1h1j6uk" targetRef="Activity_0rnbu4j">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{CONVERT}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{INPUT_FORMAT != TARGET_FORMAT &amp;&amp; !SANITIZE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0hv3ma1" sourceRef="Activity_0rnbu4j" targetRef="Event_01jb3sl" />
     <bpmn:sequenceFlow id="Flow_09scl29" sourceRef="Gateway_1h1j6uk" targetRef="Activity_12i7u1t">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{!CONVERT &amp;&amp; CLEAN}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{SANITIZE &amp;&amp; INPUT_FORMAT != TARGET_FORMAT}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1nv2lqr" sourceRef="Activity_12i7u1t" targetRef="Event_1jdjb5b" />
     <bpmn:sequenceFlow id="Flow_18rt0ro" sourceRef="Gateway_1tzn9tf" targetRef="Gateway_1h1j6uk">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{CONVERT}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{INPUT_FORMAT != TARGET_FORMAT || SANITIZE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1wkuz3c" name="no action needed" sourceRef="Gateway_1tzn9tf" targetRef="Event_1cn16j8">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{!CONVERT &amp;&amp; CLEAN}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{TARGET_FORMAT == INPUT_FORMAT &amp;&amp; !SANITIZE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">

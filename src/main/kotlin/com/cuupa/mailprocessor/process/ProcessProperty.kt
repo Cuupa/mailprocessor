@@ -23,5 +23,6 @@ enum class ProcessProperty {
     //
     TARGET_OK,
     TARGET_PATH,
-    OCR_DONE
+    OCR_DONE,
+    NUMBER_OF_OCR_ATTEMPTS
 }

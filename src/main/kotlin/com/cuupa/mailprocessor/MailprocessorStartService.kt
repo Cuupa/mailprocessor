@@ -10,13 +10,13 @@ class MailprocessorStartService(private val runtimeService: RuntimeService) {
 
     fun startScanProcess(variables: Map<String, Any?>) {
         val finalVariables = generalCalls(variables)
-        finalVariables[CallActivityConstants.PREPROCESSING] = CallActivityConstants.SCAN_PREPROCESSING
+        finalVariables[CallActivityConstants.PREPROCESSING_CALL] = CallActivityConstants.SCAN_PREPROCESSING
         start(finalVariables)
     }
 
     fun startEmailProcess(variables: Map<String, Any?>) {
         val finalVariables = generalCalls(variables)
-        finalVariables[CallActivityConstants.PREPROCESSING] = CallActivityConstants.EMAIL_PREPROCESSING
+        finalVariables[CallActivityConstants.PREPROCESSING_CALL] = CallActivityConstants.EMAIL_PREPROCESSING
         start(finalVariables)
     }
 

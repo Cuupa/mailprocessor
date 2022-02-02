@@ -6,4 +6,4 @@ COPY *.jar ./app.jar
 
 EXPOSE 8080:8080
 
-ENTRYPOINT ["java", "-jar", "./app.jar", "-Dconfig_path=/opt/app/mailprocessor", "-Dserver_port=8080", "-Dsemantic_url=https://myseaḿantic.url/api/rest/1.0/classifyText"]
+ENTRYPOINT ["java", "-jar", "./app.jar", "-Dconfig_path=/opt/app/mailprocessor", "-Dserver.port=8080"]

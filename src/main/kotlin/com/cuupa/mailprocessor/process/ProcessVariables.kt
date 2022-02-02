@@ -204,4 +204,31 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
             }
             return false
         }
+
+    var ocrId: String?
+        set(value) {
+            delegateExecution?.let {
+                it.setVariable(ProcessProperty.TARGET_PATH.name, value)
+            }
+        }
+        get() {
+            delegateExecution?.let {
+                return it.getVariable(ProcessProperty.TARGET_PATH.name) as String
+            }
+            return null
+        }
+
+    var numberOfOcrAttempts: Int
+        set(value) {
+            delegateExecution?.let {
+                it.setVariable(ProcessProperty.NUMBER_OF_OCR_ATTEMPTS.name, value)
+            }
+        }
+        get() {
+            delegateExecution?.let {
+                return it.getVariable(ProcessProperty.NUMBER_OF_OCR_ATTEMPTS.name) as Int
+            }
+            return 0
+        }
+
 }

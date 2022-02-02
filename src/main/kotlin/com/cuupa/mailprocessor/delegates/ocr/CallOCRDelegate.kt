@@ -13,15 +13,15 @@ class CallOCRDelegate(private val config: OcrConfiguration) : JavaDelegate {
         if (config.enabeld.orFalse()) {
             return
         }
+        val variables = ProcessVariables(execution)
 
-        if (config.input.isNullOrEmpty() || config.output.isNullOrEmpty()) {
+        if (config.input.isNullOrEmpty() || config.output.isNullOrEmpty() || variables.ocrId.isNullOrEmpty()) {
             return
         }
 
-        val variables = ProcessVariables(execution)
 
         TransferProtocolFacade.getForPath(config.input).init(config.username, config.password).use {
-            it.save(config.input!!, variables.filename, variables.content!!)
+            it.save(config.input!!, variables.ocrId!!, variables.content!!)
         }
     }
 }

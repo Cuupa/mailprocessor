@@ -23,8 +23,8 @@ class CheckOCRDelegate(private val config: OcrConfiguration) : JavaDelegate {
         val variables = ProcessVariables(execution)
 
         TransferProtocolFacade.getForPath(config.output).init(config.username, config.password).use {
-            if(it.exists(config.output, variables.filename)) {
-                variables.content = IOUtils.toByteArray(it.get(config.output!!, variables.filename))
+            if(it.exists(config.output, variables.ocrId)) {
+                variables.content = IOUtils.toByteArray(it.get(config.output!!, variables.ocrId!!))
                 variables.plaintext = FileFacade.content(variables.content).getText()
                 variables.ocrDone = true
             }

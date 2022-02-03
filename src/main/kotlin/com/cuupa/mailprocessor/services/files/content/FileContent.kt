@@ -13,9 +13,9 @@ abstract class FileContent(var content: ByteArray) {
 
     abstract fun getText(): List<String>
 
-    abstract fun removePatchSheets(patchSheets: List<BarcodeResult>): FileContent
-
     abstract fun handleColorTogglePage(colorToggleList: List<Int>, pageDPIs: List<DPI>): FileContent
+
+    abstract fun handleFileSeparationPatchSheet(pageSeparationSheets: List<Int>): List<ByteArray>
 
     abstract fun getImages(dpi: List<DPI>): List<BufferedImage>
 

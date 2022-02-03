@@ -1,6 +1,9 @@
 ---
 converter:
-  url: "https://path.com/to/converter"
+  input: "https://path.com/to/converter"
+  output: "https://path.com/to/converter"
+  username: "user"
+  password: "password"
   enabled: false
 
 classificator:

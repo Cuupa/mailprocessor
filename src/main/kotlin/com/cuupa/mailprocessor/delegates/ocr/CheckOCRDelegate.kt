@@ -12,7 +12,7 @@ import org.camunda.bpm.engine.delegate.JavaDelegate
 class CheckOCRDelegate(private val config: OcrConfiguration) : JavaDelegate {
 
     override fun execute(execution: DelegateExecution?) {
-        if (config.enabeld.orFalse()) {
+        if (config.enabled.orFalse()) {
             return
         }
 
@@ -23,8 +23,8 @@ class CheckOCRDelegate(private val config: OcrConfiguration) : JavaDelegate {
         val variables = ProcessVariables(execution)
 
         TransferProtocolFacade.getForPath(config.output).init(config.username, config.password).use {
-            if(it.exists(config.output, variables.ocrId)) {
-                variables.content = IOUtils.toByteArray(it.get(config.output!!, variables.ocrId!!))
+            if(it.exists(config.output, execution?.id)) {
+                variables.content = IOUtils.toByteArray(it.get(config.output!!, execution?.id!!))
                 variables.plaintext = FileFacade.content(variables.content).getText()
                 variables.ocrDone = true
             }

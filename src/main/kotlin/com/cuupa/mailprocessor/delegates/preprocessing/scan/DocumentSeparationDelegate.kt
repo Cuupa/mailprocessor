@@ -2,6 +2,7 @@ package com.cuupa.mailprocessor.delegates.preprocessing.scan
 
 import com.cuupa.mailprocessor.process.ProcessVariables
 import com.cuupa.mailprocessor.services.BarcodeResult
+import com.cuupa.mailprocessor.services.files.content.FileFacade
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.camunda.bpm.engine.delegate.DelegateExecution
@@ -16,16 +17,13 @@ class DocumentSeparationDelegate : JavaDelegate {
             log.error("No patch sheets found, although ${DetectPatchSheetDelegate::class.java} has detected some")
         }
 
-        variables.patchSheets.filter { isPageSeparationSheet(it) }
-    }
-
-    private fun isPageSeparationSheet(it: BarcodeResult): Boolean {
-        return it.barcode.text == pageSeparationCodeT || it.barcode.text == pageSeparationCode2
+        val pageSeparationSheets = variables.patchSheets
+            .filter { it.isPageSeparationSheet() }
+            .map { it.pageIndex }
+        val file = FileFacade.content(variables.content).handleFileSeparationPatchSheet(pageSeparationSheets)
     }
 
     companion object {
-        const val pageSeparationCodeT = "PATCHT"
-        const val pageSeparationCode2 = "PATCH2"
         val log: Log = LogFactory.getLog(DocumentSeparationDelegate::class.java)
     }
 }

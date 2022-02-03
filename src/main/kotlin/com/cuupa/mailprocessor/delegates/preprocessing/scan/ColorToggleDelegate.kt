@@ -25,17 +25,11 @@ class ColorToggleDelegate : JavaDelegate {
 
     override fun execute(execution: DelegateExecution?) {
         val variables = ProcessVariables(execution)
-        val patchSheets = variables.patchSheets.filter { isColorToggle(it) }
-        val colorToggleList = patchSheets.map { it.pageIndex }
+        val colorToggleList = variables.patchSheets
+            .filter { it.isColorToggle() }
+            .map { it.pageIndex }
 
-       val file = FileFacade.content(variables.content).handleColorTogglePage(colorToggleList, variables.pageDPIs)
+        val file = FileFacade.content(variables.content).handleColorTogglePage(colorToggleList, variables.pageDPIs)
         variables.content = file.content
-    }
-
-    private fun isColorToggle(it: BarcodeResult) =
-        it.barcode.barcodeFormat == BarcodeFormat.CODE_39 && it.barcode.text == colorToggleCode
-
-    companion object {
-        const val colorToggleCode = "PATCH4"
     }
 }

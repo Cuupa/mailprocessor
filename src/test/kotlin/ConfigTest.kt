@@ -13,7 +13,7 @@ class ConfigTest {
     @Test
     fun shouldLoadConfig() {
         val config = getObjectMapper().readValue(
-            File("/Users/simon/IdeaProjects/mailprocessor/docker/configuration.yml"),
+            File("docker/configuration.yml"),
             Configuration::class.java
         )
 

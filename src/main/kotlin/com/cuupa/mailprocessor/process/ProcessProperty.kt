@@ -1,28 +1,37 @@
 package com.cuupa.mailprocessor.process
 
-enum class ProcessProperty {
-    USERNAME,
+enum class ProcessProperty(val value: String) {
+    USERNAME("username"),
 
-    //
-    PATCH_SHEETS,
-    HAS_PATCH_SHEET,
-    DPI_PER_PAGE,
-    FILE_CONTENT,
-    FILE_NAME,
-    PLAIN_TEXT,
-    CONTENT_TYPE,
+    /**
+     * Document specific fields
+     */
+    PATCH_SHEETS("patch_sheets"),
+    HAS_PATCH_SHEET("has_patch_sheets"),
+    DPI_PER_PAGE("dpi_per_page"),
+    FILE_CONTENT("file_content"),
+    FILE_NAME("file_name"),
+    PLAIN_TEXT("plain_text"),
+    CONTENT_TYPE("content_type"),
 
-    //
-    //
-    TOPICS,
-    SENDERS,
-    METADATA,
-    HAS_SEMANTIC_RESULT,
+    /**
+     * Semantic fields
+     */
+    TOPICS("topics"),
+    SENDERS("senders"),
+    METADATA("metadata"),
+    HAS_SEMANTIC_RESULT("has_semantic_result"),
 
-    //
-    //
-    TARGET_OK,
-    TARGET_PATH,
-    OCR_DONE,
-    NUMBER_OF_OCR_ATTEMPTS
+    /**
+     * Archiving
+     */
+    TARGET_OK("target_ok"),
+    TARGET_PATH("target_path"),
+
+    /**
+     * OCR and Converting
+     */
+    OCR_DONE("ocr_done"),
+    NUMBER_OF_OCR_ATTEMPTS("number_of_ocr_attempts"),
+    NUMBER_OF_CONVERTING_ATTEMPTS("number_of_converting_attempts")
 }

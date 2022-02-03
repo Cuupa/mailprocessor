@@ -13,11 +13,11 @@ class Invalid: FileContent(ByteArray(0)) {
         TODO("Not yet implemented")
     }
 
-    override fun removePatchSheets(patchSheets: List<BarcodeResult>): FileContent {
+    override fun handleColorTogglePage(colorToggleList: List<Int>, pageDPIs: List<DPI>): FileContent {
         TODO("Not yet implemented")
     }
 
-    override fun handleColorTogglePage(colorToggleList: List<Int>, pageDPIs: List<DPI>): FileContent {
+    override fun handleFileSeparationPatchSheet(pageSeparationSheets: List<Int>): List<ByteArray> {
         TODO("Not yet implemented")
     }
 

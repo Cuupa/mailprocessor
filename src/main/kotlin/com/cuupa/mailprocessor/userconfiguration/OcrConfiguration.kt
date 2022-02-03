@@ -17,5 +17,5 @@ class OcrConfiguration {
     var password: String? = null
 
     @JsonProperty("enabled")
-    var enabeld: Boolean? = null
+    var enabled: Boolean? = null
 }

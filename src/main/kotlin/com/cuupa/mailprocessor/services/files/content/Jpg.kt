@@ -1,6 +1,5 @@
 package com.cuupa.mailprocessor.services.files.content
 
-import com.cuupa.mailprocessor.services.BarcodeResult
 import com.cuupa.mailprocessor.services.files.util.DPI
 import java.awt.image.BufferedImage
 
@@ -13,11 +12,11 @@ class Jpg(content: ByteArray) : FileContent(content) {
         TODO("Not yet implemented")
     }
 
-    override fun removePatchSheets(patchSheets: List<BarcodeResult>): FileContent {
+    override fun handleColorTogglePage(colorToggleList: List<Int>, pageDPIs: List<DPI>): FileContent {
         TODO("Not yet implemented")
     }
 
-    override fun handleColorTogglePage(colorToggleList: List<Int>, pageDPIs: List<DPI>): FileContent {
+    override fun handleFileSeparationPatchSheet(pageSeparationSheets: List<Int>): List<ByteArray> {
         TODO("Not yet implemented")
     }
 

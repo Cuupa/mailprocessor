@@ -7,14 +7,18 @@ import com.cuupa.mailprocessor.services.files.util.DpiService
 import com.cuupa.mailprocessor.services.files.util.PageImage
 import org.apache.pdfbox.cos.COSDictionary
 import org.apache.pdfbox.cos.COSName
+import org.apache.pdfbox.multipdf.PDFMergerUtility
+import org.apache.pdfbox.multipdf.Splitter
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import org.apache.pdfbox.pdmodel.PDPageContentStream
 import org.apache.pdfbox.pdmodel.common.PDStream
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory
 import org.apache.pdfbox.rendering.PDFRenderer
+import org.apache.pdfbox.tools.PDFMerger
 import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
+import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
 class Pdf(content: ByteArray) : FileContent(content) {
@@ -34,15 +38,6 @@ class Pdf(content: ByteArray) : FileContent(content) {
         }
     }
 
-    override fun removePatchSheets(patchSheets: List<BarcodeResult>): FileContent {
-        PDDocument.load(content).use { document ->
-            val pages: List<PDPage> = patchSheets.map { document.pages.get(it.pageIndex) }
-            pages.forEach { document.pages.remove(it) }
-            content = saveChanges(document)
-        }
-        return this
-    }
-
     override fun getImages(dpi: List<DPI>): List<BufferedImage> {
         PDDocument.load(content).use { document ->
             val renderer = PDFRenderer(document)
@@ -56,24 +51,74 @@ class Pdf(content: ByteArray) : FileContent(content) {
 
     override fun handleColorTogglePage(colorToggleList: List<Int>, pageDPIs: List<DPI>): FileContent {
         PDDocument.load(content).use { document ->
-            val colorToggleProfiles = getPageColorProfile(document, colorToggleList, pageDPIs)
-
             // it is not really possible to convert a greyscale image to color,
             // so let's just handle images with greyscale as the target color scheme
-            val pagesToConvert = colorToggleProfiles
+            val pagesToConvert = getPageColorProfile(document, colorToggleList, pageDPIs)
                 .filter { it.key == ColorSpace.CS_GRAY }
                 .flatMap { it.value }
 
-            val converted = applyGreyScale(pagesToConvert)
-
-            converted.forEach {
+            applyGreyScale(pagesToConvert).forEach {
                 val (oldPage, newPage) = createPage(document, it)
                 document.pages.insertAfter(newPage, oldPage)
                 document.pages.remove(oldPage)
             }
+
+            colorToggleList.forEach {
+                document.pages.remove(document.getPage(it))
+            }
+
             content = saveChanges(document)
         }
         return this
+    }
+
+    override fun handleFileSeparationPatchSheet(pageSeparationSheets: List<Int>): List<ByteArray> {
+
+        if (pageSeparationSheets.isEmpty()) {
+            return listOf(content)
+        }
+
+        val result = mutableListOf<ByteArray>()
+
+        PDDocument.load(content).use { document ->
+            var startPage = 1
+            var endpage: Int
+
+            for (index in pageSeparationSheets.indices) {
+                endpage = pageSeparationSheets[index]
+                val splitted = Splitter().apply {
+                    setStartPage(startPage)
+                    setEndPage(endpage)
+                    setSplitAtPage(endpage)
+                }.split(document)
+                // Save the first document.
+                // The last document might have further page separation sheets,
+                // so we discard these and iterate over the parent document to find
+                // the next separation sheet
+                val splitresult = splitted.first()
+                result.add(saveChanges(splitresult))
+                // the page is 1 based, the page separationsheets are 0 based
+                startPage = if (index + 1 < pageSeparationSheets.size) {
+                    pageSeparationSheets[index] + 2
+                } else {
+                    // +2 because we want to skipp the patch sheet
+                    endpage + 2
+                }
+            }
+
+            // if we have 2 page separation sheets, we need to have 3 documents
+            // as a result and therefore it will not be covered by the loop above.
+            // So we use the splitter one more time, starting from the index of the last
+            // separation sheet + 1, ending at the last page of the document
+            // The result should be a list with one element
+            val doc = Splitter().apply {
+                setStartPage(startPage)
+                setEndPage(document.numberOfPages)
+                setSplitAtPage(document.numberOfPages)
+            }.split(document).first()
+            result.add(saveChanges(doc))
+        }
+        return result
     }
 
     override fun getDPIPerPage(): List<DPI> {

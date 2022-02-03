@@ -10,18 +10,18 @@ import org.camunda.bpm.engine.delegate.JavaDelegate
 class CallOCRDelegate(private val config: OcrConfiguration) : JavaDelegate {
 
     override fun execute(execution: DelegateExecution?) {
-        if (config.enabeld.orFalse()) {
+        if (config.enabled.orFalse()) {
             return
         }
         val variables = ProcessVariables(execution)
 
-        if (config.input.isNullOrEmpty() || config.output.isNullOrEmpty() || variables.ocrId.isNullOrEmpty()) {
+        if (config.input.isNullOrEmpty() || config.output.isNullOrEmpty()) {
             return
         }
 
 
         TransferProtocolFacade.getForPath(config.input).init(config.username, config.password).use {
-            it.save(config.input!!, variables.ocrId!!, variables.content!!)
+            it.save(config.input!!, execution?.id!!, variables.content!!)
         }
     }
 }

@@ -10,12 +10,12 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var patchSheets: List<BarcodeResult>
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.PATCH_SHEETS.name, value)
+                it.setVariable(ProcessProperty.PATCH_SHEETS.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                return (it.getVariable(ProcessProperty.PATCH_SHEETS.name)
+                return (it.getVariable(ProcessProperty.PATCH_SHEETS.value)
                     ?: listOf<BarcodeResult>()) as List<BarcodeResult>
             }
             return listOf()
@@ -23,11 +23,11 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
 
     var hasPatchSheet: Boolean
         set(value) {
-            delegateExecution?.let { it.variables[ProcessProperty.HAS_PATCH_SHEET.name] = value }
+            delegateExecution?.let { it.variables[ProcessProperty.HAS_PATCH_SHEET.value] = value }
         }
         get() {
             delegateExecution?.let {
-                return (it.getVariable(ProcessProperty.HAS_PATCH_SHEET.name) ?: false) as Boolean
+                return (it.getVariable(ProcessProperty.HAS_PATCH_SHEET.value) ?: false) as Boolean
             }
             return false
         }
@@ -35,12 +35,12 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var content: ByteArray?
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.FILE_CONTENT.name, value)
+                it.setVariable(ProcessProperty.FILE_CONTENT.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                val content = it.getVariable(ProcessProperty.FILE_CONTENT.name)
+                val content = it.getVariable(ProcessProperty.FILE_CONTENT.value)
                 if (content != null && content is ByteArray) {
                     return content
                 }
@@ -51,12 +51,12 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var filename: String
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.FILE_NAME.name, value)
+                it.setVariable(ProcessProperty.FILE_NAME.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                return it.getVariable(ProcessProperty.FILE_NAME.name) as String
+                return it.getVariable(ProcessProperty.FILE_NAME.value) as String
             }
             return ""
         }
@@ -64,12 +64,12 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var plaintext: List<String>
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.PLAIN_TEXT.name, value)
+                it.setVariable(ProcessProperty.PLAIN_TEXT.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                val content = it.getVariable(ProcessProperty.PLAIN_TEXT.name)
+                val content = it.getVariable(ProcessProperty.PLAIN_TEXT.value)
                 if (content != null && content is List<*>) {
                     return content as List<String>
                 }
@@ -80,12 +80,12 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var contentType: MediaType
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.CONTENT_TYPE.name, value.toString())
+                it.setVariable(ProcessProperty.CONTENT_TYPE.value, value.toString())
             }
         }
         get() {
             delegateExecution?.let {
-                val mediaType = it.getVariable(ProcessProperty.CONTENT_TYPE.name) as String
+                val mediaType = it.getVariable(ProcessProperty.CONTENT_TYPE.value) as String
                 val split = mediaType.split("/")
                 return MediaType(split[0], split[1])
             }
@@ -95,12 +95,12 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var pageDPIs: List<DPI>
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.DPI_PER_PAGE.name, value)
+                it.setVariable(ProcessProperty.DPI_PER_PAGE.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                return it.getVariable(ProcessProperty.DPI_PER_PAGE.name) as List<DPI>
+                return it.getVariable(ProcessProperty.DPI_PER_PAGE.value) as List<DPI>
             }
             return listOf()
         }
@@ -108,12 +108,12 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var hasSemanticResult: Boolean
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.HAS_SEMANTIC_RESULT.name, value)
+                it.setVariable(ProcessProperty.HAS_SEMANTIC_RESULT.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                return it.getVariable(ProcessProperty.HAS_SEMANTIC_RESULT.name) as Boolean
+                return it.getVariable(ProcessProperty.HAS_SEMANTIC_RESULT.value) as Boolean
             }
             return false
         }
@@ -121,12 +121,12 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var topics: List<String>
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.TOPICS.name, value)
+                it.setVariable(ProcessProperty.TOPICS.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                return it.getVariable(ProcessProperty.TOPICS.name) as List<String>
+                return it.getVariable(ProcessProperty.TOPICS.value) as List<String>
             }
             return listOf()
         }
@@ -134,12 +134,12 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var senders: List<String>
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.SENDERS.name, value)
+                it.setVariable(ProcessProperty.SENDERS.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                return it.getVariable(ProcessProperty.SENDERS.name) as List<String>
+                return it.getVariable(ProcessProperty.SENDERS.value) as List<String>
             }
             return listOf()
         }
@@ -147,12 +147,12 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var metadatas: Map<String, List<String>>
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.METADATA.name, value)
+                it.setVariable(ProcessProperty.METADATA.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                return it.getVariable(ProcessProperty.METADATA.name) as Map<String, List<String>>
+                return it.getVariable(ProcessProperty.METADATA.value) as Map<String, List<String>>
             }
             return mapOf()
         }
@@ -160,23 +160,23 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var username: String
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.USERNAME.name, value)
+                it.setVariable(ProcessProperty.USERNAME.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                return it.getVariable(ProcessProperty.USERNAME.name) as String
+                return it.getVariable(ProcessProperty.USERNAME.value) as String
             }
             return ""
         }
 
     var targetReachable: Boolean
         set(value) {
-            delegateExecution?.let { it.variables[ProcessProperty.TARGET_OK.name] = value }
+            delegateExecution?.let { it.variables[ProcessProperty.TARGET_OK.value] = value }
         }
         get() {
             delegateExecution?.let {
-                return (it.getVariable(ProcessProperty.TARGET_OK.name) ?: false) as Boolean
+                return (it.getVariable(ProcessProperty.TARGET_OK.value) ?: false) as Boolean
             }
             return false
         }
@@ -184,23 +184,23 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var targetPath: String
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.TARGET_PATH.name, value)
+                it.setVariable(ProcessProperty.TARGET_PATH.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                return it.getVariable(ProcessProperty.TARGET_PATH.name) as String
+                return it.getVariable(ProcessProperty.TARGET_PATH.value) as String
             }
             return ""
         }
 
     var ocrDone: Boolean
         set(value) {
-            delegateExecution?.let { it.variables[ProcessProperty.OCR_DONE.name] = value }
+            delegateExecution?.let { it.variables[ProcessProperty.OCR_DONE.value] = value }
         }
         get() {
             delegateExecution?.let {
-                return (it.getVariable(ProcessProperty.OCR_DONE.name) ?: false) as Boolean
+                return (it.getVariable(ProcessProperty.OCR_DONE.value) ?: false) as Boolean
             }
             return false
         }
@@ -208,12 +208,12 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var numberOfOcrAttempts: Int
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.NUMBER_OF_OCR_ATTEMPTS.name, value)
+                it.setVariable(ProcessProperty.NUMBER_OF_OCR_ATTEMPTS.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                return it.getVariable(ProcessProperty.NUMBER_OF_OCR_ATTEMPTS.name) as Int
+                return it.getVariable(ProcessProperty.NUMBER_OF_OCR_ATTEMPTS.value) as Int
             }
             return 0
         }
@@ -221,12 +221,12 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
     var numberOfConvertingAttempts: Int
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.NUMBER_OF_CONVERTING_ATTEMPTS.name, value)
+                it.setVariable(ProcessProperty.NUMBER_OF_CONVERTING_ATTEMPTS.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                return it.getVariable(ProcessProperty.NUMBER_OF_CONVERTING_ATTEMPTS.name) as Int
+                return it.getVariable(ProcessProperty.NUMBER_OF_CONVERTING_ATTEMPTS.value) as Int
             }
             return 0
         }

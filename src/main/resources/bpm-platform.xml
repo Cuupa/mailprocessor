@@ -4,6 +4,11 @@
 
     <job-executor>
         <job-acquisition name="default" />
+        <properties>
+            <property name="maxJobsPerAcquisition">3</property>
+            <property name="lockTimeInMillis">300000</property>
+            <property name="waitTimeInMillis">5000</property>
+        </properties>
     </job-executor>
 
     <process-engine name="default">

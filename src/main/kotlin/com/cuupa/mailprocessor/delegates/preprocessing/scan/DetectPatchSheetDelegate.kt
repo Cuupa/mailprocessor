@@ -1,20 +1,22 @@
 package com.cuupa.mailprocessor.delegates.preprocessing.scan
 
+import com.cuupa.mailprocessor.delegates.AbstractJavaDelegate
 import com.cuupa.mailprocessor.process.ProcessVariables
 import com.cuupa.mailprocessor.services.BarcodeReader
 import com.cuupa.mailprocessor.services.BarcodeResult
+import com.cuupa.mailprocessor.userconfiguration.WorkDirectory
 import com.google.zxing.BarcodeFormat
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.camunda.bpm.engine.delegate.DelegateExecution
-import org.camunda.bpm.engine.delegate.JavaDelegate
 
-class DetectPatchSheetDelegate(private val barcodeReader: BarcodeReader) : JavaDelegate {
+class DetectPatchSheetDelegate(private val barcodeReader: BarcodeReader, private val workDirectory: WorkDirectory) : AbstractJavaDelegate() {
 
     override fun execute(execution: DelegateExecution?) {
         val variables = ProcessVariables(execution)
+        val content = getContent(variables.id!!, workDirectory)
         val barcodes = barcodeReader
-            .readBarcode(variables.content, variables.contentType, variables.pageDPIs)
+            .readBarcode(content)
             .filter { isPatchSheet(it) }
 
         variables.hasPatchSheet = barcodes.isNotEmpty()

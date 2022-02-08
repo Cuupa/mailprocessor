@@ -9,10 +9,10 @@
     <bpmn:messageFlow id="Flow_1yu44mg" sourceRef="Participant_02u31xg" targetRef="Activity_12i7u1t" />
   </bpmn:collaboration>
   <bpmn:process id="converting" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_1">
+    <bpmn:startEvent id="StartEvent_1" camunda:asyncAfter="true">
       <bpmn:outgoing>Flow_07lr5bi</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:businessRuleTask id="Activity_15wlijd" name="Check for converting" camunda:resultVariable="converting" camunda:decisionRef="#{checkConvertingDMN}" camunda:mapDecisionResult="singleResult">
+    <bpmn:businessRuleTask id="Activity_15wlijd" name="Check for converting" camunda:asyncAfter="true" camunda:resultVariable="converting" camunda:decisionRef="#{checkConvertingDMN}" camunda:mapDecisionResult="singleResult">
       <bpmn:incoming>Flow_07lr5bi</bpmn:incoming>
       <bpmn:outgoing>Flow_00m3gx9</bpmn:outgoing>
     </bpmn:businessRuleTask>
@@ -45,7 +45,7 @@
     <bpmn:sequenceFlow id="Flow_167tsb6" sourceRef="Gateway_0b4gvf3" targetRef="Event_01jb3sl">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{CONVERSION_DONE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0rnbu4j" name="Convert document" camunda:delegateExpression="#{convertDocumentDelegate}">
+    <bpmn:serviceTask id="Activity_0rnbu4j" name="Convert document" camunda:asyncAfter="true" camunda:delegateExpression="#{convertDocumentDelegate}">
       <bpmn:incoming>Flow_1h3tcmr</bpmn:incoming>
       <bpmn:outgoing>Flow_0hv3ma1</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -73,12 +73,12 @@
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:serviceTask id="Activity_100gbi5" name="Check number of retries" camunda:delegateExpression="#{checkNumberOfConversionTries}">
+    <bpmn:serviceTask id="Activity_100gbi5" name="Check number of retries" camunda:asyncAfter="true" camunda:delegateExpression="#{checkNumberOfConversionTries}">
       <bpmn:incoming>Flow_03hy2ru</bpmn:incoming>
       <bpmn:outgoing>Flow_0tqw9tl</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0e70ohm" sourceRef="Event_0gasbha" targetRef="Event_0ywla7a" />
-    <bpmn:serviceTask id="Activity_12i7u1t" name="Sanitize document" camunda:delegateExpression="#{cleanDocumentDelegate}">
+    <bpmn:serviceTask id="Activity_12i7u1t" name="Sanitize document" camunda:asyncAfter="true" camunda:delegateExpression="#{cleanDocumentDelegate}">
       <bpmn:incoming>Flow_09scl29</bpmn:incoming>
       <bpmn:outgoing>Flow_1nv2lqr</bpmn:outgoing>
     </bpmn:serviceTask>

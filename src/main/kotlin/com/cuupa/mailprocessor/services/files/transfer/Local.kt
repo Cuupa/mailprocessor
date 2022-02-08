@@ -13,11 +13,11 @@ class Local : File {
         return this
     }
 
-    override fun exists(path: String?, filename: String?) = Files.exists(Paths.get(path + filename))
+    override fun exists(path: String?, filename: String?) = Files.exists(Paths.get(path, filename))
 
     override fun save(path: String, filename: String, data: ByteArray): Boolean {
         return try {
-            Files.copy(ByteArrayInputStream(data), Paths.get(path + filename))
+            Files.copy(ByteArrayInputStream(data), Paths.get(path, filename))
             true
         } catch (e: IOException) {
             false
@@ -44,21 +44,21 @@ class Local : File {
     }
 
     override fun get(path: String, filename: String): InputStream {
-        return Files.newInputStream(Paths.get(path + filename))
+        return Files.newInputStream(Paths.get(path, filename))
     }
 
     override fun delete(path: String, filename: String): Boolean {
-        return Files.deleteIfExists(Paths.get(path + filename))
+        return Files.deleteIfExists(Paths.get(path, filename))
     }
 
     override fun createDirectories(url: String, path: String): String {
-        return Files.createDirectories(Paths.get(url + path)).toFile().absolutePath
+        return Files.createDirectories(Paths.get(url, path)).toFile().absolutePath
     }
 
     private fun getContentType(e: Path): String {
         return try {
             Files.probeContentType(e)
-        } catch (ioException: IOException) {
+        } catch (ioException: Exception) {
             "*/*"
         }
     }

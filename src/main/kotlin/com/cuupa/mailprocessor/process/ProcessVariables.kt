@@ -7,6 +7,20 @@ import org.springframework.http.MediaType
 
 class ProcessVariables(private val delegateExecution: DelegateExecution?) {
 
+    var documents: List<String>
+        set(value) {
+            delegateExecution?.let {
+                it.setVariable(ProcessProperty.DOCUMENTS.value, value)
+            }
+        }
+        get() {
+            delegateExecution?.let {
+                return (it.getVariable(ProcessProperty.DOCUMENTS.value)
+                    ?: listOf<ByteArray>()) as List<String>
+            }
+            return listOf()
+        }
+
     var patchSheets: List<BarcodeResult>
         set(value) {
             delegateExecution?.let {
@@ -23,7 +37,7 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
 
     var hasPatchSheet: Boolean
         set(value) {
-            delegateExecution?.let { it.variables[ProcessProperty.HAS_PATCH_SHEET.value] = value }
+            delegateExecution?.let { it.setVariable(ProcessProperty.HAS_PATCH_SHEET.value, value) }
         }
         get() {
             delegateExecution?.let {
@@ -32,17 +46,17 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
             return false
         }
 
-    var content: ByteArray?
+    var id: String?
         set(value) {
             delegateExecution?.let {
-                it.setVariable(ProcessProperty.FILE_CONTENT.value, value)
+                it.setVariable(ProcessProperty.ID.value, value)
             }
         }
         get() {
             delegateExecution?.let {
-                val content = it.getVariable(ProcessProperty.FILE_CONTENT.value)
-                if (content != null && content is ByteArray) {
-                    return content
+                val id = it.getVariable(ProcessProperty.ID.value)
+                if (id != null && id is String) {
+                    return id
                 }
             }
             return null
@@ -172,7 +186,7 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
 
     var targetReachable: Boolean
         set(value) {
-            delegateExecution?.let { it.variables[ProcessProperty.TARGET_OK.value] = value }
+            delegateExecution?.let { it.setVariable(ProcessProperty.TARGET_OK.value, value) }
         }
         get() {
             delegateExecution?.let {
@@ -196,7 +210,7 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
 
     var ocrDone: Boolean
         set(value) {
-            delegateExecution?.let { it.variables[ProcessProperty.OCR_DONE.value] = value }
+            delegateExecution?.let { it.setVariable(ProcessProperty.OCR_DONE.value, value) }
         }
         get() {
             delegateExecution?.let {
@@ -230,5 +244,4 @@ class ProcessVariables(private val delegateExecution: DelegateExecution?) {
             }
             return 0
         }
-
 }

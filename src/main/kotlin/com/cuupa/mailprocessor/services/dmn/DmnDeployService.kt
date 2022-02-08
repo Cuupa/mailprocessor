@@ -1,5 +1,7 @@
 package com.cuupa.mailprocessor.services.dmn
 
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.camunda.bpm.engine.RepositoryService
 import org.springframework.scheduling.annotation.Scheduled
 import java.io.FileInputStream
@@ -15,10 +17,15 @@ class DmnDeployService(
 
     private var lastDeployed = 0L
 
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(fixedDelay = `5minutes`)
     @PostConstruct
     fun cron() {
-        loadAndDeploy()
+        log.error("Deploying dmns ...")
+        try {
+            loadAndDeploy()
+        } catch(e: Exception){
+            log.error("Failed to deploy DMNs at $path", e)
+        }
     }
 
     private fun loadAndDeploy() {
@@ -31,9 +38,16 @@ class DmnDeployService(
             dmns.forEach {
                 repositoryService.createDeployment()
                     .addInputStream(it.name, FileInputStream(it))
+                    .name(it.name)
                     .deploy()
+                log.info("Successfully deployed '${it.name}'")
             }
             lastDeployed = System.currentTimeMillis()
         }
+    }
+
+    companion object{
+        private val log: Log = LogFactory.getLog(DmnDeployService::class.java)
+        private const val `5minutes` = 300000L
     }
 }

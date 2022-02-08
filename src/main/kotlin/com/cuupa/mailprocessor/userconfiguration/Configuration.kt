@@ -16,6 +16,9 @@ class Configuration {
     @JsonProperty("decisiontables")
     var decisiontables: DecisionConfiguration? = null
 
-    @JsonProperty("user")
+    @JsonProperty("workdirectory")
+    var workdirectory: WorkDirectory?= null
+
+    @JsonProperty("configuration")
     var entries: List<UserConfiguration>? = null
 }

@@ -6,13 +6,14 @@ enum class ProcessProperty(val value: String) {
     /**
      * Document specific fields
      */
-    PATCH_SHEETS("patch_sheets"),
-    HAS_PATCH_SHEET("has_patch_sheets"),
+    PATCH_SHEETS("patch_sheet"),
+    HAS_PATCH_SHEET("has_patch_sheet"),
     DPI_PER_PAGE("dpi_per_page"),
-    FILE_CONTENT("file_content"),
+    ID("id"),
     FILE_NAME("file_name"),
     PLAIN_TEXT("plain_text"),
     CONTENT_TYPE("content_type"),
+    DOCUMENTS("documents"),
 
     /**
      * Semantic fields

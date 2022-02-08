@@ -25,6 +25,10 @@ class Tiff(content: ByteArray) : FileContent(content) {
         TODO("Not yet implemented")
     }
 
+    override fun getImages(): List<BufferedImage> {
+        TODO("Not yet implemented")
+    }
+
     override fun getDPIPerPage(): List<DPI> {
         TODO("Not yet implemented")
     }

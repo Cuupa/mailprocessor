@@ -3,17 +3,20 @@ package com.cuupa.mailprocessor.delegates.classification
 import com.cuupa.mailprocessor.api.classification.client.ClassificationClient
 import com.cuupa.mailprocessor.api.classification.model.ClassificationRequest
 import com.cuupa.mailprocessor.api.classification.model.Metadata
+import com.cuupa.mailprocessor.delegates.AbstractJavaDelegate
 import com.cuupa.mailprocessor.process.ProcessVariables
 import com.cuupa.mailprocessor.services.Extensions.orFalse
 import com.cuupa.mailprocessor.userconfiguration.ClassificatorConfiguration
+import com.cuupa.mailprocessor.userconfiguration.WorkDirectory
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
 import java.util.*
 
 class CallClassificationDelegate(
     private val config: ClassificatorConfiguration?,
-    private val client: ClassificationClient
-) : JavaDelegate {
+    private val client: ClassificationClient,
+    private val workConfig: WorkDirectory?
+) : AbstractJavaDelegate() {
 
     override fun execute(execution: DelegateExecution?) {
         if (config?.enabled.orFalse()) {
@@ -22,8 +25,10 @@ class CallClassificationDelegate(
 
         val variables = ProcessVariables(execution)
 
+        val documentContent = getContent(variables.id, workConfig)
+
         val request = ClassificationRequest().apply {
-            content = Base64.getEncoder().encodeToString(variables.content)
+            content = Base64.getEncoder().encodeToString(documentContent)
             contentType = variables.contentType.toString()
             apiKey = config?.apiKey
         }

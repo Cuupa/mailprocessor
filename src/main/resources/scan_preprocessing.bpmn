@@ -4,22 +4,21 @@
     <bpmn:participant id="Participant_0u8ctko" name="Scan Preprocessing" processRef="scan_preprocessing" />
   </bpmn:collaboration>
   <bpmn:process id="scan_preprocessing" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_1">
+    <bpmn:startEvent id="StartEvent_1" camunda:asyncAfter="true">
       <bpmn:outgoing>Flow_03qibdc</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1c8las0" sourceRef="Activity_05o43v7" targetRef="Event_1ivzzn5" />
-    <bpmn:sequenceFlow id="Flow_12l8fnx" name="has no patch sheet" sourceRef="Gateway_1lugqbg" targetRef="Event_1i5yjkv">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{HAS_PATCH_SHEET}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_12l8fnx" name="has no patch sheet" sourceRef="Gateway_1lugqbg" targetRef="Activity_1x5erpa">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{!has_patch_sheet}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0soml8u" name="has patch sheet" sourceRef="Gateway_1lugqbg" targetRef="Activity_1b860qs">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{HAS_PATCH_SHEET}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{has_patch_sheet}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0j1h0mx" sourceRef="Activity_0ti9mu3" targetRef="Activity_05o43v7" />
+    <bpmn:sequenceFlow id="Flow_0j1h0mx" sourceRef="Activity_0ti9mu3" targetRef="Event_1ivzzn5" />
     <bpmn:sequenceFlow id="Flow_1fhv0xn" sourceRef="Activity_1b860qs" targetRef="Activity_0ti9mu3" />
     <bpmn:sequenceFlow id="Flow_085pvq3" sourceRef="Activity_1m4owzj" targetRef="Gateway_1lugqbg" />
     <bpmn:sequenceFlow id="Flow_03qibdc" sourceRef="StartEvent_1" targetRef="Activity_0gjj7hs" />
     <bpmn:sequenceFlow id="Flow_0gvcj6g" sourceRef="Activity_0ouuvzy" targetRef="Activity_1m4owzj" />
-    <bpmn:serviceTask id="Activity_1m4owzj" name="Detect patch sheet" camunda:delegateExpression="#{detectPatchSheetDelegate}">
+    <bpmn:serviceTask id="Activity_1m4owzj" name="Detect patch sheet" camunda:asyncAfter="true" camunda:delegateExpression="#{detectPatchSheetDelegate}">
       <bpmn:incoming>Flow_0gvcj6g</bpmn:incoming>
       <bpmn:outgoing>Flow_085pvq3</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -28,38 +27,53 @@
       <bpmn:outgoing>Flow_0soml8u</bpmn:outgoing>
       <bpmn:outgoing>Flow_12l8fnx</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_1b860qs" name="Handle color toggle sheet" camunda:delegateExpression="#{colorToggleDelegate}">
+    <bpmn:serviceTask id="Activity_1b860qs" name="Handle color toggle sheet" camunda:asyncAfter="true" camunda:delegateExpression="#{colorToggleDelegate}">
       <bpmn:incoming>Flow_0soml8u</bpmn:incoming>
       <bpmn:outgoing>Flow_1fhv0xn</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0ouuvzy" name="Detect DPI" camunda:delegateExpression="#{detectDPIDelegate}">
+    <bpmn:serviceTask id="Activity_0ouuvzy" name="Detect DPI" camunda:asyncAfter="true" camunda:delegateExpression="#{detectDPIDelegate}">
       <bpmn:incoming>Flow_0l2meyz</bpmn:incoming>
       <bpmn:outgoing>Flow_0gvcj6g</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0l2meyz" sourceRef="Activity_0gjj7hs" targetRef="Activity_0ouuvzy" />
-    <bpmn:serviceTask id="Activity_0gjj7hs" name="Determine file type" camunda:delegateExpression="#{determineFiletypeDelegate}">
+    <bpmn:serviceTask id="Activity_0gjj7hs" name="Determine file type" camunda:asyncAfter="true" camunda:delegateExpression="#{determineFiletypeDelegate}">
       <bpmn:incoming>Flow_03qibdc</bpmn:incoming>
       <bpmn:outgoing>Flow_0l2meyz</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0ti9mu3" name="Handle document separation sheet" camunda:delegateExpression="#{documentSeparationDelegate}">
+    <bpmn:serviceTask id="Activity_0ti9mu3" name="Handle document separation sheet" camunda:asyncAfter="true" camunda:delegateExpression="#{documentSeparationDelegate}">
       <bpmn:incoming>Flow_1fhv0xn</bpmn:incoming>
       <bpmn:outgoing>Flow_0j1h0mx</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_05o43v7" name="Remove patch sheet" camunda:delegateExpression="#{removePatchSheetDelegate}">
-      <bpmn:incoming>Flow_0j1h0mx</bpmn:incoming>
-      <bpmn:outgoing>Flow_1c8las0</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:endEvent id="Event_1ivzzn5">
-      <bpmn:incoming>Flow_1c8las0</bpmn:incoming>
+      <bpmn:incoming>Flow_0j1h0mx</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:endEvent id="Event_1i5yjkv">
-      <bpmn:incoming>Flow_12l8fnx</bpmn:incoming>
+      <bpmn:incoming>Flow_0l3vtcx</bpmn:incoming>
     </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0l3vtcx" sourceRef="Activity_1x5erpa" targetRef="Event_1i5yjkv" />
+    <bpmn:serviceTask id="Activity_1x5erpa" name="Set Documents" camunda:delegateExpression="#{setDocumentsDelegate}">
+      <bpmn:incoming>Flow_12l8fnx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0l3vtcx</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:textAnnotation id="TextAnnotation_0icc2r9">
+      <bpmn:text>Will add each document to the list "documents"</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0vo3t8z" sourceRef="Activity_0ti9mu3" targetRef="TextAnnotation_0icc2r9" />
+    <bpmn:textAnnotation id="TextAnnotation_17qkbjq">
+      <bpmn:text>Will write a the content as a list in "documents"</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0rqgbl4" sourceRef="Activity_1x5erpa" targetRef="TextAnnotation_17qkbjq" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_001n354">
       <bpmndi:BPMNShape id="Participant_0u8ctko_di" bpmnElement="Participant_0u8ctko" isHorizontal="true">
-        <dc:Bounds x="129" y="59" width="1290" height="450" />
+        <dc:Bounds x="129" y="59" width="1180" height="511" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0icc2r9_di" bpmnElement="TextAnnotation_0icc2r9">
+        <dc:Bounds x="1140" y="90" width="100" height="68" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_17qkbjq_di" bpmnElement="TextAnnotation_17qkbjq">
+        <dc:Bounds x="1120" y="350" width="100" height="54" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0l2meyz_di" bpmnElement="Flow_0l2meyz">
         <di:waypoint x="350" y="217" />
@@ -83,7 +97,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0j1h0mx_di" bpmnElement="Flow_0j1h0mx">
         <di:waypoint x="1140" y="217" />
-        <di:waypoint x="1210" y="217" />
+        <di:waypoint x="1252" y="217" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0soml8u_di" bpmnElement="Flow_0soml8u">
         <di:waypoint x="765" y="217" />
@@ -95,14 +109,14 @@
       <bpmndi:BPMNEdge id="Flow_12l8fnx_di" bpmnElement="Flow_12l8fnx">
         <di:waypoint x="740" y="242" />
         <di:waypoint x="740" y="470" />
-        <di:waypoint x="1362" y="470" />
+        <di:waypoint x="1040" y="470" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="758" y="436" width="63" height="27" />
+          <dc:Bounds x="771" y="436" width="63" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1c8las0_di" bpmnElement="Flow_1c8las0">
-        <di:waypoint x="1310" y="217" />
-        <di:waypoint x="1362" y="217" />
+      <bpmndi:BPMNEdge id="Flow_0l3vtcx_di" bpmnElement="Flow_0l3vtcx">
+        <di:waypoint x="1140" y="470" />
+        <di:waypoint x="1252" y="470" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="199" width="36" height="36" />
@@ -125,15 +139,23 @@
       <bpmndi:BPMNShape id="Activity_0n7tp8g_di" bpmnElement="Activity_0ti9mu3">
         <dc:Bounds x="1040" y="177" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0z1xwi1_di" bpmnElement="Activity_05o43v7">
-        <dc:Bounds x="1210" y="177" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1ivzzn5_di" bpmnElement="Event_1ivzzn5">
-        <dc:Bounds x="1362" y="199" width="36" height="36" />
+        <dc:Bounds x="1252" y="199" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1i5yjkv_di" bpmnElement="Event_1i5yjkv">
-        <dc:Bounds x="1362" y="452" width="36" height="36" />
+        <dc:Bounds x="1252" y="452" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0cgwkwm_di" bpmnElement="Activity_1x5erpa">
+        <dc:Bounds x="1040" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0vo3t8z_di" bpmnElement="Association_0vo3t8z">
+        <di:waypoint x="1126" y="177" />
+        <di:waypoint x="1143" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0rqgbl4_di" bpmnElement="Association_0rqgbl4">
+        <di:waypoint x="1120" y="430" />
+        <di:waypoint x="1140" y="404" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

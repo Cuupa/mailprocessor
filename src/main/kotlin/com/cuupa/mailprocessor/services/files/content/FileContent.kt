@@ -39,4 +39,6 @@ abstract class FileContent(var content: ByteArray) {
 
         return convertedPages
     }
+
+    abstract fun getImages(): List<BufferedImage>
 }

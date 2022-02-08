@@ -9,9 +9,9 @@ import kotlin.test.assertEquals
 
 class PageSeparationTest {
 
-    val testDocument = "src/test/resources/page_separation_document.pdf"
+    private val testDocument = "src/test/resources/page_separation_document.pdf"
 
-    val pageSeparationSheets = listOf(1, 4)
+    private val pageSeparationSheets = listOf(1, 4)
 
     @Test
     fun handleFileSeparationPatchSheet() {

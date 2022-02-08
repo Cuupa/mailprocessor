@@ -1,7 +1,7 @@
 package com.cuupa.mailprocessor.configuration
 
 import com.cuupa.mailprocessor.MailprocessorConfiguration
-import com.cuupa.mailprocessor.MailprocessorStartService
+import com.cuupa.mailprocessor.services.MailprocessorStartService
 import com.cuupa.mailprocessor.services.BarcodeReader
 import com.cuupa.mailprocessor.services.TextExtractorService
 import com.cuupa.mailprocessor.services.TranslateService

@@ -1,13 +1,12 @@
 package com.cuupa.mailprocessor.services.files.content
 
-import com.cuupa.mailprocessor.services.BarcodeResult
 import com.cuupa.mailprocessor.services.Extensions.getText
 import com.cuupa.mailprocessor.services.files.util.DPI
 import com.cuupa.mailprocessor.services.files.util.DpiService
 import com.cuupa.mailprocessor.services.files.util.PageImage
 import org.apache.pdfbox.cos.COSDictionary
 import org.apache.pdfbox.cos.COSName
-import org.apache.pdfbox.multipdf.PDFMergerUtility
+import org.apache.pdfbox.io.MemoryUsageSetting
 import org.apache.pdfbox.multipdf.Splitter
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
@@ -15,7 +14,6 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream
 import org.apache.pdfbox.pdmodel.common.PDStream
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory
 import org.apache.pdfbox.rendering.PDFRenderer
-import org.apache.pdfbox.tools.PDFMerger
 import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
@@ -44,6 +42,18 @@ class Pdf(content: ByteArray) : FileContent(content) {
             val pageImages = mutableListOf<BufferedImage>()
             for (index in 0 until document.numberOfPages) {
                 pageImages.add(renderer.renderImageWithDPI(index, dpi[index].x))
+            }
+            return pageImages
+        }
+    }
+
+    override fun getImages(): List<BufferedImage> {
+        PDDocument.load(ByteArrayInputStream(content), MemoryUsageSetting.setupTempFileOnly()).use { document ->
+            val renderer = PDFRenderer(document)
+            renderer.isSubsamplingAllowed = true
+            val pageImages = mutableListOf<BufferedImage>()
+            for (index in 0 until document.numberOfPages) {
+                pageImages.add(renderer.renderImageWithDPI(index, 300F))
             }
             return pageImages
         }

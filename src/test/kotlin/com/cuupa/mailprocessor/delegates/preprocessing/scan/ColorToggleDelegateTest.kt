@@ -4,6 +4,7 @@ import com.cuupa.mailprocessor.process.ProcessProperty
 import com.cuupa.mailprocessor.services.Barcode
 import com.cuupa.mailprocessor.services.BarcodeResult
 import com.cuupa.mailprocessor.services.files.util.DPI
+import com.cuupa.mailprocessor.userconfiguration.WorkDirectory
 import com.google.zxing.BarcodeFormat
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.impl.pvm.runtime.ExecutionImpl
@@ -21,7 +22,11 @@ class ColorToggleDelegateTest {
     val output =
         "path/to/result.pdf"
 
-    private val unitToTest = ColorToggleDelegate()
+    val id = "ABCDEF"
+
+    private val unitToTest = ColorToggleDelegate(WorkDirectory().apply {
+        path = input
+    })
 
     @BeforeEach
     fun setUp() {
@@ -29,9 +34,8 @@ class ColorToggleDelegateTest {
         val patchSheets = listOf(
             BarcodeResult(1, Barcode(BarcodeFormat.CODE_39, "PATCH4"))
         )
-        val content = Files.readAllBytes(Paths.get(input))
         execution = ExecutionImpl()
-        execution.setVariable(ProcessProperty.FILE_CONTENT.name, content)
+        execution.setVariable(ProcessProperty.ID.name, id)
         execution.setVariable(ProcessProperty.PATCH_SHEETS.name, patchSheets)
         execution.setVariable(ProcessProperty.DPI_PER_PAGE.name, listOf(
             DPI(300F, 300F),
@@ -45,12 +49,9 @@ class ColorToggleDelegateTest {
 
     //@Test
     fun shouldReplacePage() {
-        val contentBefore = execution.getVariable(ProcessProperty.FILE_CONTENT.name)
+        val contentBefore = Files.readAllBytes(Paths.get("${execution.getVariable(ProcessProperty.ID.name)}"))
         unitToTest.execute(execution)
-        val contentAfter = execution.getVariable(ProcessProperty.FILE_CONTENT.name)
-
-        Files.write(Paths.get(output), (execution.variables[ProcessProperty.FILE_CONTENT.name] as ByteArray))
-
+        val contentAfter = Files.readAllBytes(Paths.get("${execution.getVariable(ProcessProperty.ID.name)}"))
         assertNotEquals(contentBefore, contentAfter)
     }
 

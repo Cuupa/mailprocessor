@@ -1,7 +1,6 @@
-package com.cuupa.mailprocessor
+package com.cuupa.mailprocessor.services
 
 import com.cuupa.mailprocessor.process.CallActivityConstants
-import org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.camunda.bpm.engine.RuntimeService
@@ -24,7 +23,7 @@ class MailprocessorStartService(private val runtimeService: RuntimeService) {
         try {
             runtimeService.startProcessInstanceByKey(mailprocessorKey, variables)
         } catch (e: Exception) {
-            log.error("Failed to start process with variables ${reflectionToString(variables)}", e)
+            log.error("Failed to start process with variables ${variables.entries.joinToString()}", e)
         }
     }
 

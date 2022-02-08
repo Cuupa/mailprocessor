@@ -25,6 +25,7 @@ class DpiService(val page: PDPage) : PDFStreamEngine() {
             val xobject = resources.getXObject(objectName)
             if (xobject is PDImageXObject) {
                 val ctmNew: Matrix = graphicsState.currentTransformationMatrix
+
                 dpi = DPI(
                     xobject.width * 72 / ctmNew.scalingFactorX,
                     xobject.height * 72 / ctmNew.scalingFactorY

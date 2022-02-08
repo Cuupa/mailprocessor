@@ -1,10 +1,10 @@
 package com.cuupa.mailprocessor.services.files.content
 
-import com.cuupa.mailprocessor.services.BarcodeResult
 import com.cuupa.mailprocessor.services.files.util.DPI
 import java.awt.image.BufferedImage
 
 class Invalid: FileContent(ByteArray(0)) {
+
     override fun embeddMetadata(metadata: List<String>): FileContent {
         TODO("Not yet implemented")
     }
@@ -22,6 +22,10 @@ class Invalid: FileContent(ByteArray(0)) {
     }
 
     override fun getImages(dpi: List<DPI>): List<BufferedImage> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getImages(): List<BufferedImage> {
         TODO("Not yet implemented")
     }
 

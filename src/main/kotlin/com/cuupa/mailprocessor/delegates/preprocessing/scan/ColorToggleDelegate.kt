@@ -1,10 +1,14 @@
 package com.cuupa.mailprocessor.delegates.preprocessing.scan
 
+import com.cuupa.mailprocessor.delegates.AbstractJavaDelegate
 import com.cuupa.mailprocessor.process.ProcessVariables
 import com.cuupa.mailprocessor.services.BarcodeResult
 import com.cuupa.mailprocessor.services.files.content.FileFacade
 import com.cuupa.mailprocessor.services.files.util.PageImage
+import com.cuupa.mailprocessor.userconfiguration.WorkDirectory
 import com.google.zxing.BarcodeFormat
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.apache.pdfbox.cos.COSDictionary
 import org.apache.pdfbox.cos.COSName
 import org.apache.pdfbox.pdmodel.PDDocument
@@ -21,7 +25,7 @@ import java.awt.image.ColorConvertOp
 import java.io.ByteArrayOutputStream
 
 
-class ColorToggleDelegate : JavaDelegate {
+class ColorToggleDelegate(private val workDirectory: WorkDirectory) : AbstractJavaDelegate() {
 
     override fun execute(execution: DelegateExecution?) {
         val variables = ProcessVariables(execution)
@@ -29,7 +33,15 @@ class ColorToggleDelegate : JavaDelegate {
             .filter { it.isColorToggle() }
             .map { it.pageIndex }
 
-        val file = FileFacade.content(variables.content).handleColorTogglePage(colorToggleList, variables.pageDPIs)
-        variables.content = file.content
+        val content = getContent(variables.id!!, workDirectory)
+
+        val file = FileFacade.content(content).handleColorTogglePage(colorToggleList, variables.pageDPIs)
+        writeContent(variables.id!!, file.content, workDirectory)
+
+        log.error("${this.javaClass.simpleName} executed")
+    }
+
+    companion object{
+        private val log: Log = LogFactory.getLog(ColorToggleDelegate::class.java)
     }
 }

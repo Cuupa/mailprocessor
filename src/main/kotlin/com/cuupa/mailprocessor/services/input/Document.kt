@@ -1,10 +1,13 @@
 package com.cuupa.mailprocessor.services.input
 
 import java.io.Serializable
+import java.util.*
 
 open class Document(var content:ByteArray?) : Serializable {
     lateinit var user: String
     lateinit var filename: String
+
+    val id = UUID.randomUUID()
 
     override fun equals(other: Any?): Boolean {
         return when (other) {

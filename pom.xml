@@ -32,7 +32,7 @@
         <maven-jar-plugin.version>3.2.1</maven-jar-plugin.version>
         <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
 
-        <hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
+        <hibernate-validator.version>6.2.1.Final</hibernate-validator.version>
         <sardine.version>5.10</sardine.version>
 
         <xzing.version>3.4.1</xzing.version>

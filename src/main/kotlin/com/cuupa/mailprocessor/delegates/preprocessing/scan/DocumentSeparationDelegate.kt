@@ -27,7 +27,7 @@ class DocumentSeparationDelegate(private val workConfig: WorkDirectory
 
 
 
-        variables.documents = file
+        //variables.documents = file
         log.error("${this.javaClass.simpleName} executed")
     }
 

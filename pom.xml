@@ -24,7 +24,7 @@
         <camunda.springboot.starter>7.16.0</camunda.springboot.starter>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <kotlin.version>1.6.10</kotlin.version>
+        <kotlin.version>2.1.0</kotlin.version>
         <kotlinx.version>1.6.0</kotlinx.version>
 
         <kotlin.compiler.jvmTarget>11</kotlin.compiler.jvmTarget>
